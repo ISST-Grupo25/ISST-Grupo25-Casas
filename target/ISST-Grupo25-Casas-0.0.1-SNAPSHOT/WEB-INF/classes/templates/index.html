@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoH</title>
+    <link rel="icon" type="image/png" th:href="@{/favicon.png}">
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <h1>Bienvenido a Thymeleaf con Spring Boot</h1>
+    <p>Hola, <span th:text="${nombre}">Usuario</span>!</p>
+</body>
+</html>
