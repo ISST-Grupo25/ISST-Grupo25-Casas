@@ -1,9 +1,23 @@
 body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
 }
-
-h1 {
-    color: #3498db;
+.navbar {
+    display: flex;
+    align-items: center;
+    background-color: black;
+    padding: 10px 20px;
+    color: #A6866A;
+}
+.navbar img {
+    height: 40px;
+    margin-right: 10px;
+}
+.navbar h1 {
+    margin: 0;
+    font-size: 24px;
+}
+.content {
+    padding: 20px;
+    text-align: center;
 }
