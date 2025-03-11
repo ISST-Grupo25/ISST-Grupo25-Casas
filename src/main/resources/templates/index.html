@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IoH</title>
-    <link rel="icon" type="image/png" th:href="@{/logo_IoH.png}">
-    <link rel="stylesheet" th:href="@{/style.css}">
-</head>
-<body>
-    <div class="navbar">
-        <img th:src="@{/logo_IoH.png}" alt="IoH Logo">
-        <h1>IoH</h1>
+  <head th:replace="~{layout :: head}"></head>
+  <body>
+    <div id="main">
+      <!-- Barra de navegación -->
+      <div th:replace="~{layout :: nav}"></div>
+
+      <!-- Contenido principal -->
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
+          <header class="hero">
+            <div class="hero-content">
+              <h2>Accesos Inteligentes para tu Propiedad</h2>
+              <p class="!bg-black !text-amber-300">
+                Gestión remota y segura de cerraduras con tecnología Bluetooth e
+                Internet.
+              </p>
+            </div>
+          </header>
+          <section class="features">
+            <div class="feature">
+              <h3>Acceso Bluetooth</h3>
+              <p>
+                Abre puertas con tu smartphone sin necesidad de llaves físicas.
+              </p>
+            </div>
+            <div class="feature">
+              <h3>Integración con Google Calendar</h3>
+              <p>Planifica accesos y controla el horario de cada usuario.</p>
+            </div>
+            <div class="feature">
+              <h3>Monitoreo en Tiempo Real</h3>
+              <p>Historial de accesos y notificaciones de seguridad.</p>
+            </div>
+          </section>
+        </section>
+      </main>
     </div>
-    <div class="content">
-        <h2>Bienvenido a Thymeleaf con Spring Boot</h2>
-        <p>Hola, <span th:text="${nombre}">Usuario</span>!</p>
-    </div>
-</body>
+    <!-- Inclusión de los scripts del layout -->
+    <script th:replace="~{layout :: scripts}"></script>
+  </body>
 </html>

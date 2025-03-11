@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head}"></head>
+  <body>
+    <!-- Menú lateral -->
+
+    <div id="main">
+      <!-- Barra de navegación -->
+      <div th:replace="~{layout :: nav}"></div>
+
+      <!-- Contenido principal -->
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section th:fragment="section" class="settings-container">
+          <h2>Ajustes</h2>
+
+          <!-- Notificaciones -->
+          <!-- Notificaciones -->
+          <div class="settings-section">
+            <h3>Notificaciones</h3>
+            <form th:action="@{/settings/update-notifications}" method="post">
+              <label for="emailNotifications">
+                <input
+                  type="checkbox"
+                  id="emailNotifications"
+                  name="emailNotifications"
+                  th:checked="${session.emailNotifications}"
+                />
+                Recibir notificaciones por correo
+              </label>
+              <label for="smsNotifications">
+                <input
+                  type="checkbox"
+                  id="smsNotifications"
+                  name="smsNotifications"
+                  th:checked="${session.smsNotifications}"
+                />
+                Recibir notificaciones por SMS
+              </label>
+              <button type="submit" class="btn-primary">Guardar Cambios</button>
+            </form>
+          </div>
+
+          <!-- Preferencias Generales -->
+          <div class="settings-section">
+            <h3>Preferencias Generales</h3>
+            <form th:action="@{/settings/update-preferences}" method="post">
+              <label for="theme">Tema:</label>
+              <select id="theme" name="theme">
+                <option value="light" th:selected="${session.theme == 'light'}">
+                  Claro
+                </option>
+                <option value="dark" th:selected="${session.theme == 'dark'}">
+                  Oscuro
+                </option>
+              </select>
+
+              <label for="language">Idioma:</label>
+              <select id="language" name="language">
+                <option value="es" th:selected="${session.language == 'es'}">
+                  Español
+                </option>
+                <option value="en" th:selected="${session.language == 'en'}">
+                  Inglés
+                </option>
+              </select>
+
+              <button type="submit" class="btn-primary">Guardar Cambios</button>
+            </form>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <div th:replace="~{layout :: footer}"></div>
+      </main>
+    </div>
+    <!-- Inclusión de los scripts del layout -->
+    <script th:replace="~{layout :: scripts}"></script>
+  </body>
+</html>

@@ -2,53 +2,93 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
   <body>
-    <!-- Menú lateral -->
-    <div th:replace="~{layout :: sidenav}"></div>
-
     <div id="main">
-      <!-- Barra de navegación -->
       <div th:replace="~{layout :: nav}"></div>
 
-      <!-- Contenido principal -->
-      <main th:replace="~{layout :: content}">
-        <section class="form">
-          <h2>Crear Cuenta</h2>
-          <p>Regístrate para gestionar tus accesos de manera inteligente.</p>
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
+          <!-- Opciones de registro -->
+          <div id="selection-section" class="options-container">
+            <div class="option-box">
+              <h3>Quiero gestionar accesos</h3>
+              <p>
+                Regístrate para administrar las cerraduras de tus alojamientos.
+              </p>
+              <button class="btn" onclick="showForm('gestor')">
+                Registrarme como Gestor
+              </button>
+            </div>
 
-          <!-- Mostrar mensaje de error si hay uno -->
-          <p class="error-message" th:if="${error}" th:text="${error}"></p>
+            <div class="option-box">
+              <h3>Soy un huésped</h3>
+              <p>
+                Regístrate para acceder a alojamientos de forma segura y
+                sencilla.
+              </p>
+              <button class="btn" onclick="showForm('usuario')">
+                Registrarme como Usuario
+              </button>
+            </div>
+          </div>
 
-          <form th:action="@{/signup}" method="post">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" required />
+          <!-- Formulario de Registro (Oculto por defecto) -->
+          <section id="register-form" class="form">
+            <h2 id="form-title">Crear Cuenta</h2>
+            <p id="form-description">Regístrate para continuar.</p>
 
-            <label for="email">Correo Electrónico</label>
-            <input type="email" id="email" name="email" required />
+            <p class="error-message" th:if="${error}" th:text="${error}"></p>
 
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required />
+            <form th:action="@{/signup}" method="post">
+              <input type="hidden" id="role" name="role" value="" />
 
-            <label for="confirmPassword">Confirmar Contraseña</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              required
-            />
+              <label for="nombre">Nombre</label>
+              <input type="text" id="nombre" name="nombre" required />
 
-            <button type="submit" class="btn-primary">Registrarse</button>
-          </form>
+              <label for="email">Correo Electrónico</label>
+              <input type="email" id="email" name="email" required />
 
-          <p>
-            ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a>
-          </p>
+              <label for="password">Contraseña</label>
+              <input type="password" id="password" name="password" required />
+
+              <label for="confirmPassword">Confirmar Contraseña</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                required
+              />
+
+              <button type="submit" class="btn-primary">Registrarse</button>
+            </form>
+
+            <p>
+              ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión aquí</a>
+            </p>
+          </section>
         </section>
       </main>
-
-      <!-- Footer -->
-      <div th:replace="~{layout :: footer}"></div>
     </div>
-    <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>
+    <script>
+      function showForm(role) {
+        document.getElementById("selection-section").style.display = "none";
+
+        document.getElementById("register-form").style.display = "block";
+
+        if (role === "gestor") {
+          document.getElementById("form-title").innerText =
+            "Crear Cuenta como Gestor";
+          document.getElementById("form-description").innerText =
+            "Regístrate para gestionar accesos.";
+        } else {
+          document.getElementById("form-title").innerText =
+            "Crear Cuenta como Usuario";
+          document.getElementById("form-description").innerText =
+            "Regístrate para acceder a alojamientos.";
+        }
+
+        document.getElementById("role").value = role;
+      }
+    </script>
   </body>
 </html>

@@ -3,15 +3,14 @@
   <head th:replace="~{layout :: head}"></head>
   <body>
     <!-- Menú lateral -->
-    <div th:replace="~{layout :: sidenav}"></div>
 
     <div id="main">
       <!-- Barra de navegación -->
       <div th:replace="~{layout :: nav}"></div>
 
       <!-- Contenido principal -->
-      <main th:replace="~{layout :: content}">
-        <section th:fragment="section">
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
           <header class="hero">
             <div class="hero-content">
               <h2>Contáctanos</h2>
@@ -19,14 +18,11 @@
             </div>
           </header>
 
-          <section class="form">
+          <section class="contact-form">
             <h3>📩 Envíanos un Mensaje</h3>
             <form th:action="@{/contact}" method="POST">
-              <label for="nombre">Nombre</label>
-              <input type="text" id="nombre" name="nombre" required />
-
-              <label for="email">Correo Electrónico</label>
-              <input type="email" id="email" name="email" required />
+              <label for="topic">Asunto</label>
+              <input type="text" id="topic" name="topic" required />
 
               <label for="mensaje">Mensaje</label>
               <textarea
@@ -40,10 +36,10 @@
             </form>
           </section>
         </section>
-      </main>
 
-      <!-- Footer -->
-      <div th:replace="~{layout :: footer}"></div>
+        <!-- Footer -->
+        <div th:replace="~{layout :: footer}"></div>
+      </main>
     </div>
     <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>

@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IoH - Internet de las Casas</title>
     <link rel="icon" th:href="@{/images/logo_IoH.ico}" />
-    <link rel="stylesheet" th:href="@{/layout.css}" />
-    <link rel="stylesheet" th:href="@{/style.css}" />
-    <link rel="stylesheet" th:href="@{/styles.css}" />
-    <link href="/dist/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
 
     <link
       rel="stylesheet"
@@ -39,7 +36,7 @@
             <button id="userBtn" class="user-btn">
               <span th:text="${session.usuario}"></span
               ><span
-                style="padding-left: 10px; color: var(--marron-claro)"
+                style="padding-left: 10px; color: white"
                 class="material-icons"
                 >keyboard_arrow_down</span
               >
@@ -69,6 +66,17 @@
               <span class="material-icons">calendar_month</span>
               <a th:href="@{/calendar}">Gestionar Acessos</a>
             </li>
+            <li th:if="${session.isLoggedIn}" class="nav-item">
+              <span class="material-icons">bar_chart</span>
+              <a th:href="@{/calendar}">Monitorizar Acessos</a>
+            </li>
+            <li
+              th:if="${session.isLoggedIn and session.role == 'usuario'}"
+              class="nav-item"
+            >
+              <span class="material-icons">key</span>
+              <a th:href="@{/calendar}">Acesso Actual</a>
+            </li>
             <li class="expand"></li>
             <li class="nav-item">
               <span class="material-icons">account_circle</span>
@@ -89,12 +97,15 @@
             </li>
           </ul>
         </div>
-        <div id="maincontent" th:insert="~{::section}"></div>
+        <div class="contentview">
+          <div id="maincontent" class="viewinfo" th:insert="~{::section}"></div>
+          <footer class="footer" th:fragment="footer">
+            <p>
+              &copy; 2025 Internet de las Casas. Todos los derechos reservados.
+            </p>
+          </footer>
+        </div>
       </main>
-
-      <footer class="footer" th:fragment="footer">
-        <p>&copy; 2025 Internet de las Casas. Todos los derechos reservados.</p>
-      </footer>
     </div>
 
     <script th:fragment="scripts">
@@ -121,8 +132,8 @@
         <main>
           <div th:replace="~{sidenav}"></div>
           <div id="maincontent" th:insert="${content}"></div>
+          <div th:replace="~{footer}"></div>
         </main>
-        <div th:replace="~{footer}"></div>
       </div>
       <div th:replace="~{scripts}"></div>
     </div>

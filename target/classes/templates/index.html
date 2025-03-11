@@ -2,19 +2,17 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
   <body>
-    <!-- Menú lateral -->
-
     <div id="main">
       <!-- Barra de navegación -->
       <div th:replace="~{layout :: nav}"></div>
 
       <!-- Contenido principal -->
-      <main th:replace="~{layout :: content}">
-        <section th:fragment="section">
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
           <header class="hero">
             <div class="hero-content">
               <h2>Accesos Inteligentes para tu Propiedad</h2>
-              <p class="bg-black text-amber-300">
+              <p class="!bg-black !text-amber-300">
                 Gestión remota y segura de cerraduras con tecnología Bluetooth e
                 Internet.
               </p>
@@ -38,9 +36,6 @@
           </section>
         </section>
       </main>
-
-      <!-- Footer -->
-      <div th:replace="~{layout :: footer}"></div>
     </div>
     <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>
