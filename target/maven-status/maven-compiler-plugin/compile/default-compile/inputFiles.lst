@@ -1,2 +1,13 @@
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/IsstGrupo25CasasApplication.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/config/GoogleOAuthConfig.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/config/SecurityConfig.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/AuthController.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/CalendarController.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/HomeController.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/ProfileController.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/SettingsController.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/User.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/UserRepository.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomUserDetailsService.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/GoogleCalendarService.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/UserService.java

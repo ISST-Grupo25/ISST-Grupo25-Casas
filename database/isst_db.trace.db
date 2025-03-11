@@ -1,0 +1,4 @@
+2025-02-19 21:38:46.819188+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Error de Sintaxis en sentencia SQL "SELECT @[*]@character_set_database, @@sql_mode"; se esperaba "identifier"
+Syntax error in SQL statement "SELECT @[*]@character_set_database, @@sql_mode"; expected "identifier"; SQL statement:
+SELECT @@character_set_database, @@sql_mode [42001-232]
