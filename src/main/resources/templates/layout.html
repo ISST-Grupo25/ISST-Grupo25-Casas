@@ -71,7 +71,7 @@
               <a th:href="@{/calendar}">Monitorizar Acessos</a>
             </li>
             <li
-              th:if="${session.isLoggedIn and session.role == 'usuario'}"
+              th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'usuario'}"
               class="nav-item"
             >
               <span class="material-icons">key</span>

@@ -6,6 +6,11 @@
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/HomeController.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/ProfileController.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/SettingsController.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Acceso.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Cerradura.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Gestor.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Huesped.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Reserva.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/User.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/UserRepository.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomUserDetailsService.java

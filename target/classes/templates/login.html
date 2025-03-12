@@ -2,13 +2,9 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
   <body>
-    <!-- Menú lateral -->
-
     <div id="main">
-      <!-- Barra de navegación -->
       <div th:replace="~{layout :: nav}"></div>
 
-      <!-- Contenido principal -->
       <main class="contentview" th:replace="~{layout :: content}">
         <section th:fragment="section" class="section-container">
           <div class="login-form">
@@ -35,11 +31,9 @@
           </div>
         </section>
 
-        <!-- Footer -->
         <div th:replace="~{layout :: footer}"></div>
       </main>
     </div>
-    <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>
   </body>
 </html>
