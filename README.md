@@ -60,10 +60,10 @@ El sistema se basa en una arquitectura **cliente-servidor en tres niveles**, uti
 
 ### **Requisitos Previos**
 
+- MySQL
+- mvm
 - Java 11+
 - Apache Tomcat 9+
-- MySQL
-- Node.js y npm (para el frontend)
 
 ## Pasos para ejecutar el proyecto
 
@@ -123,33 +123,36 @@ El sistema se basa en una arquitectura **cliente-servidor en tres niveles**, uti
 
    5️⃣ **_Resuelve conflictos si los hay:_**
 
+   - Edita los archivos en conflicto.
+   - Una vez resueltos, guarda los cambios y haz:
+
    ```bash
-   Edita los archivos en conflicto.
-   Una vez resueltos, guarda los cambios y haz:
    git add .
    git commit -m "Conflictos resueltos en feature/nombre-rama"
    ```
 
-   6️⃣ Sube los cambios a GitHub:
+   6️⃣ **_Sube los cambios a GitHub:_**
 
    ```bash
    git push origin feature/nombre-rama
    ```
 
-   7️⃣ Crea un Pull Request en GitHub:
-   Desde GitHub, abre un Pull Request de feature/nombre-rama hacia develop.
-   Espera la revisión y aprobación del equipo.
+   7️⃣ **_Crea un Pull Request en GitHub:_**
 
-   8️⃣ Fusiona el Pull Request cuando esté aprobado:
-   Una vez aprobado, merge en develop.
-   Luego, actualiza tu repositorio local:
+   - Desde GitHub, abre un Pull Request de feature/nombre-rama hacia develop.
+   - Espera la revisión y aprobación del equipo.
+
+   8️⃣ **_Fusiona el Pull Request cuando esté aprobado:_**
+
+   - Una vez aprobado, merge en develop.
+   - Luego, actualiza tu repositorio local:
 
    ```bash
    git checkout develop
    git pull origin develop
    ```
 
-   9️⃣ Borra la rama después de fusionarla:
+   9️⃣ **_Borra la rama después de fusionarla:_**
 
    ```bash
    git branch -d feature/nombre-rama
@@ -196,3 +199,137 @@ Este proyecto está bajo la licencia **MIT**.
 📧 **Email:** Product Owner: f.gfernandez-getino@alumnos.upm.es, Scrum Master: natalia.burguillo@alumnos.upm.es
 
 🌐 **GitHub:** [Repositorio del Proyecto](https://github.com/ISST-Grupo25/ISST-Grupo25-Casas)
+
+## Guía de Instalaciones
+
+### 1. Instalar MySQL
+
+#### ✅ **Instalación en Windows:**
+
+- Descarga MySQL desde: [MySQL Installer](https://dev.mysql.com/downloads/installer/).
+- Instala MySQL Server y MySQL Workbench (opcional).
+- Durante la instalación, configura:
+  - Usuario: root
+  - Contraseña: Mirar el proyecto.
+- Agrega MySQL al PATH del sistema.
+
+#### ✅ Instalación en macOS (con Homebrew):
+
+```bash
+brew install mysql
+brew services start mysql
+```
+
+Para ingresar a MySQL:
+
+```bash
+mysql -u root -p
+```
+
+✅ **Configuración de la Base de Datos**
+
+Abre MySQL y ejecuta:
+
+```sql
+CREATE DATABASE isst_db;
+```
+
+Verifica que se haya creado con:
+
+```sql
+SHOW DATABASES;
+```
+
+### 2. Instalar Maven (mvn)
+
+💡 Maven es el gestor de dependencias del proyecto.
+
+#### ✅ Instalación en Windows:
+
+- Descarga [Maven](https://maven.apache.org/download.cgi).
+- Extrae el .zip en C:\Program Files\Apache\Maven.
+- Agrega C:\Program Files\Apache\Maven\bin al PATH del sistema.
+- Verifica la instalación con:
+
+```bash
+ mvn -v
+```
+
+#### ✅ Instalación en macOS/Linux (con Homebrew o apt):
+
+```bash
+brew install maven # macOS
+sudo apt install maven # Ubuntu
+```
+
+Verifica la instalación con:
+
+```bash
+mvn -v
+```
+
+### 3. Instalar Java 11 o superior
+
+💡 Java es necesario para ejecutar la aplicación.
+
+#### ✅ Instalación en Windows:
+
+- Descarga Java 11+ desde [OpenJDK](https://jdk.java.net/) o [Oracle JDK](https://www.oracle.com/java/technologies/javase/jdk11-archive-downloads.html).
+- Instala y configura la variable de entorno `JAVA_HOME` apuntando a la carpeta de instalación.
+  Verifica la instalación con:
+  ```bash
+  java -version
+  ```
+
+#### ✅ Instalación en macOS/Linux (con Homebrew o apt):
+
+```bash
+brew install openjdk@11 # macOS
+sudo apt install openjdk-11-jdk # Ubuntu
+```
+
+Verifica la instalación con:
+
+```bash
+java -version
+```
+
+### 4. Instalar Apache Tomcat 9+
+
+💡 Apache Tomcat es el servidor de aplicaciones que ejecutará nuestro backend en Spring Boot.
+
+#### ✅ Instalación en Windows y macOS:
+
+- Descarga Tomcat 9+ desde: [Apache Tomcat](https://tomcat.apache.org/download-90.cgi).
+- Extrae el archivo `.zip` o `.tar.gz`.
+
+Para iniciar Tomcat:
+
+- En Windows, ejecuta:
+
+```bash
+C:\ruta\de\tomcat\bin\startup.bat
+```
+
+- En macOS/Linux:
+
+```bash
+cd /ruta/de/tomcat/bin
+./startup.sh
+```
+
+Verifica que Tomcat está corriendo abriendo en el navegador:
+
+```
+http://localhost:8080
+```
+
+🎯 **Verificación Final**
+
+Después de instalar todo, revisa que los comandos funcionan correctamente:
+
+```bash
+mysql --version
+mvn -v
+java -version
+```
