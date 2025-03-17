@@ -1,184 +1,119 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{layout :: head}">
-    <link
-      href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-  </head>
+  <head th:replace="~{layout :: head}"></head>
   <body>
     <div id="main">
       <div th:replace="~{layout :: nav}"></div>
+      <main class="contentview" th:replace="~{layout :: content}">
+       
+        <section class="section-container" th:fragment="section">
+          <div id="calendar"></div>
+          <button id="addEvent" class="btn">Añadir Reserva</button>
+          
+          <!-- Fondo oscurecido cuando el modal está activo -->
+          <div id="modalOverlay" class="modal-overlay" style="display: none;"></div>
 
-      <main>
-        <h2>Mi Calendario</h2>
-        <div id="calendar"></div>
+          <!-- Modal oculto por defecto -->
+          <div id="accessModal" class="modal" style="display: none;">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Programar Acceso</h2>
+              <form id="accessForm">
+                <label for="casa">Casa</label>
+                <select id="casa" name="casa" required>
+                  <option value="Casa 1">Casa 1</option>
+                  <option value="Casa 2">Casa 2</option>
+                  <option value="Casa 3">Casa 3</option>
+                </select>
+                <label for="fecha">Fecha</label>
+                <input type="text" id="fecha" name="fecha" required />
+                <label for="huespedes">Huespedes</label>
+                <select id="huespedes" name="huespedes" multiple required>
+                  <option value="Huesped 1">Huesped 1</option>
+                  <option value="Huesped 2">Huesped 2</option>
+                  <option value="Huesped 3">Huesped 3</option>
+                </select>
+                <div class="modal-buttons">
+                  <button type="submit" class="btn">Confirmar</button>
+                  <button type="button" class="btn cancel-btn">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
       </main>
-
-      <div th:replace="~{layout :: footer}"></div>
     </div>
-
-    <script th:inline="javascript">
-      document.addEventListener("DOMContentLoaded", function () {
-        var calendarEl = document.getElementById("calendar");
+    <script th:replace="~{layout :: scripts}"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var modal = document.getElementById('accessModal');
+        var modalOverlay = document.getElementById('modalOverlay');
+        var closeModal = document.getElementsByClassName('close')[0];
+        var cancelModal = document.querySelector('.cancel-btn');
+        
         var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: "dayGridMonth",
-          events: [
-            /* Thymeleaf iterará sobre los eventos obtenidos del backend */
-            /* Convertimos los eventos de Google Calendar a formato FullCalendar */
-            /* Esto asegurará que los eventos se muestren en la vista */
-            /* Itera sobre los eventos pasados desde el backend */
-            /* events es una lista de eventos desde el controlador */
-            /* FullCalendar espera eventos en formato JSON */
-            /* Con Thymeleaf, generamos este JSON dinámicamente */
-            /* El evento de Google Calendar tiene un resumen (summary), start.dateTime y end.dateTime */
-            /* Si la fecha de inicio está vacía, tomamos start.date en su lugar */
-            /* Usamos th:each para iterar los eventos desde el modelo */
-            /* También verificamos que los valores existen */
-            /* Se asignan las fechas y títulos dinámicamente */
-            /* Así se muestran correctamente en el calendario */
-            /* Se renderiza FullCalendar con los datos de Google Calendar */
-            /* events de FullCalendar necesita objetos con title, start y end */
-            /* La estructura del evento en FullCalendar */
-            /* { title: "Evento", start: "2024-03-11T10:00:00", end: "2024-03-11T12:00:00" } */
-            /* Thymeleaf transformará los eventos en este formato dinámicamente */
-            /* Si start.dateTime no está definido, usamos start.date para eventos de día completo */
-            /* Si end.dateTime no está definido, usamos end.date */
-            /* Así aseguramos que todos los eventos sean válidos */
-            /* La fecha de inicio se convierte a formato de fecha de JavaScript */
-            /* La fecha de fin también se convierte a formato de JavaScript */
-            /* FullCalendar mostrará correctamente los eventos */
-            /* Google Calendar maneja fechas en formato ISO */
-            /* Aseguramos que el formato es compatible con FullCalendar */
-            /* Se recorren los eventos usando Thymeleaf */
-            /* Cada evento se formatea en JSON */
-            /* Se usa `th:each` para recorrer la lista de eventos */
-            /* En cada iteración, `event` representa un evento individual */
-            /* `event.summary` es el título */
-            /* `event.start.dateTime` o `event.start.date` es la fecha de inicio */
-            /* `event.end.dateTime` o `event.end.date` es la fecha de fin */
-            /* Estos datos se pasan al JSON de FullCalendar */
-            /* Así se renderizan los eventos correctamente en el calendario */
-            /* Esto garantiza que los eventos aparezcan en la vista */
-            /* Si hay eventos, se mostrarán en el calendario */
-            /* Generamos el JSON de eventos dinámicamente */
-            /* Thymeleaf los convierte en formato JSON en tiempo de ejecución */
-            /* Así, los eventos aparecen automáticamente en el calendario */
-            /* Esto enlaza Google Calendar con FullCalendar */
-            /* Integración completa */
-            /* Comprobación final */
-            /* El calendario mostrará los eventos */
-            /* Si hay eventos, FullCalendar los renderiza */
-            /* La integración está completa */
-            /* El calendario ya funciona con Google Calendar */
-            /* Los eventos se muestran automáticamente */
-            /* No se necesitan pasos adicionales */
-            /* Integración finalizada */
-            /* Google Calendar + FullCalendar */
-            /* Todo listo */
-            /* 🎉 */
-            /* Vamos a ver los eventos */
-            /* ¡Éxito! */
-            /* 🎊 */
-            /* 🎈 */
-            /* 🏆 */
-            /* 🎯 */
-            /* 🚀 */
-            /* ¡Google Calendar funcionando en FullCalendar! */
-            /* Ahora puedes ver tus eventos en la web */
-            /* Comprobación lista */
-            /* ¡Disfruta tu integración! */
-            /* 😃 */
-            /* 🤩 */
-            /* 🥳 */
-            /* 👍 */
-            /* 👌 */
-            /* 😎 */
-            /* 🎶 */
-            /* 🍾 */
-            /* ¡Felicidades! */
-            /* ¡Finalizado con éxito! */
-            /* 🏁 */
-            /* Google Calendar + FullCalendar = 🔥 */
-            /* Fin */
-            /* ✨ */
-            /* 🎇 */
-            /* 🏆 */
-            /* Perfecto */
-            /* Google Calendar en la web */
-            /* ¡Éxito asegurado! */
-            /* 🚀 */
-            /* 🏅 */
-            /* 🏆 */
-            /* 🎉 */
-            /* 🎊 */
-            /* 🎈 */
-            /* Vamos a verlo en acción */
-            /* 👀 */
-            /* 🔥 */
-            /* 🎯 */
-            /* 🥳 */
-            /* 🎶 */
-            /* 🍾 */
-            /* 💪 */
-            /* 🚀 */
-            /* Listo */
-            /* 🎯 */
-            /* 🏆 */
-            /* Google Calendar en vivo */
-            /* ¡Ya está! */
-            /* Perfecto */
-            /* 🚀 */
-            /* ¡Google Calendar en FullCalendar funciona! */
-            /* 🏆 */
-            /* 🎉 */
-            /* 🏅 */
-            /* 🔥 */
-            /* 🎯 */
-            /* ¡Éxito! */
-            /* 🎉 */
-            /* 🏆 */
-            /* 🚀 */
-            /* 🥳 */
-            /* Listo */
-            /* Google Calendar en FullCalendar */
-            /* 🎊 */
-            /* 🎉 */
-            /* 🎯 */
-            /* 🚀 */
-            /* 🏆 */
-            /* ¡Perfecto! */
-            /* 🎈 */
-            /* 🎯 */
-            /* 🚀 */
-            /* 🎊 */
-            /* ¡Éxito! */
-            /* ¡Finalizado con éxito! */
-            /* 🏅 */
-            /* 🔥 */
-            /* Google Calendar funcionando */
-            /* ¡Listo! */
-            /* 🎉 */
-            /* 🎊 */
-            /* 🎈 */
-            /* 🎯 */
-            /* 🚀 */
-            /* Google Calendar funcionando en FullCalendar */
-            /* ¡Éxito asegurado! */
-            /* 🔥 */
-            /* 🎯 */
-            /* 🎉 */
-            /* ¡Finalizado con éxito! */
-            /* 🚀 */
-            /* 🏆 */
-            /* 🎯 */
-            /* 🎉 */
-            /* ¡Listo! */
-          ],
+          initialView: 'dayGridMonth',
+          locale: 'es',
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+          },
+          events: '/api/reservas', // Cargar reservas desde Spring Boot
+          eventClick: function (info) {
+            alert('Reserva: ' + info.event.title + '\n' + info.event.extendedProps.description);
+          }
         });
         calendar.render();
+        
+        function openModal() {
+          modal.style.display = 'block';
+          modalOverlay.style.display = 'block';
+        }
+        
+        function closeModalFunction() {
+          modal.style.display = 'none';
+          modalOverlay.style.display = 'none';
+        }
+        
+        document.getElementById('addEvent').addEventListener('click', openModal);
+        closeModal.onclick = closeModalFunction;
+        cancelModal.onclick = closeModalFunction;
+        
+        window.onclick = function (event) {
+          if (event.target == modalOverlay) {
+            closeModalFunction();
+          }
+        };
+        
+        document.getElementById('accessForm').addEventListener('submit', function (event) {
+          event.preventDefault();
+          
+          var casa = document.getElementById('casa').value;
+          var fecha = document.getElementById('fecha').value;
+          var huespedes = Array.from(document.getElementById('huespedes').selectedOptions).map(option => option.value);
+          
+          fetch('/api/reservas', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              name: casa,
+              fechainicio: fecha.split(' - ')[0],
+              fechafin: fecha.split(' - ')[1],
+              huespedes: huespedes
+            })
+          }).then(response => response.json())
+            .then(data => {
+              calendar.refetchEvents();
+              closeModalFunction();
+              alert('Acceso programado con éxito y añadido a Google Calendar.');
+            }).catch(error => console.error('Error:', error));
+        });
       });
     </script>
   </body>
 </html>
+
