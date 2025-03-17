@@ -11,8 +11,10 @@
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Gestor.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Huesped.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Reserva.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/User.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/UserRepository.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomUserDetailsService.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/GestorRepository.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/HuespedRepository.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomGestorDetailsService.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomHuespedDetailsService.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/GestorService.java
 /Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/GoogleCalendarService.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/UserService.java
+/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/HuespedService.java

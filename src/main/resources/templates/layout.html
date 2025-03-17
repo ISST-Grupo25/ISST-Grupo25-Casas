@@ -62,7 +62,11 @@
               <span class="material-icons">home</span>
               <a th:href="@{/}">Inicio</a>
             </li>
-            <li th:if="${session.isLoggedIn}" class="nav-item">
+
+            <li
+              th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'gestor'}"
+              class="nav-item"
+            >
               <span class="material-icons">calendar_month</span>
               <a th:href="@{/calendar}">Gestionar Acessos</a>
             </li>

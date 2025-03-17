@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.isst.ISST_Grupo25_Casas.repository.UserRepository;
-import com.isst.ISST_Grupo25_Casas.models.User;
+import com.isst.ISST_Grupo25_Casas.repository.GestorRepository;
+import com.isst.ISST_Grupo25_Casas.repository.HuespedRepository;
+import com.isst.ISST_Grupo25_Casas.models.Gestor;
+import com.isst.ISST_Grupo25_Casas.models.Huesped;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -27,7 +29,8 @@ public class ProfileController {
     private static final String UPLOAD_DIR = "src/main/resources/static/images/uploads";
 
     @Autowired
-    private UserRepository userRepository;
+    private GestorRepository gestorRepository;
+    private HuespedRepository huespedRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -64,14 +67,24 @@ public class ProfileController {
                                 HttpSession session, Model model) {
         String currentEmail = (String) session.getAttribute("email");
 
-        // Buscar usuario en la base de datos
-        Optional<User> optionalUser = userRepository.findByEmail(currentEmail);
+        Optional<Huesped> optionalHuesped = huespedRepository.findByEmail(currentEmail);
+        Optional<Gestor> optionalGestor = gestorRepository.findByEmail(currentEmail);
 
-        if (optionalUser.isPresent()) {  // 🔥 Verificar si el usuario existe
-            User user = optionalUser.get();  // ✅ Obtener el objeto User real
-            user.setName(name);
-            user.setEmail(email);
-            userRepository.save(user);  // 🔥 Guardar cambios en la BD
+        if (optionalHuesped.isPresent()) {  // 🔥 Verificar si el usuario existe
+            Huesped huesped = optionalHuesped.get();  // ✅ Obtener el objeto Huesped real
+            huesped.setName(name);
+            huesped.setEmail(email);
+            huespedRepository.save(huesped);  // 🔥 Guardar cambios en la BD
+
+            // Actualizar la sesión con los nuevos datos
+            session.setAttribute("usuario", name);
+            session.setAttribute("email", email);
+        }
+        if (optionalGestor.isPresent()) {  // 🔥 Verificar si el usuario existe
+            Gestor gestor = optionalGestor.get();  // ✅ Obtener el objeto Huesped real
+            gestor.setName(name);
+            gestor.setEmail(email);
+            gestorRepository.save(gestor);  // 🔥 Guardar cambios en la BD
 
             // Actualizar la sesión con los nuevos datos
             session.setAttribute("usuario", name);
@@ -86,20 +99,34 @@ public class ProfileController {
                                  @RequestParam("newPassword") String newPassword,
                                  HttpSession session) {
         String email = (String) session.getAttribute("email");
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<Huesped> optionalHuesped = huespedRepository.findByEmail(email);
+        Optional<Gestor> optionalGestor = gestorRepository.findByEmail(email);
 
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
+        if (optionalHuesped.isPresent()) {
+            Huesped huesped = optionalHuesped.get();
 
             // Verificar que la contraseña actual es correcta
-            if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            if (!passwordEncoder.matches(oldPassword, huesped.getPassword())) {
                 session.setAttribute("error", "La contraseña actual es incorrecta.");
                 return "redirect:/profile";
             }
 
             // Encriptar la nueva contraseña y guardarla
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userRepository.save(user);
+            huesped.setPassword(passwordEncoder.encode(newPassword));
+            huespedRepository.save(huesped);
+            session.setAttribute("message", "Contraseña actualizada con éxito.");
+        } if(optionalGestor.isPresent()) {
+            Gestor gestor = optionalGestor.get();
+
+            // Verificar que la contraseña actual es correcta
+            if (!passwordEncoder.matches(oldPassword, gestor.getPassword())) {
+                session.setAttribute("error", "La contraseña actual es incorrecta.");
+                return "redirect:/profile";
+            }
+
+            // Encriptar la nueva contraseña y guardarla
+            gestor.setPassword(passwordEncoder.encode(newPassword));
+            gestorRepository.save(gestor);
             session.setAttribute("message", "Contraseña actualizada con éxito.");
         } else {
             session.setAttribute("error", "Usuario no encontrado.");
