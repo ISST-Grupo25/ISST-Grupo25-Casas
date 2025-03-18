@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{layout :: head}"></head>
+  <head th:replace="~{layout :: head}">
+    <link rel="stylesheet" th:href="@{/css/calendar.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  </head>
   <body>
     <div id="main">
       <div th:replace="~{layout :: nav}"></div>
@@ -17,25 +20,25 @@
           <div id="accessModal" class="modal" style="display: none;">
             <div class="modal-content">
               <span class="close">&times;</span>
-              <h2>Programar Acceso</h2>
+              <h2>Nuevo Acceso</h2>
               <form id="accessForm">
-                <label for="casa">Casa</label>
+                <label for="casa">Seleccionar Casa</label>
                 <select id="casa" name="casa" required>
-                  <option value="Casa 1">Casa 1</option>
-                  <option value="Casa 2">Casa 2</option>
-                  <option value="Casa 3">Casa 3</option>
+                  <option value="">Cargando casas...</option>
                 </select>
+              
                 <label for="fecha">Fecha</label>
-                <input type="text" id="fecha" name="fecha" required />
-                <label for="huespedes">Huespedes</label>
+                <div class="date-picker-container">
+                  <input type="text" id="fecha" name="fecha" class="date-range" required />
+                  <span class="calendar-icon" id="openCalendar">📅</span>
+                </div>
+                <label for="huespedes">Seleccionar Huéspedes</label>
                 <select id="huespedes" name="huespedes" multiple required>
-                  <option value="Huesped 1">Huesped 1</option>
-                  <option value="Huesped 2">Huesped 2</option>
-                  <option value="Huesped 3">Huesped 3</option>
+                  <option value="">Cargando huéspedes...</option>
                 </select>
                 <div class="modal-buttons">
-                  <button type="submit" class="btn">Confirmar</button>
                   <button type="button" class="btn cancel-btn">Cancelar</button>
+                  <button type="submit" class="btn">Confirmar</button>
                 </div>
               </form>
             </div>
@@ -44,14 +47,64 @@
       </main>
     </div>
     <script th:replace="~{layout :: scripts}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        console.log("✅ JavaScript cargado correctamente");
+        
+        var casaSelect = document.getElementById('casa');
+    var huespedSelect = document.getElementById('huespedes');
+
+    // 📌 **Cargar lista de Cerraduras (Casas)**
+    fetch('/api/cerraduras')
+      .then(response => response.json())
+      .then(data => {
+        casaSelect.innerHTML = ''; // Limpiar opciones anteriores
+        data.forEach(cerradura => {
+          let option = document.createElement('option');
+          option.value = cerradura.id;
+          option.textContent = cerradura.ubicacion; // Usamos la ubicación como nombre
+          casaSelect.appendChild(option);
+        });
+      })
+      .catch(error => console.error("❌ Error al cargar casas:", error));
+
+    // 📌 **Cargar lista de Huéspedes**
+    fetch('/api/huespedes')
+      .then(response => response.json())
+      .then(data => {
+        huespedSelect.innerHTML = ''; // Limpiar opciones anteriores
+        data.forEach(huesped => {
+          let option = document.createElement('option');
+          option.value = huesped.id;
+          option.textContent = huesped.nombre; // Usamos el nombre del huésped
+          huespedSelect.appendChild(option);
+        });
+      })
+      .catch(error => console.error("❌ Error al cargar huéspedes:", error));
+  
+
+
+
+
+
+        var dateInput = document.getElementById('fecha');
+        var openCalendarIcon = document.getElementById('openCalendar');
         var calendarEl = document.getElementById('calendar');
         var modal = document.getElementById('accessModal');
         var modalOverlay = document.getElementById('modalOverlay');
         var closeModal = document.getElementsByClassName('close')[0];
         var cancelModal = document.querySelector('.cancel-btn');
-        
+    
+        if (!dateInput || !openCalendarIcon) {
+          console.error("❌ No se encontró el input o el icono 📅");
+          return;
+        }
+    
+        console.log("✅ Elementos encontrados:", dateInput, openCalendarIcon);
+    
+        // 📌 **Configuración del calendario FullCalendar**
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: 'dayGridMonth',
           locale: 'es',
@@ -60,40 +113,89 @@
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
           },
-          events: '/api/reservas', // Cargar reservas desde Spring Boot
+          events: '/api/reservas',
           eventClick: function (info) {
             alert('Reserva: ' + info.event.title + '\n' + info.event.extendedProps.description);
           }
         });
         calendar.render();
-        
+    
+        // 📌 **Funciones para abrir y cerrar el modal**
         function openModal() {
           modal.style.display = 'block';
           modalOverlay.style.display = 'block';
         }
-        
+    
         function closeModalFunction() {
           modal.style.display = 'none';
           modalOverlay.style.display = 'none';
         }
-        
+    
         document.getElementById('addEvent').addEventListener('click', openModal);
         closeModal.onclick = closeModalFunction;
         cancelModal.onclick = closeModalFunction;
-        
+    
         window.onclick = function (event) {
           if (event.target == modalOverlay) {
             closeModalFunction();
           }
         };
-        
+    
+        // 📌 **Flatpickr - Configuración del selector de fechas**
+        var datePicker = flatpickr(dateInput, {
+          mode: "range",
+          dateFormat: "d/m/Y",
+          locale: flatpickr.l10ns.es,
+          clickOpens: false, // No abrir al hacer clic en el input
+          allowInput: true,
+          appendTo: document.body, // Evita que el modal lo oculte
+    
+          // 📌 **Se oculta por defecto hasta que se haga clic en el icono**
+          onReady: function(selectedDates, dateStr, instance) {
+            instance.calendarContainer.style.display = "none";
+          },
+    
+          // 📌 **Cuando se abre, aseguramos su visibilidad y posición**
+          onOpen: function(selectedDates, dateStr, instance) {
+            console.log("📆 Flatpickr se está abriendo...");
+            let inputRect = dateInput.getBoundingClientRect();
+            let calendar = instance.calendarContainer;
+    
+            calendar.style.display = "block"; // Asegurar que se muestra
+            calendar.style.zIndex = "99999"; // Mayor que el modal
+            calendar.style.position = "absolute";
+            calendar.style.left = `${inputRect.right + 10}px`; // 10px a la derecha del input
+            calendar.style.top = `${inputRect.top}px`;
+            calendar.style.background = "white";
+          },
+    
+          // 📌 **Cuando se cierra, se vuelve a ocultar**
+          onClose: function(selectedDates, dateStr, instance) {
+            instance.calendarContainer.style.display = "none";
+          }
+        });
+    
+        // 📌 **Abrir el DatePicker al hacer clic en el icono 📅**
+        openCalendarIcon.addEventListener('click', function () {
+          console.log("📅 Icono clickeado");
+          datePicker.open();
+        });
+    
+        // 📌 **Manejo del formulario de reservas**
         document.getElementById('accessForm').addEventListener('submit', function (event) {
           event.preventDefault();
-          
+    
           var casa = document.getElementById('casa').value;
           var fecha = document.getElementById('fecha').value;
           var huespedes = Array.from(document.getElementById('huespedes').selectedOptions).map(option => option.value);
-          
+    
+          // 📌 **Validación de fecha**
+          var fechas = fecha.split(' - ');
+          if (fechas.length !== 2) {
+            alert("❌ Debes seleccionar un rango de fechas válido.");
+            return;
+          }
+    
           fetch('/api/reservas', {
             method: 'POST',
             headers: {
@@ -101,19 +203,26 @@
             },
             body: JSON.stringify({
               name: casa,
-              fechainicio: fecha.split(' - ')[0],
-              fechafin: fecha.split(' - ')[1],
+              fechainicio: fechas[0],
+              fechafin: fechas[1],
               huespedes: huespedes
             })
-          }).then(response => response.json())
-            .then(data => {
-              calendar.refetchEvents();
-              closeModalFunction();
-              alert('Acceso programado con éxito y añadido a Google Calendar.');
-            }).catch(error => console.error('Error:', error));
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log("✅ Reserva añadida:", data);
+            calendar.refetchEvents(); // Refresca las reservas
+            closeModalFunction();
+            alert('✅ Acceso programado con éxito y añadido a Google Calendar.');
+          })
+          .catch(error => console.error('❌ Error en la reserva:', error));
         });
+
+        
+    
       });
     </script>
+    
   </body>
 </html>
 

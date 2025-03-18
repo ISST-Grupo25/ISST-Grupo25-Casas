@@ -15,7 +15,7 @@
 	align-items: center;
 }
 
-/* Fondo oscurecido cuando el modal está activo */
+/* Fondo oscuro semitransparente cuando el modal está activo */
 .modal-overlay {
 	display: none;
 	position: fixed;
@@ -23,7 +23,7 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5); /* Oscurece el fondo */
+	background-color: rgba(0, 0, 0, 0.5);
 	z-index: 1000;
 }
 
@@ -38,7 +38,7 @@
 	max-width: 500px;
 	background-color: white;
 	padding: 20px;
-	border-radius: 10px;
+	border-radius: 12px;
 	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
 	z-index: 1001;
 }
@@ -48,6 +48,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 15px;
+	position: relative;
 }
 
 /* Botón de cerrar modal */
@@ -59,7 +60,36 @@
 	cursor: pointer;
 }
 
-/* Botones dentro del modal */
+/* Estilos del formulario */
+#accessForm label {
+	font-weight: bold;
+	color: #333;
+	display: block;
+	margin-bottom: 5px;
+}
+
+#accessForm select, 
+#accessForm input {
+	width: 100%;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	margin-bottom: 15px;
+}
+
+/* Selector de fecha con icono */
+.date-picker-container {
+	position: relative;
+	display: flex;
+	align-items: center;
+	border: 1px solid #8C6D4F;
+	border-radius: 5px;
+	padding: 5px;
+	background: white;
+}
+
+
+/* Botones del modal */
 .modal-buttons {
 	display: flex;
 	justify-content: space-between;
@@ -93,4 +123,92 @@
 
 .modal-buttons .cancel-btn:hover {
 	background-color: #bbb;
+}
+
+
+
+
+
+
+/*Flatpickr personalizado*/
+.flatpickr-months {
+	width: 10%;
+	font-family: Arial, sans-serif;
+}
+
+
+/* Ajuste del tamaño del selector de fecha */
+.flatpickr-input {
+	font-size: 16px;
+	width: 100%;
+	border: 1px solid #8C6D4F;
+	border-radius: 5px;
+}
+
+/* Días seleccionados en el calendario */
+.flatpickr-day.selected {
+	background: #A0846A !important;
+	color: white !important;
+}
+
+/* Botón de confirmación en el calendario */
+.flatpickr-confirm {
+	background: #A0846A !important;
+	color: white !important;
+	border-radius: 5px;
+	padding: 5px 10px;
+	margin-top: 10px;
+}
+
+
+/* .date-range{
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 15px;
+} */
+
+/* .date-picker-container{
+				position: relative;
+				display: flex;
+				align-items: center;
+				border: 1px solid #8C6D4F;
+				border-radius: 5px;
+				padding: 5px;
+				background: white;
+} */
+
+
+/* Ajuste del input para que no abra el calendario directamente */
+#fecha {
+	width: 100%;
+	border: none;
+	outline: none;
+	font-size: 16px;
+	padding: 10px;
+	cursor: default; /* Evita que se abra solo con el input */
+	background: white;
+}
+
+/* Estilos para el icono de calendario 📅 */
+.calendar-icon {
+	cursor: pointer;
+	font-size: 20px;
+	margin-left: 10px;
+	color: #8C6D4F;
+}
+
+.calendar-icon:hover {
+	color: #A0846A;
+}
+
+.flatpickr-calendar {
+	z-index: 99999 !important; /* Mayor que cualquier modal */
+	display: block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	position: absolute !important;
+	background: white !important; /* Asegurar que tenga fondo */
+	border: 1px solid #ccc !important;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3) !important;
 }
