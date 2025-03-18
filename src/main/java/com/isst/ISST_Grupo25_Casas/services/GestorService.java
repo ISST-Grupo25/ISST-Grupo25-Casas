@@ -1,0 +1,61 @@
+package com.isst.ISST_Grupo25_Casas.services;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import com.isst.ISST_Grupo25_Casas.models.Gestor;
+import com.isst.ISST_Grupo25_Casas.repository.GestorRepository;
+import com.isst.ISST_Grupo25_Casas.repository.GestorRepository;
+import java.util.Optional;
+
+@Service
+public class GestorService {
+
+    private final GestorRepository gestorRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public GestorService(GestorRepository gestorRepository, PasswordEncoder passwordEncoder) {
+        this.gestorRepository = gestorRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public Gestor registerGestor(String name, String email, String password, String phone) {
+        if (gestorRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("El correo ya está registrado.");
+        }
+    
+        Gestor gestor = new Gestor();
+        gestor.setName(name);
+        gestor.setEmail(email);
+        gestor.setTelefono(phone);
+        gestor.setPassword(passwordEncoder.encode(password));
+    
+        System.out.println("🛠 Registrando usuario: " + email);
+        System.out.println("🔑 Contraseña encriptada: " + gestor.getPassword());
+    
+        return gestorRepository.save(gestor);
+    }    
+
+
+    public Optional<Gestor> authenticate(String email, String password) {
+        System.out.println("➡️ Intentando autenticar usuario con email: " + email);
+    
+        Optional<Gestor> gestor = gestorRepository.findByEmail(email);
+    
+        if (gestor.isEmpty()) {
+            System.out.println("❌ No se encontró usuario con el email: " + email);
+            return Optional.empty();
+        }
+    
+        System.out.println("🔍 Usuario encontrado: " + gestor.get().getEmail());
+        System.out.println("🔑 Contraseña en BD (encriptada): " + gestor.get().getPassword());
+    
+        if (passwordEncoder.matches(password, gestor.get().getPassword())) {
+            System.out.println("✅ Contraseña correcta para: " + email);
+            return gestor;
+        } else {
+            System.out.println("❌ Contraseña incorrecta para: " + email);
+            return Optional.empty();
+        }
+    }    
+}

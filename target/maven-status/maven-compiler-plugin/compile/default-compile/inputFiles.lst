@@ -2,6 +2,7 @@ C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\conf
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\config\SecurityConfig.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\AuthController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\CalendarController.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\CerraduraController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\HomeController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\ProfileController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\ReservaController.java
@@ -12,9 +13,12 @@ C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\mode
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\models\Gestor.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\models\Huesped.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\models\Reserva.java
-C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\models\User.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\repository\CerraduraRepository.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\repository\GestorRepository.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\repository\HuespedRepository.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\repository\ReservaRepository.java
-C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\repository\UserRepository.java
-C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\CustomUserDetailsService.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\CustomGestorDetailsService.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\CustomHuespedDetailsService.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\GestorService.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\GoogleCalendarService.java
-C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\UserService.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\HuespedService.java

@@ -78,16 +78,12 @@
         data.forEach(huesped => {
           let option = document.createElement('option');
           option.value = huesped.id;
-          option.textContent = huesped.nombre; // Usamos el nombre del huésped
+          option.textContent = huesped.name; // Usamos el nombre del huésped
           huespedSelect.appendChild(option);
         });
       })
       .catch(error => console.error("❌ Error al cargar huéspedes:", error));
   
-
-
-
-
 
         var dateInput = document.getElementById('fecha');
         var openCalendarIcon = document.getElementById('openCalendar');
@@ -181,42 +177,61 @@
           datePicker.open();
         });
     
-        // 📌 **Manejo del formulario de reservas**
         document.getElementById('accessForm').addEventListener('submit', function (event) {
-          event.preventDefault();
-    
-          var casa = document.getElementById('casa').value;
-          var fecha = document.getElementById('fecha').value;
-          var huespedes = Array.from(document.getElementById('huespedes').selectedOptions).map(option => option.value);
-    
-          // 📌 **Validación de fecha**
-          var fechas = fecha.split(' - ');
-          if (fechas.length !== 2) {
-            alert("❌ Debes seleccionar un rango de fechas válido.");
-            return;
-          }
-    
-          fetch('/api/reservas', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              name: casa,
-              fechainicio: fechas[0],
-              fechafin: fechas[1],
-              huespedes: huespedes
-            })
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log("✅ Reserva añadida:", data);
-            calendar.refetchEvents(); // Refresca las reservas
-            closeModalFunction();
-            alert('✅ Acceso programado con éxito y añadido a Google Calendar.');
-          })
-          .catch(error => console.error('❌ Error en la reserva:', error));
-        });
+    event.preventDefault();
+
+    var casa = document.getElementById('casa').value;
+    var fecha = document.getElementById('fecha').value;
+    var huespedes = Array.from(document.getElementById('huespedes').selectedOptions).map(option => option.value);
+
+    // 📌 **Validación de fecha**
+    var fechas = fecha.split(' a '); // Flatpickr separa con " a "
+    if (fechas.length !== 2) {
+        alert("❌ Debes seleccionar un rango de fechas válido.");
+        return;
+    }
+
+    // **Convertir fechas de "DD/MM/YYYY" a "YYYY-MM-DD"**
+    function convertirFecha(fechaStr) {
+        let partes = fechaStr.split('/');
+        return `${partes[2]}-${partes[1]}-${partes[0]}`;
+    }
+
+    let fechaInicio = convertirFecha(fechas[0]);
+    let fechaFin = convertirFecha(fechas[1]);
+
+    console.log(`📆 Fechas convertidas: Inicio = ${fechaInicio}, Fin = ${fechaFin}`);
+
+    let reservaData = {
+        name: casa,
+        fechainicio: fechaInicio, // ✅ Formato correcto
+        fechafin: fechaFin,
+        huespedes: huespedes
+    };
+
+    console.log("📤 Enviando datos al backend:", JSON.stringify(reservaData));
+
+    fetch('/api/reservas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reservaData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`❌ Error en la respuesta del servidor: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("✅ Reserva añadida:", data);
+        calendar.refetchEvents(); // Refresca el calendario si se usa FullCalendar
+        closeModalFunction();
+        alert('✅ Acceso programado con éxito.');
+    })
+    .catch(error => console.error("❌ Error en la reserva:", error));
+});
 
         
     

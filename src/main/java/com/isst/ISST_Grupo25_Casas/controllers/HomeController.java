@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.isst.ISST_Grupo25_Casas.models.User;
-import com.isst.ISST_Grupo25_Casas.services.UserService;
+import com.isst.ISST_Grupo25_Casas.models.Huesped;
+import com.isst.ISST_Grupo25_Casas.repository.GestorRepository;
+import com.isst.ISST_Grupo25_Casas.repository.HuespedRepository;
+import com.isst.ISST_Grupo25_Casas.services.GestorService;
+import com.isst.ISST_Grupo25_Casas.services.HuespedService;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -16,10 +20,12 @@ import java.util.Optional;
 @Controller
 public class HomeController {
 
-    private final UserService userService;
+    private final HuespedRepository huespedRepository;
+    private final GestorRepository gestorRepository;
 
-    public HomeController(UserService userService) {
-        this.userService = userService;
+    public HomeController(HuespedRepository huespedRepository, GestorRepository gestorRepository) {
+        this.huespedRepository = huespedRepository;
+        this.gestorRepository = gestorRepository;
     }
 
     @GetMapping("/index")
@@ -28,13 +34,6 @@ public class HomeController {
         model.addAttribute("user", session.getAttribute("user"));
         return "index";
     }
-
-    // @GetMapping("/calendar")
-    // public String calendar(Model model, HttpSession session) {
-    //     model.addAttribute("title", "Inicio");
-    //     model.addAttribute("user", session.getAttribute("user"));
-    //     return "calendar";
-    // }
 
     @GetMapping("/contact") 
     public String contact(Model model, HttpSession session) {
@@ -55,7 +54,7 @@ public class HomeController {
     @GetMapping("/settings") 
     public String settings(Model model, HttpSession session) {
         model.addAttribute("user", session.getAttribute("user"));
-        return "settings"; // Make sure "contact.html" exists
+        return "settings";
     }
 
 }

@@ -1,36 +1,41 @@
 package com.isst.ISST_Grupo25_Casas.controllers;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.*;
-import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
+import java.sql.Date;
+import java.util.List;
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
+import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
 
-@RestController
-@RequestMapping("/api/reservas")
+@Controller
+@RequestMapping("/reservas")
 public class ReservaController {
 
     @Autowired
     private ReservaRepository reservaRepository;
 
+    // 📌 Mostrar formulario de reservas
+    @GetMapping("/nueva")
+    public String mostrarFormulario(Model model) {
+        model.addAttribute("reserva", new Reserva());
+        return "formulario_reserva"; // Esto renderiza "formulario_reserva.html"
+    }
+
+    // 📌 Guardar la nueva reserva cuando se envíe el formulario
+    @PostMapping("/guardar")
+    public String guardarReserva(@ModelAttribute Reserva reserva) {
+        reservaRepository.save(reserva);
+        return "redirect:/reservas"; // Redirige a la lista de reservas
+    }
+
+    // 📌 Mostrar lista de reservas
     @GetMapping
-    public List<Map<String, Object>> getReservas() {
+    public String mostrarReservas(Model model) {
         List<Reserva> reservas = reservaRepository.findAll();
-        List<Map<String, Object>> eventos = new ArrayList<>();
-
-        for (Reserva reserva : reservas) {
-            Map<String, Object> evento = new HashMap<>();
-            evento.put("title", "Reserva: " + reserva.getName());
-            evento.put("start", reserva.getFechainicio().toString());
-            evento.put("end", reserva.getFechafin().toString());
-            evento.put("description", "PIN: " + reserva.getPin());
-
-            // Asigna un color según el tipo de evento (aquí todas son reservas)
-            evento.put("color", "#4CAF50"); // Verde
-
-            eventos.add(evento);
-        }
-        return eventos;
+        model.addAttribute("reservas", reservas);
+        return "reservas"; // Renderiza "reservas.html"
     }
 }
 
