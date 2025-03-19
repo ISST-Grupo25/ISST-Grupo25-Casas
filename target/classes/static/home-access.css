@@ -1,0 +1,190 @@
+/* Key Title Section */
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding-bottom: 0px;
+}
+
+.key-content h2 {
+  font-size: 36px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* houses Section */
+.houses {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.house {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+}
+
+.house h3 {
+  color: black;
+  font-size: 22px;
+}
+
+.house p {
+  color: #666;
+}
+
+.key-btn {
+  background-color: #69e5a7e0;
+  color: aliceblue !important;
+  border: none;
+  border-radius: 10px;
+  padding: 20px;
+  transition: transform 0.6s ease, background-color 0.3s ease; /* Añadimos transición */
+  perspective: 1000px; /* Añadimos perspectiva para el efecto 3D */
+}
+
+.key-btn:hover {
+  background-color: #397a5ab9;
+  transform: scale(1.1); /* Escala el botón al 110% */
+}
+
+.key-btn.hover-animation {
+  background-color: #397a5ab9;
+  transform: scale(1.1); /* Escala el botón al 110% */
+  transition: transform 0.6s ease, background-color 0.3s ease;
+}
+
+.key-btn .material-icons {
+  color: aliceblue !important;
+}
+
+.key-btn span {
+  display: inline-block;
+  transition: transform 0.6s ease; /* Transición para el giro */
+  transform-origin: center;
+}
+
+.key-btn:hover span {
+  transform: rotateY(180deg); /* Gira el contenido del botón */
+}
+.key-btn.hover-animation span {
+  transform: rotate(90deg); /* Gira el contenido del botón */
+}
+
+/* Modal Númerico */
+/* Estilos del modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+#pin-input {
+  margin: 0 10px 0 10px;
+  padding: 10px;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Teclado numérico */
+.pin-keypad {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 0 12px 10px 12px;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.pin-btn {
+  width: 30%;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  background-color: #ddd;
+  border: none;
+  border-radius: 5px;
+}
+
+.pin-btn:hover {
+  background-color: #bbb;
+}
+
+/* Botones de acción */
+.pin-actions {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px;
+  margin-top: 20px;
+}
+
+#accept-btn {
+  height: 40px;
+  flex: 1;
+  background: #8bedbcd3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+#accept-btn:hover {
+  background: rgba(4, 164, 111, 0.514);
+}
+
+#cancel-btn {
+  height: 40px;
+  flex: 1;
+  background: transparent;
+  color: gray;
+  border: none;
+  border-radius: 10px;
+}
+
+#cancel-btn:hover {
+  color: #d9534f;
+}
+
+#clear-btn {
+  background: #f4c480b6;
+}
+
+#clear-btn:hover {
+  background: #f4a460;
+}
+
+#blank-btn {
+  background: #f0adadbe;
+}
+
+#blank-btn:hover {
+  background: #d9534f;
+}

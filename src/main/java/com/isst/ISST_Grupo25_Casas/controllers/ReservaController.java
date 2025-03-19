@@ -1,41 +1,34 @@
 package com.isst.ISST_Grupo25_Casas.controllers;
 
+import com.isst.ISST_Grupo25_Casas.models.Reserva;
+import com.isst.ISST_Grupo25_Casas.models.Huesped;
+import com.isst.ISST_Grupo25_Casas.services.ReservaService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.sql.Date;
+import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
-import com.isst.ISST_Grupo25_Casas.models.Reserva;
-import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
 
 @Controller
-@RequestMapping("/reservas")
 public class ReservaController {
 
     @Autowired
-    private ReservaRepository reservaRepository;
+    private ReservaService reservaService;
 
-    // 📌 Mostrar formulario de reservas
-    @GetMapping("/nueva")
-    public String mostrarFormulario(Model model) {
-        model.addAttribute("reserva", new Reserva());
-        return "formulario_reserva"; // Esto renderiza "formulario_reserva.html"
-    }
-
-    // 📌 Guardar la nueva reserva cuando se envíe el formulario
-    @PostMapping("/guardar")
-    public String guardarReserva(@ModelAttribute Reserva reserva) {
-        reservaRepository.save(reserva);
-        return "redirect:/reservas"; // Redirige a la lista de reservas
-    }
-
-    // 📌 Mostrar lista de reservas
-    @GetMapping
-    public String mostrarReservas(Model model) {
-        List<Reserva> reservas = reservaRepository.findAll();
-        model.addAttribute("reservas", reservas);
-        return "reservas"; // Renderiza "reservas.html"
+    @GetMapping("/home-access")
+    public String mostrarReservas(Model model, HttpSession session) {
+        Object obj = session.getAttribute("usuario");
+        
+        if (obj instanceof Huesped huesped) { // Validar y castear correctamente
+            System.out.println("📌 Usuario logueado: " + huesped.getName());
+            List<Reserva> reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
+            model.addAttribute("reservas", reservas);
+        } else {
+            System.out.println("❌ Error: No hay un huésped en sesión");
+            model.addAttribute("reservas", null);
+        }
+        return "home-access";
     }
 }
 
