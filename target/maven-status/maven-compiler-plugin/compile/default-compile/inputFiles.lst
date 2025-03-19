@@ -1,10 +1,11 @@
-<<<<<<< HEAD
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\config\GoogleOAuthConfig.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\config\SecurityConfig.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\AuthController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\CalendarController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\CerraduraController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\HomeController.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\HuespedController.java
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\KeyController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\ProfileController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\ReservaController.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\controllers\SettingsController.java
@@ -23,29 +24,4 @@ C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\serv
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\GestorService.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\GoogleCalendarService.java
 C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\HuespedService.java
-=======
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/IsstGrupo25CasasApplication.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/config/GoogleOAuthConfig.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/config/SecurityConfig.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/AuthController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/CalendarController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/HomeController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/KeyController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/ProfileController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/ReservaController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/controllers/SettingsController.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Acceso.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Cerradura.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Gestor.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Huesped.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/models/Reserva.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/GestorRepository.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/HuespedRepository.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/repository/ReservaRepository.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomGestorDetailsService.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/CustomHuespedDetailsService.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/GestorService.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/GoogleCalendarService.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/HuespedService.java
-/Users/nataliaburguillomartin/Documents/TELECO/ETSIT/4/ISST/ISST-Grupo25-Casas/src/main/java/com/isst/ISST_Grupo25_Casas/services/ReservaService.java
->>>>>>> develop
+C:\Users\inesv\ISST-Grupo25-Casas\src\main\java\com\isst\ISST_Grupo25_Casas\services\ReservaService.java
