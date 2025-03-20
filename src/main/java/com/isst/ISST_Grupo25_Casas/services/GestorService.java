@@ -11,6 +11,7 @@ import java.util.Optional;
 @Service
 public class GestorService {
 
+    
     private final GestorRepository gestorRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -57,5 +58,9 @@ public class GestorService {
             System.out.println("❌ Contraseña incorrecta para: " + email);
             return Optional.empty();
         }
+    }
+
+    public Gestor obtenerGestorPorId(Long id) {
+        return gestorRepository.findById(id).orElse(null);  // Devuelve el gestor o null si no lo encuentra
     }    
 }

@@ -8,4 +8,3 @@ import org.springframework.stereotype.Repository;
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByHuespedesId(Long huespedId);
 }
-

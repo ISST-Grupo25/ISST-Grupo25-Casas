@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.repository.HuespedRepository;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -56,4 +58,12 @@ public class HuespedService {
             return Optional.empty();
         }
     }    
+
+    public List<Huesped> obtenerTodosLosHuespedes() {
+        return huespedRepository.findAll();
+    }
+
+    public List<Huesped> obtenerHuespedesPorIds(List<Long> ids) {
+        return huespedRepository.findAllById(ids);
+    }
 }

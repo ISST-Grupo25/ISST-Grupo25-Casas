@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}">
@@ -29,30 +30,50 @@
               <span id="closeModal" class="close">&times;</span>
               <h3>Programar Acceso</h3>
 
-              <form id="accessForm" class="access-form">
+              <form
+                th:action="@{/calendar/guardar}"
+                method="post"
+                id="accessForm"
+                class="access-form"
+              >
                 <!-- Selección de Casa -->
                 <label for="casa">Casa:</label>
                 <div class="input-group">
                   <select id="casa" name="casa" class="select-keys" required>
-                    <option value="Casa 1">Casa 1</option>
-                    <option value="Casa 2">Casa 2</option>
-                    <option value="Casa 3">Casa 3</option>
+                    <option
+                      th:each="c : ${cerraduras}"
+                      th:value="${c.id}"
+                      th:text="${c.ubicacion}"
+                    ></option>
                   </select>
                   <input type="text" id="nuevaCasa" placeholder="Nueva casa" />
                   <button type="button" id="addCasa" class="add-icon">+</button>
                 </div>
 
+
                 <!-- Selección de Fechas -->
-                <label for="fecha">Rango de Fechas:</label>
-                <input type="text" id="fecha" name="fecha" required />
+                <label for="fechaInicio">Fecha de Inicio:</label>
+                <input
+                  type="date"
+                  id="fechaInicio"
+                  name="fechaInicio"
+                  required
+                />
+
+                <label for="fechaFin">Fecha de Fin:</label>
+                <input type="date" id="fechaFin" name="fechaFin" required />
 
                 <!-- Selección de Huéspedes -->
                 <label for="huespedes">Huéspedes:</label>
                 <select id="huespedes" name="huespedes" multiple required>
-                  <option value="Huesped 1">Huésped 1</option>
-                  <option value="Huesped 2">Huésped 2</option>
-                  <option value="Huesped 3">Huésped 3</option>
+                  <option
+                    th:each="h : ${huespedes}"
+                    th:value="${h.id}"
+                    th:text="${h.name}"
+                  ></option>
                 </select>
+
+
 
                 <div class="modal-calendar-actions">
                   <button
@@ -106,7 +127,7 @@
             center: "title",
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           },
-          events: "/api/reservas",
+          events: "/reservas",
           eventClick: function (info) {
             alert("Reserva: " + info.event.title);
           },
