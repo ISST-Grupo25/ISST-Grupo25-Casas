@@ -30,6 +30,20 @@
               <span id="closeModal" class="close">&times;</span>
               <h3>Programar Acceso</h3>
 
+              <div class="añadir-casa">
+                <form id="newCasaInputs" th:action="@{/cerradura/guardar}" method="post" style="display: none;">
+                  <label for="ubicacion">Ubicación:</label>
+                  <input type="text" id="ubicacion" name="ubicacion" placeholder="Ubicación" required />
+              
+                  <label for="token">Token:</label>
+                  <input type="text" id="token" name="token" placeholder="Token" required />
+                  
+                  <button type= "button" class="btn-cancelar-cerradura">Cancelar</button>  <!-- Botón para cancelar -->
+                  <button type="submit" class="btn-confirmar-cerradura">Confirmar</button>  <!-- Botón para confirmar -->
+              </form>
+            </div>
+
+
               <form
                 th:action="@{/calendar/guardar}"
                 method="post"
@@ -46,10 +60,10 @@
                       th:text="${c.ubicacion}"
                     ></option>
                   </select>
-                  <input type="text" id="nuevaCasa" placeholder="Nueva casa" />
-                  <button type="button" id="addCasa" class="add-icon">+</button>
-                </div>
-
+                  <button 
+                        type="button" 
+                        id="addCasa" 
+                        class="add-icon">+</button>              
 
                 <!-- Selección de Fechas -->
                 <label for="fechaInicio">Fecha de Inicio:</label>
@@ -88,6 +102,7 @@
                   </button>
                 </div>
               </form>
+
             </div>
           </div>
         </section>
@@ -141,21 +156,21 @@
           minDate: "today",
         });
 
-        // Agregar casa nueva a la lista
-        document
-          .getElementById("addCasa")
-          .addEventListener("click", function () {
-            var nuevaCasa = document.getElementById("nuevaCasa").value.trim();
-            if (nuevaCasa) {
-              var selectCasa = document.getElementById("casa");
-              var option = document.createElement("option");
-              option.value = nuevaCasa;
-              option.textContent = nuevaCasa;
-              selectCasa.appendChild(option);
-              selectCasa.value = nuevaCasa;
-              document.getElementById("nuevaCasa").value = "";
-            }
-          });
+        // Mostrar el formulario de nueva casa cuando se hace clic en "+"
+        document.getElementById('addCasa').addEventListener('click', function() {
+          document.getElementById('newCasaInputs').style.display = 'block'; // Mostrar el formulario
+        });
+
+        // Ocultar el formulario después de hacer clic en "Confirmar"
+        document.querySelector('.btn-confirmar-cerradura').addEventListener('click', function() {
+          document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
+        });
+
+        // Ocultar el formulario después de hacer clic en "Cancelar"
+        document.querySelector('.btn-cancelar-cerradura').addEventListener('click', function(event) {
+          event.preventDefault();  // Prevenir cualquier acción por defecto (como el envío del formulario)
+          document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
+        });
       });
     </script>
   </body>

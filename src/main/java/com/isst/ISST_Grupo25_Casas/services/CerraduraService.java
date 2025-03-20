@@ -22,4 +22,11 @@ public class CerraduraService {
     public Cerradura obtenerCerraduraPorId(Long id) {
         return cerraduraRepository.findById(id).orElse(null);
     }
+
+    public Cerradura guardarCerradura(String ubicación, String token) {
+        Cerradura cerradura = new Cerradura();
+        cerradura.setUbicacion(ubicación);
+        cerradura.setToken(token);
+        return cerraduraRepository.save(cerradura);
+    }
 }
