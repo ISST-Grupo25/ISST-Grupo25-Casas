@@ -236,6 +236,11 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/signup")
+    public String showSignupForm() {
+        return "signup"; // nombre del HTML de tu formulario de registro
+    }
+
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();

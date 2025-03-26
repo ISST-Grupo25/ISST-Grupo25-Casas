@@ -36,12 +36,14 @@
         <div class="nav-right">
           <div class="user-menu" th:if="${session.isLoggedIn}" tabindex="0">
             <button id="userBtn" class="user-btn">
-              <span th:text="${session.usuario.getName()}"></span
+              <span th:if="${session.usuario != null}" th:text="${session.usuario.getName()}"></span></span
               ><span
                 style="padding-left: 10px; color: white"
                 class="material-icons"
                 >keyboard_arrow_down</span
               >
+              <!-- <a th:if="${session.usuario != null}" th:href="@{/logout}">Cerrar sesión</a>
+              <a th:unless="${session.usuario != null}" th:href="@{/login}">Iniciar sesión</a> -->
             </button>
             <ul class="dropdown">
               <li><a th:href="@{/profile}">Mi Perfil</a></li>
