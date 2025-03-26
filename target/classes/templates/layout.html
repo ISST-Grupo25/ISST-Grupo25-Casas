@@ -36,7 +36,7 @@
         <div class="nav-right">
           <div class="user-menu" th:if="${session.isLoggedIn}" tabindex="0">
             <button id="userBtn" class="user-btn">
-              <span th:if="${session.usuario != null}" th:text="${session.usuario.getName()}"></span></span
+              <span th:text="${session.usuario != null ? session.usuario.name : 'Invitado'}"></span></span
               ><span
                 style="padding-left: 10px; color: white"
                 class="material-icons"
