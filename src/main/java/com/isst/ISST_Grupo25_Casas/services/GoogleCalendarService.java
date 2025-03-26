@@ -113,4 +113,33 @@ public class GoogleCalendarService {
 
         return service.events().insert("primary", event).execute();
     }
+
+    /**
+ * Actualiza un evento existente en Google Calendar.
+ */
+public static Event updateEvent(String eventId, String summary, String description, String startDateTime, String endDateTime) throws IOException, GeneralSecurityException {
+    Calendar service = getCalendarService();
+
+    // Obtener el evento existente
+    Event event = service.events().get("primary", eventId).execute();
+
+    // Actualizar campos
+    event.setSummary(summary);
+    event.setDescription(description);
+
+    EventDateTime start = new EventDateTime()
+            .setDateTime(new com.google.api.client.util.DateTime(startDateTime))
+            .setTimeZone(TimeZone.getDefault().getID());
+    event.setStart(start);
+
+    EventDateTime end = new EventDateTime()
+            .setDateTime(new com.google.api.client.util.DateTime(endDateTime))
+            .setTimeZone(TimeZone.getDefault().getID());
+    event.setEnd(end);
+
+    // Ejecutar actualización
+    return service.events().update("primary", event.getId(), event).execute();
+}
+
+
 }

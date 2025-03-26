@@ -7,6 +7,7 @@ import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.repository.HuespedRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -66,4 +67,17 @@ public class HuespedService {
     public List<Huesped> obtenerHuespedesPorIds(List<Long> ids) {
         return huespedRepository.findAllById(ids);
     }
+
+    public Optional<Huesped> findByEmail(String email) {
+        return huespedRepository.findByEmail(email);
+    }
+
+    public Huesped obtenerPrimero() {
+    List<Huesped> huespedes = obtenerTodosLosHuespedes();
+    if (!huespedes.isEmpty()) {
+        return huespedes.get(0);
+    }
+    throw new NoSuchElementException("No hay huéspedes disponibles.");
+}
+
 }

@@ -5,6 +5,7 @@ import com.isst.ISST_Grupo25_Casas.repository.CerraduraRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CerraduraService {
@@ -29,4 +30,12 @@ public class CerraduraService {
         cerradura.setToken(token);
         return cerraduraRepository.save(cerradura);
     }
+
+    public Cerradura obtenerPrimera() {
+    List<Cerradura> cerraduras = obtenerTodasLasCerraduras();
+    if (!cerraduras.isEmpty()) {
+        return cerraduras.get(0);
+    }
+    throw new NoSuchElementException("No hay cerraduras disponibles.");
+}
 }

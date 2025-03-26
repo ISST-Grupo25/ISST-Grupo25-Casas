@@ -158,10 +158,14 @@ import com.isst.ISST_Grupo25_Casas.services.HuespedService;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.services.GestorService;
 import jakarta.servlet.http.HttpSession;
+
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class AuthController {
@@ -237,4 +241,34 @@ public class AuthController {
         session.invalidate();
         return "redirect:/";
     }
+
+    @GetMapping("/oauth-success")
+public String oauthSuccess(Authentication authentication, HttpSession session) {
+    OAuth2AuthenticationToken oauth = (OAuth2AuthenticationToken) authentication;
+    String email = oauth.getPrincipal().getAttribute("email");
+    String nombre = oauth.getPrincipal().getAttribute("name");
+
+    System.out.println("✅ Login con Google: " + email + " (" + nombre + ")");
+
+    // Si ya está en tu BD como gestor o huesped, lo recuperas
+    Optional<Gestor> gestor = gestorService.findByEmail(email);
+    Optional<Huesped> huesped = huespedService.findByEmail(email);
+
+    if (gestor.isPresent()) {
+        session.setAttribute("usuario", gestor.get());
+        session.setAttribute("role", "gestor");
+    } else if (huesped.isPresent()) {
+        session.setAttribute("usuario", huesped.get());
+        session.setAttribute("role", "huesped");
+    } else {
+        // Si no existe, lo registras como huésped por defecto (puedes cambiar esto)
+        Huesped nuevo = huespedService.registerHuesped(nombre, email, UUID.randomUUID().toString());
+        session.setAttribute("usuario", nuevo);
+        session.setAttribute("role", "huesped");
+    }
+
+    session.setAttribute("isLoggedIn", true);
+    return "redirect:/";
+}
+
 }

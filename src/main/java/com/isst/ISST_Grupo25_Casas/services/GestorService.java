@@ -63,4 +63,8 @@ public class GestorService {
     public Gestor obtenerGestorPorId(Long id) {
         return gestorRepository.findById(id).orElse(null);  // Devuelve el gestor o null si no lo encuentra
     }    
+
+    public Optional<Gestor> findByEmail(String email) {
+        return gestorRepository.findByEmail(email);
+    }
 }

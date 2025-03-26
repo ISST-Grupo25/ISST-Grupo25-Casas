@@ -21,6 +21,13 @@
         <section class="section-container" th:fragment="section">
           <h2>Gestión de Reservas</h2>
           <div id="calendar"></div>
+          <form method="post" action="/calendar/importar">
+            <button type="submit">📥 Importar reservas desde Google Calendar</button>
+          </form>
+          <div th:if="${importadas}" class="alert alert-success">
+            ✅ Se importaron <span th:text="${importadas}"></span> reservas desde Google Calendar.
+          </div>
+
           <button id="addEvent" class="btn">Añadir Reserva</button>
           <div id="modalOverlay" class="modal-calendar-overlay"></div>
 
@@ -102,6 +109,9 @@
                   </button>
                 </div>
               </form>
+              <div th:if="${errorReserva}" class="alert alert-danger">
+                <span th:text="${errorReserva}"></span>
+              </div>
 
             </div>
           </div>
