@@ -52,7 +52,7 @@
               type="text"
               id="name"
               name="name"
-              th:value="${session.usuario}"
+              th:value="${session.usuario.getName()}"
               required
             />
 
@@ -61,7 +61,7 @@
               type="email"
               id="email"
               name="email"
-              th:value="${session.email}"
+              th:value="${session.usuario.getEmail()}"
               required
             />
 
