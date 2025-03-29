@@ -42,8 +42,58 @@ public class ReservaService {
             reserva.setPin(String.valueOf((int) (Math.random() * 9000) + 1000));
             reserva.setGestor(gestor);
 
+         // Actualizamos el lado de Huesped para mantener la relación bidireccional y evitar problemas de sincronización en la bbdd
+        for (Huesped h : huespedes) {
+            h.getReservas().add(reserva);
+        }
+
         return reservaRepository.save(reserva);
     }
+
+    @Transactional
+    public Reserva actualizarReserva(Long id, Date fechaInicio, Date fechaFin, Cerradura cerradura, List<Huesped> nuevosHuespedes) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + id));
+
+        // Limpiar huéspedes anteriores para actualizar la relación bidireccional
+        for (Huesped h : reserva.getHuespedes()) {
+            h.getReservas().remove(reserva);
+        }
+
+        reserva.setFechainicio(fechaInicio);
+        reserva.setFechafin(fechaFin);
+        reserva.setCerradura(cerradura);
+        reserva.setHuespedes(nuevosHuespedes);
+
+        for (Huesped h : nuevosHuespedes) {
+            h.getReservas().add(reserva);
+        }
+
+        return reservaRepository.save(reserva);
+    }
+
+    @Transactional
+    public void eliminarReserva(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + id));
+
+        // Eliminar la relación bidireccional con los huéspedes
+        for (Huesped h : reserva.getHuespedes()) {
+            h.getReservas().remove(reserva);
+        }
+
+        // // Si tiene un eventId asociado, intentamos borrarlo del calendario
+        // if (reserva.getEventId() != null) {
+        //     try {
+        //         GoogleCalendarService.deleteEvent(reserva.getEventId());
+        //     } catch (Exception e) {
+        //         System.out.println("⚠️ No se pudo eliminar el evento de Google Calendar: " + e.getMessage());
+        //     }
+        // }
+
+        reservaRepository.delete(reserva);
+    }
+
 
     public List<Reserva> obtenerReservasPorHuesped(Long huespedId) {
         return reservaRepository.findByHuespedesId(huespedId);

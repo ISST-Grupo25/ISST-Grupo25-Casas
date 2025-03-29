@@ -32,25 +32,25 @@ public class GoogleCalendarService {
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    /**
-     * Carga las credenciales para acceder a Google Calendar API.
-     */
-    private static Credential getCredentials(final HttpTransport HTTP_TRANSPORT) throws IOException {
-        InputStream in = GoogleCalendarService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        if (in == null) {
-            throw new FileNotFoundException("El archivo 'credentials.json' no se encontró en " + CREDENTIALS_FILE_PATH);
-        }
+    // /**
+    //  * Carga las credenciales para acceder a Google Calendar API.
+    //  */
+    // private static Credential getCredentials(final HttpTransport HTTP_TRANSPORT) throws IOException {
+    //     InputStream in = GoogleCalendarService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+    //     if (in == null) {
+    //         throw new FileNotFoundException("El archivo 'credentials.json' no se encontró en " + CREDENTIALS_FILE_PATH);
+    //     }
 
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+    //     GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
-                .build();
+    //     GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+    //             HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+    //             .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+    //             .setAccessType("offline")
+    //             .build();
 
-        return flow.loadCredential("user");
-    }
+    //     return flow.loadCredential("user");
+    // }
 
 
     public static GoogleAuthorizationCodeFlow getFlow() throws IOException, GeneralSecurityException {
@@ -169,47 +169,24 @@ public static Event updateEvent(String eventId, String summary, String descripti
     return service.events().update("primary", event.getId(), event).execute();
 }
 
-public static String getAuthorizationUrl(String userId) throws IOException, GeneralSecurityException {
-        GoogleAuthorizationCodeFlow flow = getFlow();
-        return flow.newAuthorizationUrl().setRedirectUri(getRedirectUri()).build();
-    }
+public static String getAuthorizationUrl() throws IOException, GeneralSecurityException {
+    GoogleAuthorizationCodeFlow flow = getFlow();
+    return flow.newAuthorizationUrl().setRedirectUri(getRedirectUri()).build();
+}
     
-    public static void autorizarConCodigo(String code, String userId) throws Exception {
-        GoogleAuthorizationCodeFlow flow = getFlow();
-        TokenResponse response = flow.newTokenRequest(code)
-                .setRedirectUri("http://localhost:8080/google-calendar/callback")
-                .execute();
-    
-        flow.createAndStoreCredential(response, userId);
-    }
+public static void autorizarConCodigo(String code) throws Exception {
+    GoogleAuthorizationCodeFlow flow = getFlow();
+    TokenResponse response = flow.newTokenRequest(code)
+            .setRedirectUri(getRedirectUri())
+            .execute();
+
+    flow.createAndStoreCredential(response, "isst"); // Usamos una clave fija
+}
+
     
     private static String getRedirectUri() {
         return "http://localhost:8080/google-calendar/callback"; // Asegúrate que este coincide con lo de tu consola de Google
     }
     
-
-
-// public static void authorizeManualmente() throws Exception {
-//     final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-
-//     InputStream in = GoogleCalendarService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-//     if (in == null) {
-//         throw new FileNotFoundException("No se encontró el archivo credentials.json");
-//     }
-
-//     GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
-//     GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-//             HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-//             .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
-//             .setAccessType("offline")
-//             .build();
-
-//     LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-//     Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-
-//     System.out.println("✅ Token de acceso generado y guardado");
-// }
-
 
 }

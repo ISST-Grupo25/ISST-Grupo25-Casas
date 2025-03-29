@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -163,16 +164,10 @@ public class ReservaController {
 
 
 
-
-
-
-
-
-
 @GetMapping("/google-calendar/authorize")
 public String googleCalendarAuthorize() {
     try {
-        String url = GoogleCalendarService.getAuthorizationUrl("isst"); // El ID de usuario puede ser "isst"
+        String url = GoogleCalendarService.getAuthorizationUrl(); // El ID de usuario puede ser "isst"
         return "redirect:" + url;
     } catch (Exception e) {
         System.out.println("❌ Error al generar URL de autorización: " + e.getMessage());
@@ -183,7 +178,7 @@ public String googleCalendarAuthorize() {
 @GetMapping("/google-calendar/callback")
 public String googleCalendarCallback(@RequestParam("code") String code, HttpSession session) {
     try {
-        GoogleCalendarService.autorizarConCodigo(code, "isst");
+        GoogleCalendarService.autorizarConCodigo(code);
 
         // Recuperar acción pendiente
         String pending = (String) session.getAttribute("pendingAction");
@@ -243,23 +238,109 @@ public void redirectToGoogleAuth(HttpServletResponse response) throws IOExceptio
         }
     }
 
-    @GetMapping("/reservas")
-@ResponseBody
-public List<Map<String, Object>> obtenerReservasParaCalendario() {
-    List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
 
-    List<Map<String, Object>> eventos = new ArrayList<>();
 
-    for (Reserva r : reservas) {
-        Map<String, Object> evento = new HashMap<>();
-        evento.put("title", "Reserva casa " + r.getCerradura().getUbicacion());
-        evento.put("start", r.getFechainicio().toString());
-        evento.put("end", r.getFechafin().toString());
-        eventos.add(evento);
+    // Método para generar un color único basado en el ID de la cerradura y mostrarlo luego en el calendario
+    private String generarColorDesdeId(Long id) {
+        if (id == null) return "#999999";
+    
+        // Generar un color HSL basado en el ID
+        float hue = (id * 137) % 360; // 137 es un número primo para mejor dispersión
+        float saturation = 0.7f;      // Saturación 70%
+        float lightness = 0.6f;       // Luminosidad 60%
+    
+        return hslToHex(hue, saturation, lightness);
+    }
+    
+    // Conversión de HSL a HEX
+    private String hslToHex(float h, float s, float l) {
+        float c = (1 - Math.abs(2 * l - 1)) * s;
+        float x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        float m = l - c / 2;
+    
+        float r = 0, g = 0, b = 0;
+        if (h < 60) {
+            r = c; g = x; b = 0;
+        } else if (h < 120) {
+            r = x; g = c; b = 0;
+        } else if (h < 180) {
+            r = 0; g = c; b = x;
+        } else if (h < 240) {
+            r = 0; g = x; b = c;
+        } else if (h < 300) {
+            r = x; g = 0; b = c;
+        } else {
+            r = c; g = 0; b = x;
+        }
+    
+        int rInt = Math.round((r + m) * 255);
+        int gInt = Math.round((g + m) * 255);
+        int bInt = Math.round((b + m) * 255);
+    
+        return String.format("#%02X%02X%02X", rInt, gInt, bInt);
     }
 
-    return eventos;
-}
+    @GetMapping("/reservas")
+        @ResponseBody
+        public List<Map<String, Object>> obtenerReservasParaCalendario() {
+            List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
+
+            List<Map<String, Object>> eventos = new ArrayList<>();
+
+            for (Reserva r : reservas) {
+                Map<String, Object> evento = new HashMap<>();
+                evento.put("id", r.getId()); // ✅ Añadir esto
+                evento.put("title", "Reserva casa " + r.getCerradura().getUbicacion());
+                evento.put("start", r.getFechainicio().toString());
+                evento.put("end", r.getFechafin().toString());
+                evento.put("extendedProps", Map.of(
+                    "cerraduraId", r.getCerradura().getId(),
+                    "huespedIds", r.getHuespedes().stream().map(Huesped::getId).toList()
+                ));
+                evento.put("color", generarColorDesdeId(r.getCerradura().getId()));
+                eventos.add(evento);
+            }
+
+            return eventos;
+        }
+
+
+    @PostMapping("/calendar/editar-modal")
+    public String actualizarReservaDesdeModal(@RequestParam Long id,
+                                              @RequestParam("casa") Long cerraduraId,
+                                              @RequestParam("fechaInicio") String fechaInicioStr,
+                                              @RequestParam("fechaFin") String fechaFinStr,
+                                              @RequestParam("huespedes") List<Long> huespedIds,
+                                              RedirectAttributes redirectAttributes) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date fechaInicio = new Date(sdf.parse(fechaInicioStr).getTime());
+            Date fechaFin = new Date(sdf.parse(fechaFinStr).getTime());
+    
+            Cerradura cerradura = cerraduraService.obtenerCerraduraPorId(cerraduraId);
+            List<Huesped> huespedes = huespedService.obtenerHuespedesPorIds(huespedIds);
+    
+            reservaService.actualizarReserva(id, fechaInicio, fechaFin, cerradura, huespedes);
+            redirectAttributes.addFlashAttribute("editado", true);
+            return "redirect:/calendar";
+        } catch (Exception e) {
+            return "redirect:/calendar?errorEdicion";
+        }
+    }
+
+    @PostMapping("/calendar/eliminar")
+    public String eliminarReserva(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            reservaService.eliminarReserva(id);
+            redirectAttributes.addFlashAttribute("mensajeExito", "✅ Reserva eliminada correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorEliminar", "No se pudo eliminar la reserva");
+        }
+        return "redirect:/calendar";
+    }
+        
+
+
 
 }
 
