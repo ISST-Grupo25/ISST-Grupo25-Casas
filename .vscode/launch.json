@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-IsstGrupo25CasasApplication<ISST-Grupo25-Casas>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.isst.ISST_Grupo25_Casas.IsstGrupo25CasasApplication",
+            "projectName": "ISST-Grupo25-Casas",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

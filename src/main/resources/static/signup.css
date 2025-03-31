@@ -106,3 +106,68 @@
 .btn:hover {
   background-color: #a6866a;
 }
+
+/* 🔹 Estilos responsive para vista móvil (signup) */
+@media screen and (max-width: 768px) {
+  .options-container {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
+
+  .option-box {
+    width: 100%;
+    padding: 15px;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .option-box h3 {
+    font-size: 18px;
+  }
+
+  .option-box p {
+    font-size: 14px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .form {
+    margin: 20px 15px;
+    padding: 20px;
+    max-width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .form h2,
+  .form p {
+    font-size: 14px;
+  }
+
+  .form label {
+    font-size: 14px;
+  }
+
+  .form input {
+    font-size: 14px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .form .btn-primary {
+    font-size: 14px;
+    padding: 12px;
+    width: 100%;
+  }
+
+  .form a {
+    font-size: 14px;
+  }
+}

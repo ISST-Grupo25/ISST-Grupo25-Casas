@@ -188,3 +188,103 @@
 #blank-btn:hover {
   background: #d9534f;
 }
+
+/* 🔹 Estilos responsive para vista móvil (home-access) */
+@media screen and (max-width: 768px) {
+  .key {
+    padding: 20px 15px;
+    text-align: center;
+  }
+
+  .key-content h2 {
+    font-size: 22px;
+  }
+
+  .houses {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+  }
+
+  .house {
+    padding: 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .house h3 {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+
+  .house p {
+    font-size: 14px;
+  }
+
+  .key-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    margin: 0 auto 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--marron-claro);
+    color: white;
+    border: none;
+    border-radius: 50%;
+  }
+
+  /* Modal adaptado */
+  .modal-content {
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+  }
+
+  .pin-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .pin-btn {
+    padding: 15px;
+    font-size: 18px;
+    border-radius: 5px;
+    border: none;
+    background-color: var(--marron-claro);
+    color: white;
+    cursor: pointer;
+  }
+
+  #pin-input {
+    font-size: 20px;
+    padding: 10px;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .pin-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .pin-actions button {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    background-color: var(--marron-claro);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+}
+
