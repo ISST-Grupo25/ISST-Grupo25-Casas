@@ -204,6 +204,14 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/signup")
+    public String signupPage(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Usuario o contraseña incorrectos.");
+        }
+        return "signup";
+    }
+
     @PostMapping("/signup")
     public String signup(@RequestParam String nombre, 
                          @RequestParam String email, 
