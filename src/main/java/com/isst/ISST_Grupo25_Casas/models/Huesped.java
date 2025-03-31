@@ -1,6 +1,7 @@
 
 package com.isst.ISST_Grupo25_Casas.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
@@ -28,7 +29,7 @@ public class Huesped {
         joinColumns = @JoinColumn(name = "huesped_id"),
         inverseJoinColumns = @JoinColumn(name = "reserva_id")
     )
-    private List<Reserva> reservas;
+    private List<Reserva> reservas = new ArrayList<>();
 
     // 🔹 GETTERS Y SETTERS MANUALES
     public Long getId() {

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
+  <link rel="stylesheet" th:href="@{/login.css}" />
   <body>
     <div id="main">
       <div th:replace="~{layout :: nav}"></div>
@@ -25,9 +26,13 @@
               </p>
             </form>
 
+
             <p>
               ¿No tienes cuenta? <a th:href="@{/signup}">Regístrate aquí</a>
             </p>
+            <a href="/oauth2/authorization/google">
+              <button type="button">Iniciar sesión con Google</button>
+            </a>            
           </div>
         </section>
 

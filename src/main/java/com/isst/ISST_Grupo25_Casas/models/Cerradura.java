@@ -20,7 +20,7 @@ public class Cerradura {
     @Column(nullable = false)
     private String token;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer bateria;
 
     // 🔹 GETTERS Y SETTERS MANUALES

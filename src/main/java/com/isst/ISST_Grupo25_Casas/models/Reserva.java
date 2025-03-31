@@ -16,8 +16,6 @@ public class Reserva {
     @Column(name = "pin", nullable = false, unique = true)
     private String pin;
 
-    @Column(nullable = false)
-    private String name;
 
     @Column(nullable = false)
     private Date fechainicio;
@@ -53,13 +51,6 @@ public class Reserva {
         this.pin = pin;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Date getFechainicio() {
         return fechainicio;

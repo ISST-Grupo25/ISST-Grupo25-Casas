@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}">
@@ -6,178 +7,321 @@
       rel="stylesheet"
     />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
   <body>
     <div id="main">
       <div th:replace="~{layout :: nav}"></div>
 
-      <main>
-        <h2>Mi Calendario</h2>
-        <div id="calendar"></div>
-      </main>
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
+          <h2>Gestión de Reservas</h2>
+          <div id="calendar"></div>
+          <form method="post" action="/calendar/importar-fichero" enctype="multipart/form-data">
+            <label for="file">Selecciona un archivo .ics:</label>
+            <input type="file" id="file" name="file" accept=".ics" required />
+            <button type="submit">📥 Importar reservas desde archivo .ics</button>
+          </form>
+          <div th:if="${importadasFichero}" class="alert alert-success">
+            ✅ Se importaron <span th:text="${importadasFichero}"></span> reservas desde fichero ICS.
+          </div>
 
-      <div th:replace="~{layout :: footer}"></div>
+
+          <form method="post" th:action="@{/calendar/sincronizar}">
+            <button type="submit" class="btn">🔄 Sincronizar con Google Calendar</button>
+          </form>
+          <div th:if="${param.syncSuccess}" class="alert alert-success">
+            ✅ Google Calendar ha sido sincronizado con la app.
+          </div>
+          <div th:if="${errorSincronizar}" class="alert alert-danger">
+            ❌ <span th:text="${errorSincronizar}"></span>
+          </div>
+
+
+          <button id="addEvent" class="btn">Añadir Reserva</button>
+          <div id="modalOverlay" class="modal-calendar-overlay"></div>
+
+                    <!-- MODAL de Modificación o eliminación -->
+          <div id="eventModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999;">
+            <div style="background:#fff; margin:10% auto; padding:20px; width:300px; border-radius:8px; position:relative;">
+              <h3 id="modal-title">Reserva</h3>
+              <p id="modal-dates"></p>
+              <button id="editEventBtn">Modificar</button>
+              <button id="deleteEventBtn">Eliminar</button>
+              <button onclick="closeEventModal()">Cancelar</button> 
+              <!-- Parte formulario -->
+              <form
+                id="editForm"
+                method="post"
+                action="/calendar/editar-modal"
+                style="display:none;"
+                class="access-form"
+              >
+                <label for="editCasa">Casa:</label>
+                <select id="editCasa" name="casa" required>
+                  <option th:each="c : ${cerraduras}" th:value="${c.id}" th:text="${c.ubicacion}"></option>
+                </select>
+          
+                <label for="editFechaInicio">Fecha de Inicio:</label>
+                <input type="date" id="editFechaInicio" name="fechaInicio" required />
+          
+                <label for="editFechaFin">Fecha de Fin:</label>
+                <input type="date" id="editFechaFin" name="fechaFin" required />
+          
+                <label for="editHuespedes">Huéspedes:</label>
+                <select id="editHuespedes" name="huespedes" multiple required>
+                  <option th:each="h : ${huespedes}" th:value="${h.id}" th:text="${h.name}"></option>
+                </select>
+          
+                <input type="hidden" id="editReservaId" name="id" />
+          
+                <div class="modal-calendar-actions">
+                  <button type="button" onclick="closeEventModal()" class="btn-cancel-calendar">Cancelar</button>
+                  <button type="submit" class="btn-confirm-calendar">Guardar Cambios</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Modal de Reservas -->
+          <div id="accessModal" class="modal-calendar">
+            <div class="modal-calendar-content">
+              <span id="closeModal" class="close">&times;</span>
+              <h3>Programar Acceso</h3>
+
+              <div class="añadir-casa">
+                <form id="newCasaInputs" th:action="@{/cerradura/guardar}" method="post" style="display: none;">
+                  <label for="ubicacion">Ubicación:</label>
+                  <input type="text" id="ubicacion" name="ubicacion" placeholder="Ubicación" required />
+              
+                  <label for="token">Token:</label>
+                  <input type="text" id="token" name="token" placeholder="Token" required />
+                  
+                  <button type= "button" class="btn-cancelar-cerradura">Cancelar</button>  <!-- Botón para cancelar -->
+                  <button type="submit" class="btn-confirmar-cerradura">Confirmar</button>  <!-- Botón para confirmar -->
+              </form>
+            </div>
+
+
+              <form
+                th:action="@{/calendar/guardar}"
+                method="post"
+                id="accessForm"
+                class="access-form"
+              >
+                <!-- Selección de Casa -->
+                <label for="casa">Casa:</label>
+                <div class="input-group">
+                  <select id="casa" name="casa" class="select-keys" required>
+                    <option
+                      th:each="c : ${cerraduras}"
+                      th:value="${c.id}"
+                      th:text="${c.ubicacion}"
+                    ></option>
+                  </select>
+                  <button 
+                        type="button" 
+                        id="addCasa" 
+                        class="add-icon">+</button>              
+
+                <!-- Selección de Fechas -->
+                <label for="fechaInicio">Fecha de Inicio:</label>
+                <input
+                  type="date"
+                  id="fechaInicio"
+                  name="fechaInicio"
+                  required
+                />
+
+                <label for="fechaFin">Fecha de Fin:</label>
+                <input type="date" id="fechaFin" name="fechaFin" required />
+
+                <!-- Selección de Huéspedes -->
+                <label for="huespedes">Huéspedes:</label>
+                <select id="huespedes" name="huespedes" multiple required>
+                  <option
+                    th:each="h : ${huespedes}"
+                    th:value="${h.id}"
+                    th:text="${h.name}"
+                  ></option>
+                </select>
+
+
+
+                <div class="modal-calendar-actions">
+                  <button
+                    type="button"
+                    id="cancelModal"
+                    class="btn-cancel-calendar"
+                  >
+                    Cancelar
+                  </button>
+                  <button type="submit" class="btn-confirm-calendar">
+                    Confirmar
+                  </button>
+                </div>
+              </form>
+              <div th:if="${errorReserva}" class="alert alert-danger">
+                <span th:text="${errorReserva}"></span>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      </main>
     </div>
 
-    <script th:inline="javascript">
+    <script th:replace="~{layout :: scripts}"></script>
+    <script>
       document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("accessModal");
+        const modalOverlay = document.getElementById("modalOverlay");
+        const openModalBtn = document.getElementById("addEvent");
+        const closeModalBtn = document.getElementById("closeModal");
+        const cancelModalBtn = document.getElementById("cancelModal");
+
+        function openModal() {
+          modal.classList.add("show");
+          modalOverlay.classList.add("show");
+        }
+
+        function closeModal() {
+          modal.classList.remove("show");
+          modalOverlay.classList.remove("show");
+        }
+
+        openModalBtn.addEventListener("click", openModal);
+        closeModalBtn.addEventListener("click", closeModal);
+        cancelModalBtn.addEventListener("click", closeModal);
+        modalOverlay.addEventListener("click", closeModal);
+
         var calendarEl = document.getElementById("calendar");
         var calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: "dayGridMonth",
-          events: [
-            /* Thymeleaf iterará sobre los eventos obtenidos del backend */
-            /* Convertimos los eventos de Google Calendar a formato FullCalendar */
-            /* Esto asegurará que los eventos se muestren en la vista */
-            /* Itera sobre los eventos pasados desde el backend */
-            /* events es una lista de eventos desde el controlador */
-            /* FullCalendar espera eventos en formato JSON */
-            /* Con Thymeleaf, generamos este JSON dinámicamente */
-            /* El evento de Google Calendar tiene un resumen (summary), start.dateTime y end.dateTime */
-            /* Si la fecha de inicio está vacía, tomamos start.date en su lugar */
-            /* Usamos th:each para iterar los eventos desde el modelo */
-            /* También verificamos que los valores existen */
-            /* Se asignan las fechas y títulos dinámicamente */
-            /* Así se muestran correctamente en el calendario */
-            /* Se renderiza FullCalendar con los datos de Google Calendar */
-            /* events de FullCalendar necesita objetos con title, start y end */
-            /* La estructura del evento en FullCalendar */
-            /* { title: "Evento", start: "2024-03-11T10:00:00", end: "2024-03-11T12:00:00" } */
-            /* Thymeleaf transformará los eventos en este formato dinámicamente */
-            /* Si start.dateTime no está definido, usamos start.date para eventos de día completo */
-            /* Si end.dateTime no está definido, usamos end.date */
-            /* Así aseguramos que todos los eventos sean válidos */
-            /* La fecha de inicio se convierte a formato de fecha de JavaScript */
-            /* La fecha de fin también se convierte a formato de JavaScript */
-            /* FullCalendar mostrará correctamente los eventos */
-            /* Google Calendar maneja fechas en formato ISO */
-            /* Aseguramos que el formato es compatible con FullCalendar */
-            /* Se recorren los eventos usando Thymeleaf */
-            /* Cada evento se formatea en JSON */
-            /* Se usa `th:each` para recorrer la lista de eventos */
-            /* En cada iteración, `event` representa un evento individual */
-            /* `event.summary` es el título */
-            /* `event.start.dateTime` o `event.start.date` es la fecha de inicio */
-            /* `event.end.dateTime` o `event.end.date` es la fecha de fin */
-            /* Estos datos se pasan al JSON de FullCalendar */
-            /* Así se renderizan los eventos correctamente en el calendario */
-            /* Esto garantiza que los eventos aparezcan en la vista */
-            /* Si hay eventos, se mostrarán en el calendario */
-            /* Generamos el JSON de eventos dinámicamente */
-            /* Thymeleaf los convierte en formato JSON en tiempo de ejecución */
-            /* Así, los eventos aparecen automáticamente en el calendario */
-            /* Esto enlaza Google Calendar con FullCalendar */
-            /* Integración completa */
-            /* Comprobación final */
-            /* El calendario mostrará los eventos */
-            /* Si hay eventos, FullCalendar los renderiza */
-            /* La integración está completa */
-            /* El calendario ya funciona con Google Calendar */
-            /* Los eventos se muestran automáticamente */
-            /* No se necesitan pasos adicionales */
-            /* Integración finalizada */
-            /* Google Calendar + FullCalendar */
-            /* Todo listo */
-            /* 🎉 */
-            /* Vamos a ver los eventos */
-            /* ¡Éxito! */
-            /* 🎊 */
-            /* 🎈 */
-            /* 🏆 */
-            /* 🎯 */
-            /* 🚀 */
-            /* ¡Google Calendar funcionando en FullCalendar! */
-            /* Ahora puedes ver tus eventos en la web */
-            /* Comprobación lista */
-            /* ¡Disfruta tu integración! */
-            /* 😃 */
-            /* 🤩 */
-            /* 🥳 */
-            /* 👍 */
-            /* 👌 */
-            /* 😎 */
-            /* 🎶 */
-            /* 🍾 */
-            /* ¡Felicidades! */
-            /* ¡Finalizado con éxito! */
-            /* 🏁 */
-            /* Google Calendar + FullCalendar = 🔥 */
-            /* Fin */
-            /* ✨ */
-            /* 🎇 */
-            /* 🏆 */
-            /* Perfecto */
-            /* Google Calendar en la web */
-            /* ¡Éxito asegurado! */
-            /* 🚀 */
-            /* 🏅 */
-            /* 🏆 */
-            /* 🎉 */
-            /* 🎊 */
-            /* 🎈 */
-            /* Vamos a verlo en acción */
-            /* 👀 */
-            /* 🔥 */
-            /* 🎯 */
-            /* 🥳 */
-            /* 🎶 */
-            /* 🍾 */
-            /* 💪 */
-            /* 🚀 */
-            /* Listo */
-            /* 🎯 */
-            /* 🏆 */
-            /* Google Calendar en vivo */
-            /* ¡Ya está! */
-            /* Perfecto */
-            /* 🚀 */
-            /* ¡Google Calendar en FullCalendar funciona! */
-            /* 🏆 */
-            /* 🎉 */
-            /* 🏅 */
-            /* 🔥 */
-            /* 🎯 */
-            /* ¡Éxito! */
-            /* 🎉 */
-            /* 🏆 */
-            /* 🚀 */
-            /* 🥳 */
-            /* Listo */
-            /* Google Calendar en FullCalendar */
-            /* 🎊 */
-            /* 🎉 */
-            /* 🎯 */
-            /* 🚀 */
-            /* 🏆 */
-            /* ¡Perfecto! */
-            /* 🎈 */
-            /* 🎯 */
-            /* 🚀 */
-            /* 🎊 */
-            /* ¡Éxito! */
-            /* ¡Finalizado con éxito! */
-            /* 🏅 */
-            /* 🔥 */
-            /* Google Calendar funcionando */
-            /* ¡Listo! */
-            /* 🎉 */
-            /* 🎊 */
-            /* 🎈 */
-            /* 🎯 */
-            /* 🚀 */
-            /* Google Calendar funcionando en FullCalendar */
-            /* ¡Éxito asegurado! */
-            /* 🔥 */
-            /* 🎯 */
-            /* 🎉 */
-            /* ¡Finalizado con éxito! */
-            /* 🚀 */
-            /* 🏆 */
-            /* 🎯 */
-            /* 🎉 */
-            /* ¡Listo! */
-          ],
+          locale: "es",
+          headerToolbar: {
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          },
+          events: "/reservas",
+          eventClick: function (info) {
+            // Guarda los datos del evento
+            const title = info.event.title;
+            const start = info.event.startStr;
+            const end = info.event.endStr;
+
+            // Muestra el modal
+            document.getElementById("modal-title").textContent = title;
+            document.getElementById("modal-dates").textContent = `Inicio: ${start}\nFin: ${end}`;
+            
+            // Guarda ID del evento si es necesario (puedes extender con info.event.id)
+            window.selectedEvent = info.event;
+
+            // Mostrar el modal
+            document.getElementById("eventModal").style.display = "block";
+          },
         });
         calendar.render();
+
+        window.closeEventModal = function () {
+          document.getElementById("eventModal").style.display = "none";
+          document.getElementById("editForm").style.display = "none";
+        }
+
+
+        document.getElementById("deleteEventBtn").addEventListener("click", function () {
+          const reservaId = window.selectedEvent.id;
+          console.log("🧪 ID de reserva:", reservaId);
+          if (confirm("¿Estás segura de que quieres eliminar esta reserva?")) {
+            fetch("/calendar/eliminar", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: `id=${reservaId}`,
+            })
+              .then((res) => {
+                if (res.ok) {
+                  window.selectedEvent.remove(); // Elimina del calendario
+                  closeEventModal();
+                } else {
+                  alert("❌ Error al eliminar la reserva");
+                }
+              });
+          }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+          const editBtn = document.getElementById("editEventBtn");
+          if (editBtn) {
+            editBtn.addEventListener("click", () => {
+              const form = document.getElementById("editForm");
+              if (form) {
+                form.style.display = "block";
+              }
+            });
+          }
+        });
+
+        
+
+        document.getElementById("editEventBtn").addEventListener("click", function () {
+          const event = window.selectedEvent;
+
+          // Ocultar vista info, mostrar formulario
+          //document.getElementById("modalInfo").style.display = "none";
+          document.getElementById("editForm").style.display = "block";
+
+          // Rellenar campos del formulario
+          document.getElementById("editReservaId").value = event.id;
+          document.getElementById("editFechaInicio").value = event.startStr.substring(0, 10);
+          document.getElementById("editFechaFin").value = event.endStr?.substring(0, 10) || event.startStr.substring(0, 10);
+
+          // Opcional: puedes rellenar casa y huéspedes si están en extendedProps
+          if (event.extendedProps) {
+            if (event.extendedProps.cerraduraId) {
+              document.getElementById("editCasa").value = event.extendedProps.cerraduraId;
+            }
+
+            if (event.extendedProps.huespedIds) {
+              const huespedesSelect = document.getElementById("editHuespedes");
+              const huespedIds = event.extendedProps.huespedIds;
+              for (const option of huespedesSelect.options) {
+                option.selected = huespedIds.includes(parseInt(option.value));
+              }
+            }
+          }
+        });
+
+
+
+        // Datepicker
+        flatpickr("#fecha", {
+          mode: "range",
+          dateFormat: "Y-m-d",
+          minDate: "today",
+        });
+
+        // Mostrar el formulario de nueva casa cuando se hace clic en "+"
+        document.getElementById('addCasa').addEventListener('click', function() {
+          document.getElementById('newCasaInputs').style.display = 'block'; // Mostrar el formulario
+        });
+
+        // Ocultar el formulario después de hacer clic en "Confirmar"
+        document.querySelector('.btn-confirmar-cerradura').addEventListener('click', function() {
+          document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
+        });
+
+        // Ocultar el formulario después de hacer clic en "Cancelar"
+        document.querySelector('.btn-cancelar-cerradura').addEventListener('click', function(event) {
+          event.preventDefault();  // Prevenir cualquier acción por defecto (como el envío del formulario)
+          document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
+        });
       });
     </script>
   </body>
