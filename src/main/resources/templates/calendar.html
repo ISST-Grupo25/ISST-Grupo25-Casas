@@ -21,12 +21,26 @@
         <section class="section-container" th:fragment="section">
           <h2>Gestión de Reservas</h2>
           <div id="calendar"></div>
-          <form method="post" action="/calendar/importar">
-            <button type="submit">📥 Importar reservas desde Google Calendar</button>
+          <form method="post" action="/calendar/importar-fichero" enctype="multipart/form-data">
+            <label for="file">Selecciona un archivo .ics:</label>
+            <input type="file" id="file" name="file" accept=".ics" required />
+            <button type="submit">📥 Importar reservas desde archivo .ics</button>
           </form>
-          <div th:if="${importadas}" class="alert alert-success">
-            ✅ Se importaron <span th:text="${importadas}"></span> reservas desde Google Calendar.
+          <div th:if="${importadasFichero}" class="alert alert-success">
+            ✅ Se importaron <span th:text="${importadasFichero}"></span> reservas desde fichero ICS.
           </div>
+
+
+          <form method="post" th:action="@{/calendar/sincronizar}">
+            <button type="submit" class="btn">🔄 Sincronizar con Google Calendar</button>
+          </form>
+          <div th:if="${param.syncSuccess}" class="alert alert-success">
+            ✅ Google Calendar ha sido sincronizado con la app.
+          </div>
+          <div th:if="${errorSincronizar}" class="alert alert-danger">
+            ❌ <span th:text="${errorSincronizar}"></span>
+          </div>
+
 
           <button id="addEvent" class="btn">Añadir Reserva</button>
           <div id="modalOverlay" class="modal-calendar-overlay"></div>

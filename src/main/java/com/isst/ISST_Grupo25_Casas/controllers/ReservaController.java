@@ -8,6 +8,7 @@ import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.services.CerraduraService;
 import com.isst.ISST_Grupo25_Casas.services.HuespedService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
+import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
 import com.isst.ISST_Grupo25_Casas.services.GestorService;
 
 import com.isst.ISST_Grupo25_Casas.services.GoogleCalendarService;
@@ -28,9 +29,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -197,6 +200,14 @@ public String googleCalendarCallback(@RequestParam("code") String code, HttpSess
             session.removeAttribute("form_huespedIds");
 
             return ejecutarGuardarReserva(gestor, cerraduraId, fechaInicio, fechaFin, huespedIds, null);
+        }else if ("sincronizar".equals(pending)) {
+            Gestor gestor = (Gestor) session.getAttribute("usuario");
+            session.removeAttribute("pendingAction");
+
+            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+            GoogleCalendarService.sincronizarConGoogle(reservas);
+
+            return "redirect:/calendar?syncSuccess";
         }
 
         // Puedes añadir más casos si necesitas importar luego
@@ -212,6 +223,36 @@ public String googleCalendarCallback(@RequestParam("code") String code, HttpSess
 public void redirectToGoogleAuth(HttpServletResponse response) throws IOException, GeneralSecurityException {
     // código que redirige a la página de Google para login
 }
+
+
+    //la prioridad en la sincronización es la base de datos, por lo que si hay un evento en Google Calendar y no en la base de datos, se eliminará el evento de Google Calendar
+    @PostMapping("/calendar/sincronizar")
+public String sincronizarConGoogle(HttpSession session, RedirectAttributes redirectAttributes) {
+    try {
+        Object obj = session.getAttribute("usuario");
+        if (obj instanceof Gestor gestor) {
+            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+            GoogleCalendarService.sincronizarConGoogle(reservas);
+            redirectAttributes.addFlashAttribute("sincronizado", true);
+            return "redirect:/calendar";
+        } else {
+            return "redirect:/calendar?error=NoAutenticado";
+        }
+    } catch (RuntimeException e) {
+        if (e.getMessage().contains("reautenticación")) {
+            // 👉 Guardamos acción pendiente y redirigimos a autorización
+            session.setAttribute("pendingAction", "sincronizar");
+            return "redirect:/google-calendar/authorize";
+        } else {
+            redirectAttributes.addFlashAttribute("errorSincronizar", e.getMessage());
+            return "redirect:/calendar";
+        }
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("errorSincronizar", "Error al sincronizar: " + e.getMessage());
+        return "redirect:/calendar";
+    }
+}
+
 
 
 
@@ -237,6 +278,35 @@ public void redirectToGoogleAuth(HttpServletResponse response) throws IOExceptio
             return "redirect:/calendar?errorGoogle";
         }
     }
+
+
+
+    @PostMapping("/calendar/importar-fichero")
+    public String importarDesdeIcs(@RequestParam("file") MultipartFile file,
+                                   HttpSession session,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            Object obj = session.getAttribute("usuario");
+            if (!(obj instanceof Gestor gestor)) {
+                return "redirect:/calendar?error=NoAutenticado";
+            }
+    
+            // Puedes ajustar esto: por ahora cogemos la primera cerradura y primer huésped
+            Cerradura cerradura = cerraduraService.obtenerPrimera(); // ← Asegúrate que este método existe
+            List<Huesped> huespedes = List.of(huespedService.obtenerPrimero()); // ← También asegúrate
+            
+            int importadas = reservaService.importarDesdeFicheroIcs(file.getInputStream(), cerradura, huespedes, gestor);
+            redirectAttributes.addFlashAttribute("importadasFichero", importadas);
+            return "redirect:/calendar";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorReserva", "❌ Error al importar ICS: " + e.getMessage());
+            return "redirect:/calendar";
+        }
+    }
+
+
+
+    
 
 
 

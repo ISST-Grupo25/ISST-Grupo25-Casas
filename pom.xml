@@ -165,6 +165,13 @@
             <version>v3-rev411-1.25.0</version> <!-- versión estable y disponible -->
         </dependency>
 
+
+        <dependency>
+            <groupId>org.mnode.ical4j</groupId>
+            <artifactId>ical4j</artifactId>
+            <version>3.0.24</version>
+        </dependency>
+
     </dependencies>
 
     <build>

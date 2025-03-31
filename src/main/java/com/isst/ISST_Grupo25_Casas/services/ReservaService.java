@@ -8,13 +8,17 @@ import com.google.api.services.calendar.model.Event;
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
+import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.InputStream;
 //import java.util.Date;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,6 +98,18 @@ public class ReservaService {
         reservaRepository.delete(reserva);
     }
 
+    public int importarDesdeFicheroIcs(InputStream icsInputStream, Cerradura cerradura, List<Huesped> huespedes, Gestor gestor) {
+        List<Timestamp[]> fechas = IcsParserUtil.parseFechas(icsInputStream);
+        int count = 0;
+
+        for (Timestamp[] par : fechas) {
+            guardarReserva(new Date(par[0].getTime()), new Date(par[1].getTime()), cerradura, huespedes, gestor);
+            count++;
+        }
+
+        return count;
+    }
+
 
     public List<Reserva> obtenerReservasPorHuesped(Long huespedId) {
         return reservaRepository.findByHuespedesId(huespedId);
@@ -101,6 +117,10 @@ public class ReservaService {
 
     public List<Reserva> obtenerReservasPorCerradura(Long cerraduraId) {
         return reservaRepository.findByCerraduraId(cerraduraId);
+    }
+
+    public List<Reserva> obtenerReservasPorGestor(Gestor gestor) {
+        return reservaRepository.findByGestor(gestor);
     }
 
 
@@ -137,6 +157,10 @@ public class ReservaService {
         }
         return importadas;
     }
+
+
+
+
 
     public boolean existeReservaEnEseRangoYCasa(Date inicio, Date fin, Cerradura cerradura) {
         List<Reserva> reservas = obtenerReservasPorCerradura(cerradura.getId());
