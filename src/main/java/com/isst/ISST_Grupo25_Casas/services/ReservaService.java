@@ -8,7 +8,7 @@ import com.google.api.services.calendar.model.Event;
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
-import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
+//import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,17 +98,17 @@ public class ReservaService {
         reservaRepository.delete(reserva);
     }
 
-    public int importarDesdeFicheroIcs(InputStream icsInputStream, Cerradura cerradura, List<Huesped> huespedes, Gestor gestor) {
-        List<Timestamp[]> fechas = IcsParserUtil.parseFechas(icsInputStream);
-        int count = 0;
+    // public int importarDesdeFicheroIcs(InputStream icsInputStream, Cerradura cerradura, List<Huesped> huespedes, Gestor gestor) {
+    //     List<Timestamp[]> fechas = IcsParserUtil.parseFechas(icsInputStream);
+    //     int count = 0;
 
-        for (Timestamp[] par : fechas) {
-            guardarReserva(new Date(par[0].getTime()), new Date(par[1].getTime()), cerradura, huespedes, gestor);
-            count++;
-        }
+    //     for (Timestamp[] par : fechas) {
+    //         guardarReserva(new Date(par[0].getTime()), new Date(par[1].getTime()), cerradura, huespedes, gestor);
+    //         count++;
+    //     }
 
-        return count;
-    }
+    //     return count;
+    // }
 
 
     public List<Reserva> obtenerReservasPorHuesped(Long huespedId) {
@@ -124,39 +124,39 @@ public class ReservaService {
     }
 
 
-    public int importarDesdeGoogle(Cerradura cerradura, Huesped huesped, Gestor gestor) {
-        int importadas = 0;
-        try {
-            Calendar calendar = GoogleCalendarService.getCalendarService();
+    // public int importarDesdeGoogle(Cerradura cerradura, Huesped huesped, Gestor gestor) {
+    //     int importadas = 0;
+    //     try {
+    //         Calendar calendar = GoogleCalendarService.getCalendarService();
     
-            List<Event> eventos = calendar.events().list("primary")
-                    .setTimeMin(new DateTime(System.currentTimeMillis()))
-                    .setOrderBy("startTime")
-                    .setSingleEvents(true)
-                    .execute()
-                    .getItems();
+    //         List<Event> eventos = calendar.events().list("primary")
+    //                 .setTimeMin(new DateTime(System.currentTimeMillis()))
+    //                 .setOrderBy("startTime")
+    //                 .setSingleEvents(true)
+    //                 .execute()
+    //                 .getItems();
     
-            for (Event event : eventos) {
-                if (event.getStart() != null && event.getEnd() != null) {
-                    Date fechaInicio = new Date(event.getStart().getDateTime().getValue());
-                    Date fechaFin = new Date(event.getEnd().getDateTime().getValue());
+    //         for (Event event : eventos) {
+    //             if (event.getStart() != null && event.getEnd() != null) {
+    //                 Date fechaInicio = new Date(event.getStart().getDateTime().getValue());
+    //                 Date fechaFin = new Date(event.getEnd().getDateTime().getValue());
     
-                    boolean existe = existeReservaEnEseRangoYCasa(fechaInicio, fechaFin, cerradura);
+    //                 boolean existe = existeReservaEnEseRangoYCasa(fechaInicio, fechaFin, cerradura);
     
-                    if (!existe) {
-                        List<Huesped> huespedes = new ArrayList<>();
-                        huespedes.add(huesped);
+    //                 if (!existe) {
+    //                     List<Huesped> huespedes = new ArrayList<>();
+    //                     huespedes.add(huesped);
     
-                        guardarReserva(fechaInicio, fechaFin, cerradura, huespedes, gestor);
-                        importadas++;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error al importar eventos: " + e.getMessage());
-        }
-        return importadas;
-    }
+    //                     guardarReserva(fechaInicio, fechaFin, cerradura, huespedes, gestor);
+    //                     importadas++;
+    //                 }
+    //             }
+    //         }
+    //     } catch (Exception e) {
+    //         System.out.println("❌ Error al importar eventos: " + e.getMessage());
+    //     }
+    //     return importadas;
+    // }
 
 
 

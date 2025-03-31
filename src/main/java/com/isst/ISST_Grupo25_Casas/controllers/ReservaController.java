@@ -8,7 +8,7 @@ import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.services.CerraduraService;
 import com.isst.ISST_Grupo25_Casas.services.HuespedService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
-import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
+//import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
 import com.isst.ISST_Grupo25_Casas.services.GestorService;
 
 import com.isst.ISST_Grupo25_Casas.services.GoogleCalendarService;
@@ -219,11 +219,6 @@ public String googleCalendarCallback(@RequestParam("code") String code, HttpSess
 }
 
 
-@GetMapping("/google/auth")
-public void redirectToGoogleAuth(HttpServletResponse response) throws IOException, GeneralSecurityException {
-    // código que redirige a la página de Google para login
-}
-
 
     //la prioridad en la sincronización es la base de datos, por lo que si hay un evento en Google Calendar y no en la base de datos, se eliminará el evento de Google Calendar
     @PostMapping("/calendar/sincronizar")
@@ -260,49 +255,49 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
 
 
 
-    @PostMapping("/calendar/importar")
-    public String importarDesdeGoogle(HttpSession session, RedirectAttributes redirectAttributes) {
-        try {
-            Object obj = session.getAttribute("usuario");
-            if (obj instanceof Gestor gestor) {
-                Cerradura cerradura = cerraduraService.obtenerPrimera();
-                Huesped huesped = huespedService.obtenerPrimero();
+    // @PostMapping("/calendar/importar")
+    // public String importarDesdeGoogle(HttpSession session, RedirectAttributes redirectAttributes) {
+    //     try {
+    //         Object obj = session.getAttribute("usuario");
+    //         if (obj instanceof Gestor gestor) {
+    //             Cerradura cerradura = cerraduraService.obtenerPrimera();
+    //             Huesped huesped = huespedService.obtenerPrimero();
 
-                int importadas = reservaService.importarDesdeGoogle(cerradura, huesped, gestor);
-                redirectAttributes.addFlashAttribute("importadas", importadas);
-                return "redirect:/calendar";
-            } else {
-                return "redirect:/calendar?error";
-            }
-        } catch (Exception e) {
-            return "redirect:/calendar?errorGoogle";
-        }
-    }
+    //             int importadas = reservaService.importarDesdeGoogle(cerradura, huesped, gestor);
+    //             redirectAttributes.addFlashAttribute("importadas", importadas);
+    //             return "redirect:/calendar";
+    //         } else {
+    //             return "redirect:/calendar?error";
+    //         }
+    //     } catch (Exception e) {
+    //         return "redirect:/calendar?errorGoogle";
+    //     }
+    // }
 
 
 
-    @PostMapping("/calendar/importar-fichero")
-    public String importarDesdeIcs(@RequestParam("file") MultipartFile file,
-                                   HttpSession session,
-                                   RedirectAttributes redirectAttributes) {
-        try {
-            Object obj = session.getAttribute("usuario");
-            if (!(obj instanceof Gestor gestor)) {
-                return "redirect:/calendar?error=NoAutenticado";
-            }
+    // @PostMapping("/calendar/importar-fichero")
+    // public String importarDesdeIcs(@RequestParam("file") MultipartFile file,
+    //                                HttpSession session,
+    //                                RedirectAttributes redirectAttributes) {
+    //     try {
+    //         Object obj = session.getAttribute("usuario");
+    //         if (!(obj instanceof Gestor gestor)) {
+    //             return "redirect:/calendar?error=NoAutenticado";
+    //         }
     
-            // Puedes ajustar esto: por ahora cogemos la primera cerradura y primer huésped
-            Cerradura cerradura = cerraduraService.obtenerPrimera(); // ← Asegúrate que este método existe
-            List<Huesped> huespedes = List.of(huespedService.obtenerPrimero()); // ← También asegúrate
+    //         // Puedes ajustar esto: por ahora cogemos la primera cerradura y primer huésped
+    //         Cerradura cerradura = cerraduraService.obtenerPrimera(); // ← Asegúrate que este método existe
+    //         List<Huesped> huespedes = List.of(huespedService.obtenerPrimero()); // ← También asegúrate
             
-            int importadas = reservaService.importarDesdeFicheroIcs(file.getInputStream(), cerradura, huespedes, gestor);
-            redirectAttributes.addFlashAttribute("importadasFichero", importadas);
-            return "redirect:/calendar";
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorReserva", "❌ Error al importar ICS: " + e.getMessage());
-            return "redirect:/calendar";
-        }
-    }
+    //         int importadas = reservaService.importarDesdeFicheroIcs(file.getInputStream(), cerradura, huespedes, gestor);
+    //         redirectAttributes.addFlashAttribute("importadasFichero", importadas);
+    //         return "redirect:/calendar";
+    //     } catch (Exception e) {
+    //         redirectAttributes.addFlashAttribute("errorReserva", "❌ Error al importar ICS: " + e.getMessage());
+    //         return "redirect:/calendar";
+    //     }
+    // }
 
 
 

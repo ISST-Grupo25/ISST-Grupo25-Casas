@@ -16,9 +16,11 @@ com\isst\ISST_Grupo25_Casas\models\Gestor.class
 com\isst\ISST_Grupo25_Casas\models\Cerradura.class
 com\isst\ISST_Grupo25_Casas\services\CustomHuespedDetailsService.class
 com\isst\ISST_Grupo25_Casas\controllers\HuespedController.class
-com\isst\ISST_Grupo25_Casas\config\GoogleOAuthConfig.class
+com\isst\ISST_Grupo25_Casas\controllers\CerraduraController.class
 com\isst\ISST_Grupo25_Casas\models\Reserva.class
 com\isst\ISST_Grupo25_Casas\controllers\KeyController.class
 com\isst\ISST_Grupo25_Casas\controllers\AuthController.class
 com\isst\ISST_Grupo25_Casas\controllers\SettingsController.class
+com\isst\ISST_Grupo25_Casas\controllers\ReservaController.class
+com\isst\ISST_Grupo25_Casas\services\ReservaService.class
 com\isst\ISST_Grupo25_Casas\models\Acceso.class
