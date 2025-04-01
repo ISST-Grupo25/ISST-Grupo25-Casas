@@ -20,10 +20,9 @@
             </div>
 
             <div class="house" th:each="reserva : ${reservas}">
-              <button class="key-btn">
+              <button class="key-btn" th:attr="data-pin=${reserva.pin}">
                 <span class="material-icons">key</span>
               </button>
-              <h3 th:text="${reserva.name}"></h3>
               <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
               <p
                 th:text="'Desde: ' + ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' + ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
@@ -69,16 +68,21 @@
         modal.style.display = "none";
         const pinInput = document.getElementById("pin-input");
         const buttons = document.querySelectorAll(".pin-btn");
-        const openModalBtn = document.querySelector(".key-btn");
+        const openModalBtns = document.querySelectorAll(".key-btn");
         const cancelBtn = document.getElementById("cancel-btn");
         const clearBtn = document.getElementById("clear-btn");
         const acceptBtn = document.getElementById("accept-btn");
         const blankBtn = document.getElementById("blank-btn");
 
-        // Abrir modal
-        openModalBtn.addEventListener("click", () => {
-          modal.style.display = "flex";
-          pinInput.value = "";
+        let currentPin = null; // Variable para almacenar el PIN de la reserva seleccionada
+
+        // Abrir modal y obtener el PIN de la reserva seleccionada
+        openModalBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            currentPin = btn.getAttribute("data-pin"); // Obtener el PIN de la reserva
+            modal.style.display = "flex";
+            pinInput.value = "";
+          });
         });
 
         // Cerrar modal
@@ -109,14 +113,17 @@
           pinInput.value = "";
         });
 
-        // Aceptar PIN (Aquí puedes añadir lógica para verificar el PIN)
+        // Aceptar PIN (Verificar si coincide con el PIN de la reserva)
         acceptBtn.addEventListener("click", () => {
           const pin = pinInput.value;
           if (pin.length >= 4) {
-            if (pin === "1234") {
+            console.log("PIN ingresado:", currentPin);
+            if (pin === currentPin) {
               alert("PIN correcto. Acceso permitido.");
               modal.style.display = "none";
-              triggerButtonAnimation(openModalBtn);
+              triggerButtonAnimation(
+                document.querySelector(`.key-btn[data-pin="${currentPin}"]`)
+              );
             } else {
               alert("PIN incorrecto. Acceso denegado.");
             }
