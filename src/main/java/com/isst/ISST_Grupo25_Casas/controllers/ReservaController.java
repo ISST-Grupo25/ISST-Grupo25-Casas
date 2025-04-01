@@ -60,6 +60,10 @@ public class ReservaController {
     @GetMapping("/home-access")
     public String mostrarReservas(Model model, HttpSession session) {
         Object obj = session.getAttribute("usuario");
+
+        if (obj == null) {  // Si no hay usuario en sesión
+            return "redirect:/login";  // Redirigir al login (o página de inicio)
+        }
         
         if (obj instanceof Huesped huesped) { // Validar y castear correctamente
             System.out.println("📌 Usuario logueado: " + huesped.getName());
@@ -73,7 +77,13 @@ public class ReservaController {
     }
 
     @GetMapping("/calendar")
-    public String mostrarFormularioReserva(Model model) {
+    public String mostrarFormularioReserva(Model model, HttpSession session) {
+
+            Object obj = session.getAttribute("usuario");
+        
+            if (obj == null) {  // Si no hay usuario en sesión
+                return "redirect:/login";  // Redirigir al login (o página de inicio)
+            }
 
             List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
             List<Cerradura> cerraduras = cerraduraService.obtenerTodasLasCerraduras();

@@ -43,6 +43,9 @@ public class HomeController {
 
     @GetMapping("/profile")
     public String profile(Model model, HttpSession session) {
+        if (session.getAttribute("user") == null) {  // Si no hay usuario en la sesión
+            return "redirect:/login";  // Redirigir a la página de login
+        }
         String user = (String) session.getAttribute("user");
         String email = (String) session.getAttribute("email");
 
@@ -53,12 +56,18 @@ public class HomeController {
 
     @GetMapping("/settings") 
     public String settings(Model model, HttpSession session) {
+        if (session.getAttribute("user") == null) {  // Si no hay usuario en la sesión
+            return "redirect:/login";  // Redirigir a la página de login
+        }
         model.addAttribute("user", session.getAttribute("user"));
         return "settings";
     }
 
     @GetMapping("/monitor") 
     public String monitor(Model model, HttpSession session) {
+        if (session.getAttribute("user") == null) {  // Si no hay usuario en la sesión
+            return "redirect:/login";  // Redirigir a la página de login
+        }
         model.addAttribute("user", session.getAttribute("user"));
         return "monitor";
     }
