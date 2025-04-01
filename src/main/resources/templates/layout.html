@@ -21,20 +21,31 @@
     <div id="main" th:fragment="main">
       <nav class="navbar" th:fragment="nav">
         <div class="nav-left">
-          <span class="material-icons menu-icon" onclick="openNav()">menu</span>
-          <img
-            th:src="@{/images/logo_IoH_white.png}"
-            alt="IoH Logo"
-            class="logo"
-          />
+          <span
+            th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn }"
+            class="material-icons menu-icon"
+            onclick="openNav()"
+            >menu</span
+          >
+          <a th:href="@{/}">
+            <img
+              th:src="@{/images/logo_IoH_white.png}"
+              alt="IoH Logo"
+              class="logo"
+            />
+          </a>
           <div class="nav-title">
             <h1><a th:href="@{/}">Internet de las Casas</a></h1>
           </div>
         </div>
         <div class="nav-right">
-          <div class="user-menu" th:if="${session.isLoggedIn}" tabindex="0">
+          <div
+            class="user-menu"
+            th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'gestor'}"
+            tabindex="0"
+          >
             <button id="userBtn" class="user-btn">
-              <span th:text="${session.usuario.getName()}"></span
+              <span th:text="${session?.usuario?.getName()}"></span
               ><span
                 style="padding-left: 10px; color: white"
                 class="material-icons"
@@ -72,7 +83,7 @@
             </li>
             <li th:if="${session.isLoggedIn}" class="nav-item">
               <span class="material-icons">bar_chart</span>
-              <a th:href="@{/calendar}">Monitorizar Acessos</a>
+              <a th:href="@{/monitor}">Monitorizar Acessos</a>
             </li>
             <li
               th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'huesped'}"

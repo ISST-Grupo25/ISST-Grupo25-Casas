@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head}"></head>
+  <body>
+    <div id="main">
+      <!-- Barra de navegación -->
+      <div th:replace="~{layout :: nav}"></div>
+
+      <!-- Contenido principal -->
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
+          <p>Desarrollo sprint 3</p>
+        </section>
+      </main>
+    </div>
+    <!-- Inclusión de los scripts del layout -->
+    <script th:replace="~{layout :: scripts}"></script>
+  </body>
+</html>

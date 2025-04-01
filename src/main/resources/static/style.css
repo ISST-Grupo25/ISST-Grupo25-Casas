@@ -336,8 +336,6 @@ main {
     padding: 20px;
     max-width: 100%;
     box-sizing: border-box;
-    border-radius: 0;
-    box-shadow: none;
   }
   .nav-title {
     display: none;
@@ -349,7 +347,7 @@ main {
   /* Botones de inicio de sesión y registro */
   .auth-buttons {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
     align-items: flex-start;
     margin-top: 5px;
@@ -357,12 +355,11 @@ main {
 
   .btn-login,
   .btn-register {
-    width: 75%;
     text-align: center;
     padding: 4px;
     font-size: 14px;
   }
-  
+
   /* Hero / encabezados */
   .hero {
     height: auto;

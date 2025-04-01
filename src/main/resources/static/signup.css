@@ -119,8 +119,6 @@
   .option-box {
     width: 100%;
     padding: 15px;
-    box-shadow: none;
-    border-radius: 0;
   }
 
   .option-box h3 {
@@ -141,8 +139,6 @@
     margin: 20px 15px;
     padding: 20px;
     max-width: 100%;
-    box-shadow: none;
-    border-radius: 0;
   }
 
   .form h2,
