@@ -24,7 +24,7 @@
       <nav class="navbar" th:fragment="nav">
         <div class="nav-left">
           <span
-            th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn }"
+            th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn }"
             class="material-icons menu-icon"
             onclick="openNav()"
             >menu</span
@@ -43,7 +43,7 @@
         <div class="nav-right">
           <div
             class="user-menu"
-            th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn}"
+            th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'gestor'}"
             tabindex="0"
           >
             <button id="userBtn" class="user-btn">
@@ -53,17 +53,15 @@
                 class="material-icons"
                 >keyboard_arrow_down</span
               >
-              <!-- <a th:if="${session.usuario != null}" th:href="@{/logout}">Cerrar sesión</a>
-              <a th:unless="${session.usuario != null}" th:href="@{/login}">Iniciar sesión</a> -->
             </button>
-            <ul class="dropdown">
+            <ul class="dropdown" th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn}">
               <li><a th:href="@{/profile}">Mi Perfil</a></li>
               <li><a th:href="@{/settings}">Ajustes</a></li>
               <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
             </ul>
           </div>
 
-          <div class="auth-buttons" th:unless="${session.isLoggedIn}">
+          <div class="auth-buttons" th:unless="${session.usuario != null and session.isLoggedIn}">
             <a th:href="@{/login}" class="btn-login">Iniciar Sesión</a>
             <a th:href="@{/signup}" class="btn-register">Crear Cuenta</a>
           </div>
@@ -83,7 +81,7 @@
               class="nav-item"
             >
               <span class="material-icons">calendar_month</span>
-              <a th:href="@{/calendar}">Gestionar Acessos</a>
+              <a th:href="@{/calendar}">Gestionar Reservas</a>
             </li>
             <li th:if="${session.isLoggedIn}" class="nav-item">
               <span class="material-icons">bar_chart</span>
