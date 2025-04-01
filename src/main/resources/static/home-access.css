@@ -81,7 +81,7 @@
 
 /* Modal Númerico */
 /* Estilos del modal */
-.modal {
+.access-modal {
   display: none;
   position: fixed;
   z-index: 1000;

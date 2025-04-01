@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}">
@@ -10,7 +9,8 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
+    />   
+
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
   <body>
@@ -19,20 +19,13 @@
 
       <main class="contentview" th:replace="~{layout :: content}">
         <section class="section-container" th:fragment="section">
-          <h2>Gestión de Reservas</h2>
-          <div id="calendar"></div>
-          <form method="post" action="/calendar/importar-fichero" enctype="multipart/form-data">
-            <label for="file">Selecciona un archivo .ics:</label>
-            <input type="file" id="file" name="file" accept=".ics" required />
-            <button type="submit">📥 Importar reservas desde archivo .ics</button>
-          </form>
-          <div th:if="${importadasFichero}" class="alert alert-success">
-            ✅ Se importaron <span th:text="${importadasFichero}"></span> reservas desde fichero ICS.
-          </div>
+          <h2 class="h2-white">Gestión de Reservas</h2>
+          <button id="addEvent" class="btn"> <span class="material-icons">add</span>Añadir Reserva</button>
 
+          <div id="calendar"></div>
 
           <form method="post" th:action="@{/calendar/sincronizar}">
-            <button type="submit" class="btn">🔄 Sincronizar con Google Calendar</button>
+            <button type="submit" class="btn"> <span class="material-icons">autorenew</span> Sincronizar con Google Calendar</button>
           </form>
           <div th:if="${param.syncSuccess}" class="alert alert-success">
             ✅ Google Calendar ha sido sincronizado con la app.
@@ -42,17 +35,16 @@
           </div>
 
 
-          <button id="addEvent" class="btn">Añadir Reserva</button>
           <div id="modalOverlay" class="modal-calendar-overlay"></div>
 
-                    <!-- MODAL de Modificación o eliminación -->
-          <div id="eventModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999;">
+          <!-- MODAL de Modificación o eliminación -->
+          <div id="eventModal" class="calendar-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999;">
             <div style="background:#fff; margin:10% auto; padding:20px; width:300px; border-radius:8px; position:relative;">
               <h3 id="modal-title">Reserva</h3>
               <p id="modal-dates"></p>
               <button id="editEventBtn">Modificar</button>
               <button id="deleteEventBtn">Eliminar</button>
-              <button onclick="closeEventModal()">Cancelar</button> 
+              <button onclick="closeEventModal()"><span class="material-icons">close</span></button> 
               <!-- Parte formulario -->
               <form
                 id="editForm"
@@ -80,7 +72,6 @@
                 <input type="hidden" id="editReservaId" name="id" />
           
                 <div class="modal-calendar-actions">
-                  <button type="button" onclick="closeEventModal()" class="btn-cancel-calendar">Cancelar</button>
                   <button type="submit" class="btn-confirm-calendar">Guardar Cambios</button>
                 </div>
               </form>
@@ -90,7 +81,8 @@
           <!-- Modal de Reservas -->
           <div id="accessModal" class="modal-calendar">
             <div class="modal-calendar-content">
-              <span id="closeModal" class="close">&times;</span>
+              <button id="closeModal" class="close"><span class="material-icons">close</span></button> 
+
               <h3>Programar Acceso</h3>
 
               <div class="añadir-casa">
@@ -100,9 +92,10 @@
               
                   <label for="token">Token:</label>
                   <input type="text" id="token" name="token" placeholder="Token" required />
-                  
-                  <button type= "button" class="btn-cancelar-cerradura">Cancelar</button>  <!-- Botón para cancelar -->
-                  <button type="submit" class="btn-confirmar-cerradura">Confirmar</button>  <!-- Botón para confirmar -->
+                  <div>
+                  <button type= "button" class="btn-cancelar-cerradura" style="background-color: lightgrey; color: gray; border-color:gray; border: none; border-radius: 10px; padding: 5px;">Cancelar</button> 
+                  <button type="submit" class="btn-confirmar-cerradura" style="background-color: darkseagreen; color: green; border-color: darkseagreen; border: none; border-radius: 10px; padding: 5px;">Confirmar</button> 
+                </div>
               </form>
             </div>
 
@@ -256,26 +249,30 @@
           }
         });
 
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", function () {
           const editBtn = document.getElementById("editEventBtn");
-          if (editBtn) {
+          const editForm = document.getElementById("editForm");
+
+          if (editBtn && editForm) {
             editBtn.addEventListener("click", () => {
-              const form = document.getElementById("editForm");
-              if (form) {
-                form.style.display = "block";
-              }
+              editForm.classList.add("show"); // Agrega la clase para mostrar el formulario
+            });
+          }
+
+          const closeModalBtn = document.querySelector("#eventModal button[onclick='closeEventModal()']");
+          if (closeModalBtn) {
+            closeModalBtn.addEventListener("click", () => {
+              editForm.classList.remove("show"); // Quita la clase para ocultar el formulario
             });
           }
         });
-
-        
 
         document.getElementById("editEventBtn").addEventListener("click", function () {
           const event = window.selectedEvent;
 
           // Ocultar vista info, mostrar formulario
           //document.getElementById("modalInfo").style.display = "none";
-          document.getElementById("editForm").style.display = "block";
+          document.getElementById("editForm").style.display = "flex";
 
           // Rellenar campos del formulario
           document.getElementById("editReservaId").value = event.id;
@@ -309,7 +306,7 @@
 
         // Mostrar el formulario de nueva casa cuando se hace clic en "+"
         document.getElementById('addCasa').addEventListener('click', function() {
-          document.getElementById('newCasaInputs').style.display = 'block'; // Mostrar el formulario
+          document.getElementById('newCasaInputs').style.display = 'flex'; // Mostrar el formulario
         });
 
         // Ocultar el formulario después de hacer clic en "Confirmar"
@@ -322,6 +319,35 @@
           event.preventDefault();  // Prevenir cualquier acción por defecto (como el envío del formulario)
           document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
         });
+      });
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const addCasaBtn = document.getElementById("addCasa");
+        const newCasaInputs = document.getElementById("newCasaInputs");
+        const confirmCasaBtn = document.querySelector(".btn-confirmar-cerradura");
+        const cancelCasaBtn = document.querySelector(".btn-cancelar-cerradura");
+
+        // Mostrar el formulario al hacer clic en "+"
+        if (addCasaBtn && newCasaInputs) {
+          addCasaBtn.addEventListener("click", () => {
+            newCasaInputs.classList.add("show"); // Agrega la clase para mostrar el formulario
+          });
+        }
+
+        // Ocultar el formulario al hacer clic en "Confirmar"
+        if (confirmCasaBtn && newCasaInputs) {
+          confirmCasaBtn.addEventListener("click", () => {
+            newCasaInputs.classList.remove("show"); // Quita la clase para ocultar el formulario
+          });
+        }
+
+        // Ocultar el formulario al hacer clic en "Cancelar"
+        if (cancelCasaBtn && newCasaInputs) {
+          cancelCasaBtn.addEventListener("click", (event) => {
+            event.preventDefault(); // Prevenir cualquier acción por defecto
+            newCasaInputs.classList.remove("show"); // Quita la clase para ocultar el formulario
+          });
+        }
       });
     </script>
   </body>
