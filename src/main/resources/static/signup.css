@@ -1,3 +1,9 @@
+.error-message {
+  color: red !important;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
 /* Formularios */
 .form {
   display: none;

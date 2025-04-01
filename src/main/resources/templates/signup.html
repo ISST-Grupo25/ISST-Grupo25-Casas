@@ -104,6 +104,16 @@
 
         document.getElementById("role").value = role;
       }
+
+      // Mostrar automáticamente el formulario si hay un error
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasError = urlParams.has("error"); // Verifica si la URL contiene el parámetro "error"
+        if (hasError) {
+          document.getElementById("selection-section").style.display = "none";
+          document.getElementById("register-form").style.display = "block";
+        }
+      });
     </script>
   </body>
 </html>

@@ -147,11 +147,6 @@ main {
   margin-bottom: 10px;
 }
 
-.form p {
-  color: #666;
-  margin-bottom: 20px;
-}
-
 .form form {
   display: flex;
   flex-direction: column;

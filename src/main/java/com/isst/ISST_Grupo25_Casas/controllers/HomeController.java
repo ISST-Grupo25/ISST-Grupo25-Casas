@@ -31,44 +31,44 @@ public class HomeController {
     @GetMapping("/index")
     public String home(Model model, HttpSession session) {
         model.addAttribute("title", "Inicio");
-        model.addAttribute("user", session.getAttribute("user"));
+        model.addAttribute("usuario", session.getAttribute("usuario"));
         return "index";
     }
 
     @GetMapping("/contact") 
     public String contact(Model model, HttpSession session) {
-        model.addAttribute("user", session.getAttribute("user"));
+        Object obj = session.getAttribute("usuario");
+
+        model.addAttribute("usuario", session.getAttribute("usuario"));
         return "contact"; // Make sure "contact.html" exists
     }
 
     @GetMapping("/profile")
     public String profile(Model model, HttpSession session) {
-        if (session.getAttribute("user") == null) {  // Si no hay usuario en la sesión
+        if (session.getAttribute("usuario") == null) {  // Si no hay usuario en la sesión
             return "redirect:/login";  // Redirigir a la página de login
         }
-        String user = (String) session.getAttribute("user");
-        String email = (String) session.getAttribute("email");
-
-        model.addAttribute("user", user);
-        model.addAttribute("email", email);
         return "profile";
     }
 
     @GetMapping("/settings") 
     public String settings(Model model, HttpSession session) {
-        if (session.getAttribute("user") == null) {  // Si no hay usuario en la sesión
+        if (session.getAttribute("usuario") == null) {  // Si no hay usuario en la sesión
             return "redirect:/login";  // Redirigir a la página de login
         }
-        model.addAttribute("user", session.getAttribute("user"));
+        System.out.println("➡️ Usuario en el perfil: " + session.getAttribute("usuario"));
+
+        model.addAttribute("usuario", session.getAttribute("usuario"));
         return "settings";
     }
 
     @GetMapping("/monitor") 
     public String monitor(Model model, HttpSession session) {
-        if (session.getAttribute("user") == null) {  // Si no hay usuario en la sesión
+        if (session.getAttribute("usuario") == null) {  
+            System.out.println("❌ No hay usuario en la sesión");
             return "redirect:/login";  // Redirigir a la página de login
         }
-        model.addAttribute("user", session.getAttribute("user"));
+        model.addAttribute("usuario", session.getAttribute("usuario"));
         return "monitor";
     }
 
