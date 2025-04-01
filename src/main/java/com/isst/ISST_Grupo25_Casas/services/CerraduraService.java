@@ -28,6 +28,7 @@ public class CerraduraService {
         Cerradura cerradura = new Cerradura();
         cerradura.setUbicacion(ubicación);
         cerradura.setToken(token);
+        cerradura.setBateria(100);  //Se implementará en el siguiente sprint el monitoreo de la batería
         return cerraduraRepository.save(cerradura);
     }
 

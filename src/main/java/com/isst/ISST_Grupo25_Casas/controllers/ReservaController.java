@@ -117,17 +117,17 @@ public class ReservaController {
                 return "redirect:/calendar?error";
             }
     
-            // Verificar si está autorizado con Google
-            var credential = GoogleCalendarService.getFlow().loadCredential("isst");
-            if (credential == null || credential.getAccessToken() == null) {
-                // Guardar temporalmente los datos necesarios
-                session.setAttribute("pendingAction", "guardar");
-                session.setAttribute("form_cerraduraId", cerraduraId);
-                session.setAttribute("form_fechaInicio", fechaInicioStr);
-                session.setAttribute("form_fechaFin", fechaFinStr);
-                session.setAttribute("form_huespedIds", huespedIds);
-                return "redirect:/google-calendar/authorize";
-            }
+            // // Verificar si está autorizado con Google
+            // var credential = GoogleCalendarService.getFlow().loadCredential("isst");
+            // if (credential == null || credential.getAccessToken() == null) {
+            //     // Guardar temporalmente los datos necesarios
+            //     session.setAttribute("pendingAction", "guardar");
+            //     session.setAttribute("form_cerraduraId", cerraduraId);
+            //     session.setAttribute("form_fechaInicio", fechaInicioStr);
+            //     session.setAttribute("form_fechaFin", fechaFinStr);
+            //     session.setAttribute("form_huespedIds", huespedIds);
+            //     return "redirect:/google-calendar/authorize";
+            // }
     
             return ejecutarGuardarReserva(gestor, cerraduraId, fechaInicioStr, fechaFinStr, huespedIds, redirectAttributes);
         } catch (Exception e) {
