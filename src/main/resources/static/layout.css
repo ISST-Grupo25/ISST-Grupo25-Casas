@@ -50,7 +50,6 @@ main {
   z-index: 10;
 }
 
-
 .navbar .material-icons {
   color: var(--boton-hover);
 }
@@ -117,11 +116,6 @@ main {
 .nav-links a.active {
   font-weight: bold;
   border-bottom: 3px solid var(--marron-claro);
-}
-
-.nav-right {
-  display: flex;
-  gap: 15px;
 }
 
 .btn-login,

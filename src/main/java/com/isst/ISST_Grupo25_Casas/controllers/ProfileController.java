@@ -30,6 +30,8 @@ public class ProfileController {
 
     @Autowired
     private GestorRepository gestorRepository;
+
+    @Autowired
     private HuespedRepository huespedRepository;
 
     @Autowired
@@ -65,32 +67,28 @@ public class ProfileController {
     public String updateProfile(@RequestParam("name") String name,
                                 @RequestParam("email") String email,
                                 HttpSession session, Model model) {
-        String currentEmail = (String) session.getAttribute("email");
+        // Obtener el usuario completo de la sesión
+        Object usuario = session.getAttribute("usuario");
 
-        Optional<Huesped> optionalHuesped = huespedRepository.findByEmail(currentEmail);
-        Optional<Gestor> optionalGestor = gestorRepository.findByEmail(currentEmail);
-
-        if (optionalHuesped.isPresent()) {  // 🔥 Verificar si el usuario existe
-            Huesped huesped = optionalHuesped.get();  // ✅ Obtener el objeto Huesped real
+        if (usuario instanceof Huesped) {
+            Huesped huesped = (Huesped) usuario;
             huesped.setName(name);
             huesped.setEmail(email);
-            huespedRepository.save(huesped);  // 🔥 Guardar cambios en la BD
+            huespedRepository.save(huesped);  // Guardar cambios en la BD
 
             // Actualizar la sesión con los nuevos datos
-            session.setAttribute("usuario", name);
+            session.setAttribute("usuario", huesped);  // Guardar objeto Huesped completo
             session.setAttribute("email", email);
-        }
-        if (optionalGestor.isPresent()) {  // 🔥 Verificar si el usuario existe
-            Gestor gestor = optionalGestor.get();  // ✅ Obtener el objeto Huesped real
+        } else if (usuario instanceof Gestor) {
+            Gestor gestor = (Gestor) usuario;
             gestor.setName(name);
             gestor.setEmail(email);
-            gestorRepository.save(gestor);  // 🔥 Guardar cambios en la BD
+            gestorRepository.save(gestor);  // Guardar cambios en la BD
 
             // Actualizar la sesión con los nuevos datos
-            session.setAttribute("usuario", name);
+            session.setAttribute("usuario", gestor);  // Guardar objeto Gestor completo
             session.setAttribute("email", email);
         }
-
         return "redirect:/profile";
     }
 
