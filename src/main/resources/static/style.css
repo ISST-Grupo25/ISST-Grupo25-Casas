@@ -170,6 +170,16 @@ main {
   margin-top: 5px;
 }
 
+input {
+  width: 100%;
+  font-size: 14px;
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
 .form .btn-primary {
   background-color: var(--marron-claro);
   color: white;
@@ -397,6 +407,16 @@ main {
     width: 100%;
     font-size: 14px;
     box-sizing: border-box;
+  }
+
+  input {
+    width: 100%;
+    font-size: 14px;
+    box-sizing: border-box;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
   }
 
   .btn-primary,
