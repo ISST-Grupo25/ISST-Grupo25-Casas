@@ -244,11 +244,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/signup")
-    public String showSignupForm() {
-        return "signup"; // nombre del HTML de tu formulario de registro
-    }
-
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
@@ -256,32 +251,32 @@ public class AuthController {
     }
 
     @GetMapping("/oauth-success")
-public String oauthSuccess(Authentication authentication, HttpSession session) {
-    OAuth2AuthenticationToken oauth = (OAuth2AuthenticationToken) authentication;
-    String email = oauth.getPrincipal().getAttribute("email");
-    String nombre = oauth.getPrincipal().getAttribute("name");
+    public String oauthSuccess(Authentication authentication, HttpSession session) {
+        OAuth2AuthenticationToken oauth = (OAuth2AuthenticationToken) authentication;
+        String email = oauth.getPrincipal().getAttribute("email");
+        String nombre = oauth.getPrincipal().getAttribute("name");
 
-    System.out.println("✅ Login con Google: " + email + " (" + nombre + ")");
+        System.out.println("✅ Login con Google: " + email + " (" + nombre + ")");
 
-    // Si ya está en tu BD como gestor o huesped, lo recuperas
-    Optional<Gestor> gestor = gestorService.findByEmail(email);
-    Optional<Huesped> huesped = huespedService.findByEmail(email);
+        // Si ya está en tu BD como gestor o huesped, lo recuperas
+        Optional<Gestor> gestor = gestorService.findByEmail(email);
+        Optional<Huesped> huesped = huespedService.findByEmail(email);
 
-    if (gestor.isPresent()) {
-        session.setAttribute("usuario", gestor.get());
-        session.setAttribute("role", "gestor");
-    } else if (huesped.isPresent()) {
-        session.setAttribute("usuario", huesped.get());
-        session.setAttribute("role", "huesped");
-    } else {
-        // Si no existe, lo registras como huésped por defecto (puedes cambiar esto)
-        Huesped nuevo = huespedService.registerHuesped(nombre, email, UUID.randomUUID().toString());
-        session.setAttribute("usuario", nuevo);
-        session.setAttribute("role", "huesped");
+        if (gestor.isPresent()) {
+            session.setAttribute("usuario", gestor.get());
+            session.setAttribute("role", "gestor");
+        } else if (huesped.isPresent()) {
+            session.setAttribute("usuario", huesped.get());
+            session.setAttribute("role", "huesped");
+        } else {
+            // Si no existe, lo registras como huésped por defecto (puedes cambiar esto)
+            Huesped nuevo = huespedService.registerHuesped(nombre, email, UUID.randomUUID().toString());
+            session.setAttribute("usuario", nuevo);
+            session.setAttribute("role", "huesped");
+        }
+
+        session.setAttribute("isLoggedIn", true);
+        return "redirect:/";
     }
-
-    session.setAttribute("isLoggedIn", true);
-    return "redirect:/";
-}
 
 }
