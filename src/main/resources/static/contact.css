@@ -60,3 +60,41 @@
 .contact-form a:hover {
   text-decoration: underline;
 }
+
+/* 🔹 Estilos responsive para vista móvil */
+@media screen and (max-width: 768px) {
+  .contact-form {
+    min-width: 0;
+    width: 100%;
+    margin: 20px 15px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .contact-form h3 {
+    font-size: 20px;
+  }
+
+  .contact-form p,
+  .contact-form label,
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 14px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .contact-form textarea {
+    resize: vertical;
+  }
+
+  .contact-form .btn-primary {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+}

@@ -50,11 +50,6 @@ main {
   z-index: 10;
 }
 
-@media screen and (max-width: 768px) {
-  .nav-title {
-    display: none;
-  }
-}
 
 .navbar .material-icons {
   color: var(--boton-hover);
@@ -200,12 +195,6 @@ main {
 
 #main {
   transition: margin-left 0.5s;
-}
-
-@media screen and (max-height: 450px) {
-  .sidenav {
-    padding-top: 15px;
-  }
 }
 
 /* 🔹 Estilos del menú */

@@ -29,6 +29,17 @@ main {
   background-color: var(--fondo);
 }
 
+/* Desplegable */
+#mySidenav {
+  width: 0;
+  transition: width 0.5s;
+}
+
+.contentview {
+  margin-left: 0;
+  transition: margin-left 0.5s;
+}
+
 /* Hero Section */
 .hero {
   height: 150px;
@@ -304,4 +315,151 @@ main {
   font-size: 24px; /* Tamaño del icono */
   color: var(--boton-hover); /* Usa una variable de color */
   vertical-align: middle; /* Alinear con el texto */
+}
+
+/* 🔹 Estilos responsivos globales para móviles */
+@media screen and (max-width: 768px) {
+  /* Layout general */
+  html,
+  body {
+    font-size: 14px;
+  }
+
+  .section-container,
+  .form,
+  .login-form,
+  .profile-container,
+  .settings-container,
+  .contact-form,
+  .error-container {
+    margin: 20px 15px;
+    padding: 20px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .nav-title {
+    display: none;
+  }
+  .sidenav {
+    padding-top: 15px;
+  }
+
+  /* Botones de inicio de sesión y registro */
+  .auth-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: flex-start;
+    margin-top: 5px;
+  }
+
+  .btn-login,
+  .btn-register {
+    text-align: center;
+    padding: 4px;
+    font-size: 14px;
+  }
+
+  /* Hero / encabezados */
+  .hero {
+    height: auto;
+    padding: 30px 15px 10px;
+    text-align: center;
+  }
+
+  .hero-content h2,
+  .tile-content h2 {
+    font-size: 22px;
+  }
+
+  .hero-content p,
+  .title-content p {
+    font-size: 14px;
+  }
+
+  /* Features en columna */
+  .features {
+    flex-direction: column;
+    gap: 20px;
+    padding: 30px 15px;
+  }
+
+  .feature {
+    max-width: 100%;
+  }
+
+  /* Formularios */
+  input,
+  textarea,
+  select,
+  .btn-primary,
+  .btn {
+    width: 100%;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  .btn-primary,
+  .btn {
+    padding: 12px;
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  /* Sidebar (por si es flex) */
+  .maincontent,
+  .contentview {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+
+  .sidebar {
+    position: absolute;
+    width: 250px;
+    max-width: 80%;
+    height: 100%;
+    z-index: 1000;
+  }
+
+  /* Modal PIN (home-access) */
+  .modal-content {
+    width: 90% !important;
+    padding: 20px !important;
+  }
+
+  .houses {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .house {
+    width: 100%;
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  /* Calendario */
+  #calendar {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Dropdown usuario */
+  .dropdown {
+    right: 0;
+    left: auto;
+    width: 100%;
+  }
+
+  /* Error */
+  .error-container h1 {
+    font-size: 20px;
+  }
+
+  .error-container p {
+    font-size: 14px;
+  }
 }

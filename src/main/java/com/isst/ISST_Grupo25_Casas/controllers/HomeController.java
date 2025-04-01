@@ -57,4 +57,10 @@ public class HomeController {
         return "settings";
     }
 
+    @GetMapping("/monitor") 
+    public String monitor(Model model, HttpSession session) {
+        model.addAttribute("user", session.getAttribute("user"));
+        return "monitor";
+    }
+
 }
