@@ -20,13 +20,18 @@
             </div>
 
             <div class="house" th:each="reserva : ${reservas}">
-              <button class="key-btn" th:attr="data-pin=${reserva.pin}">
-                <span class="material-icons">key</span>
-              </button>
-              <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
-              <p
-                th:text="'Desde: ' + ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' + ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
-              ></p>
+              <!-- Formulario para abrir la cerradura -->
+              <form th:action="@{/cerradura/abrir}" method="POST">
+                <!-- Enviar el ID de la reserva y el PIN -->
+                <input type="hidden" th:name="reservaId" th:value="${reserva.id}" />
+                <input type="hidden" th:name="pin" id="pin-input" />
+            
+                <button class="key-btn" type="submit">
+                  <span class="material-icons">key</span>
+                </button>
+                <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
+                <p th:text="'Desde: ' + ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' + ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"></p>
+              </form>
             </div>
           </section>
         </section>
@@ -146,6 +151,20 @@
             modal.style.display = "none";
           }
         });
+
+        acceptBtn.addEventListener("click", () => {
+            const pin = pinInput.value;
+            if (pin.length >= 4) {
+                // Asignar el PIN al formulario antes de enviarlo
+                document.getElementById("pin-input").value = pin;
+                document.querySelector('form').submit(); // Enviar el formulario
+                modal.style.display = "none";
+            } else {
+                alert("El PIN debe tener al menos 4 dígitos.");
+            }
+        });
+
+
       });
     </script>
   </body>
