@@ -14,24 +14,44 @@
               <h2>Acceder a tu reserva actual</h2>
             </div>
           </header>
+          <!-- Por ejemplo, justo debajo de la cabecera -->
+          <div id="statusMessage" style="text-align:center; font-size:18px; margin-top:10px;"></div>
           <section class="houses">
             <div th:if="${reservas == null or reservas.isEmpty()}">
               <p>No tienes reservas activas.</p>
             </div>
 
             <div class="house" th:each="reserva : ${reservas}">
-              <button class="key-btn" th:attr="data-pin=${reserva.pin}">
-                <span class="material-icons">key</span>
-              </button>
-              <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
-              <p
-                th:text="'Desde: ' + ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' + ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
-              ></p>
+              <!-- Formulario para abrir la cerradura -->
+              <form th:action="@{/cerradura/abrir}" method="POST">
+                <!-- Enviar el ID de la reserva y el PIN -->
+                <input type="hidden" th:name="reservaId" th:value="${reserva.id}" />
+                <input type="hidden" th:name="pin" id="form-pin-input" />
+                <input type="hidden" th:name="cerraduraId" th:value="${reserva.cerradura.id}" />
+            
+                <button class="key-btn" type="button" data-pin="${reserva.pin}" data-reserva-id="${reserva.id}">
+                  <span class="material-icons">key</span>
+                </button>
+                <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
+                <p th:text="'Desde: ' + ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' + ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"></p>
+              </form>
             </div>
           </section>
         </section>
+
+        <!-- Mensaje de éxito -->
+          <div th:if="${success}" class="alert-container">
+            <div class="alert alert-success" th:text="${message}"></div>
+          </div>
+
+          <!-- Mensaje de error -->
+          <div th:if="${errorMessage}" class="alert-container">
+            <div class="alert alert-danger" th:text="${errorMessage}"></div>
+          </div>
+
       </main>
     </div>
+
     <!-- Modal para ingresar PIN -->
     <div id="pin-dialog" class="access-modal">
       <div class="modal-content">
@@ -62,11 +82,46 @@
 
     <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>
+
+    <!-- Incluye el cliente de Socket.IO -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+      // Conéctate al servidor de Socket.IO (ajusta la URL según corresponda)
+      const socket = io("http://localhost:3555");
+
+      // Escucha el evento 'lockStatus'
+      socket.on('lockStatus', function(data) {
+        if (data.status === 'abierta') {
+          // Actualiza la UI: por ejemplo, muestra un mensaje
+          alert('¡Cerradura abierta!');
+          // También puedes actualizar un elemento en la página:
+          document.getElementById('statusMessage').innerText = 'Cerradura abierta';
+        } else if (data.status === 'cerrada') {
+          alert('¡Cerradura cerrada!');
+          document.getElementById('statusMessage').innerText = 'Cerradura cerrada';
+        }
+      });
+    </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pinValido = urlParams.get('pinValido');
+
+      if (pinValido === 'true') {
+        alert('✅ PIN válido, acérquese a la cerradura');
+      } else if (pinValido === 'false') {
+        alert('❌ PIN incorrecto');
+      }
+    });
+  </script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById("pin-dialog");
         modal.style.display = "none";
-        const pinInput = document.getElementById("pin-input");
+        const pinInputModal = document.getElementById("pin-input"); // Para el PIN del modal
+        const pinInputForm = document.getElementById("form-pin-input"); // Para el PIN del formulario
         const buttons = document.querySelectorAll(".pin-btn");
         const openModalBtns = document.querySelectorAll(".key-btn");
         const cancelBtn = document.getElementById("cancel-btn");
@@ -75,13 +130,15 @@
         const blankBtn = document.getElementById("blank-btn");
 
         let currentPin = null; // Variable para almacenar el PIN de la reserva seleccionada
+        let currentReservaId = null; // Variable para almacenar el ID de la reserva seleccionada
 
         // Abrir modal y obtener el PIN de la reserva seleccionada
         openModalBtns.forEach((btn) => {
           btn.addEventListener("click", () => {
             currentPin = btn.getAttribute("data-pin"); // Obtener el PIN de la reserva
+            currentReservaId = btn.getAttribute("data-reserva-id"); // Obtener el ID de la reserva
             modal.style.display = "flex";
-            pinInput.value = "";
+            pinInputModal.value = "";
           });
         });
 
@@ -96,8 +153,8 @@
             const value = button.getAttribute("data-value");
 
             if (value) {
-              if (pinInput.value.length < 6) {
-                pinInput.value += value;
+              if (pinInputModal.value.length < 6) {
+                pinInputModal.value += value;
               }
             }
           });
@@ -105,40 +162,26 @@
 
         // Borrar último dígito
         clearBtn.addEventListener("click", () => {
-          pinInput.value = pinInput.value.slice(0, -1);
+          pinInputModal.value = pinInputModal.value.slice(0, -1);
         });
 
         // Borrar todo
         blankBtn.addEventListener("click", () => {
-          pinInput.value = "";
+          pinInputModal.value = "";
         });
 
-        // Aceptar PIN (Verificar si coincide con el PIN de la reserva)
+        // Aceptar PIN (Asignar el PIN al formulario y enviarlo)
         acceptBtn.addEventListener("click", () => {
-          const pin = pinInput.value;
+          const pin = pinInputModal.value;
           if (pin.length >= 4) {
-            console.log("PIN ingresado:", currentPin);
-            if (pin === currentPin) {
-              alert("PIN correcto. Acceso permitido.");
-              modal.style.display = "none";
-              triggerButtonAnimation(
-                document.querySelector(`.key-btn[data-pin="${currentPin}"]`)
-              );
-            } else {
-              alert("PIN incorrecto. Acceso denegado.");
-            }
+            // Asignar el PIN al formulario antes de enviarlo
+            pinInputForm.value = pin;
+            document.querySelector('form').submit(); // Enviar el formulario
+            modal.style.display = "none";
           } else {
             alert("El PIN debe tener al menos 4 dígitos.");
           }
         });
-
-        // Función para reproducir la animación del botón
-        function triggerButtonAnimation(button) {
-          button.classList.add("hover-animation");
-          setTimeout(() => {
-            button.classList.remove("hover-animation");
-          }, 600); // Duración de la animación (debe coincidir con la duración en CSS)
-        }
 
         // Cerrar modal si se hace clic fuera
         window.addEventListener("click", (event) => {
@@ -148,5 +191,5 @@
         });
       });
     </script>
-  </body>
+  </body>  
 </html>

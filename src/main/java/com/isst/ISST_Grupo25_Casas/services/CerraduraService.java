@@ -24,6 +24,10 @@ public class CerraduraService {
         return cerraduraRepository.findById(id).orElse(null);
     }
 
+    public String obtenerTokenPorCerradura(Cerradura Cerradura) {
+        return Cerradura.getToken();
+    }
+
     public Cerradura guardarCerradura(String ubicación, String token) {
         Cerradura cerradura = new Cerradura();
         cerradura.setUbicacion(ubicación);
@@ -38,5 +42,7 @@ public class CerraduraService {
         return cerraduras.get(0);
     }
     throw new NoSuchElementException("No hay cerraduras disponibles.");
+
+
 }
 }
