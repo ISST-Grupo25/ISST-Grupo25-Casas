@@ -181,6 +181,16 @@ El sistema se basa en una arquitectura **cliente-servidor en tres niveles**, uti
    mvn spring-boot:run
    ```
 
+1. **Simulación de la cerradura:**
+
+   - Abrir otra terminal para ejecutar la simulacion de la cerradura.
+   - Acceder al repositorio de la simulación de la cerradura:
+     ```bash
+     git clone https://github.com/ISST-Grupo25/cerraduraSoftware.git
+     cd cerraduraSoftware
+     ```
+   - Seguir las instrucciones del readme de ese repositorio
+
 1. **Acceder a la aplicación:**
    - Backend: `http://localhost:8080` 😎
 
