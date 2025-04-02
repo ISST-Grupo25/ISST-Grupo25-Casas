@@ -87,7 +87,7 @@
               <h3>Programar Acceso</h3>
 
               <div class="añadir-casa">
-                <form id="newCasaInputs" th:action="@{/cerradura/guardar}" method="post" style="display: none;">
+                <form id="newCasaInputs" style="display: none;">
                   <label for="ubicacion">Ubicación:</label>
                   <input type="text" id="ubicacion" name="ubicacion" placeholder="Ubicación" required />
               
@@ -322,6 +322,47 @@
         document.querySelector('.btn-cancelar-cerradura').addEventListener('click', function(event) {
           event.preventDefault();  // Prevenir cualquier acción por defecto (como el envío del formulario)
           document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
+        });
+        
+        document.querySelector('.btn-confirmar-cerradura').addEventListener('click', async function (event) {
+          event.preventDefault();
+
+          const ubicacion = document.getElementById('ubicacion').value;
+          const token = document.getElementById('token').value;
+
+          if (!ubicacion || !token) {
+            alert("Por favor, completa los campos de ubicación y token.");
+            return;
+          }
+
+          try {
+            const response = await fetch("/cerradura/guardar", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: `ubicacion=${encodeURIComponent(ubicacion)}&token=${encodeURIComponent(token)}`
+            });
+
+            if (response.ok) {
+              const nuevaCerraduraId = await response.text();
+              const select = document.getElementById('casa');
+              const nuevaOpcion = document.createElement('option');
+              nuevaOpcion.value = nuevaCerraduraId;
+              nuevaOpcion.text = ubicacion;
+              select.appendChild(nuevaOpcion);
+              select.value = nuevaCerraduraId;
+
+              // Limpiar campos y ocultar formulario
+              document.getElementById('ubicacion').value = "";
+              document.getElementById('token').value = "";
+              document.getElementById('newCasaInputs').style.display = 'none';
+            } else {
+              alert("❌ Error al guardar la cerradura.");
+            }
+          } catch (error) {
+            alert("❌ Error de red o del servidor.");
+          }
         });
       });
 
