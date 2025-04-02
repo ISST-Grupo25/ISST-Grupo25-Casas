@@ -106,6 +106,7 @@ public class ProfileController {
             // Verificar que la contraseña actual es correcta
             if (!passwordEncoder.matches(oldPassword, huesped.getPassword())) {
                 session.setAttribute("error", "La contraseña actual es incorrecta.");
+                System.out.println("La contraseña actual es incorrecta.");
                 return "redirect:/profile";
             }
 
@@ -113,12 +114,14 @@ public class ProfileController {
             huesped.setPassword(passwordEncoder.encode(newPassword));
             huespedRepository.save(huesped);
             session.setAttribute("message", "Contraseña actualizada con éxito.");
+            System.out.println("Contraseña actualizada con éxito.");
         } if(optionalGestor.isPresent()) {
             Gestor gestor = optionalGestor.get();
 
             // Verificar que la contraseña actual es correcta
             if (!passwordEncoder.matches(oldPassword, gestor.getPassword())) {
                 session.setAttribute("error", "La contraseña actual es incorrecta.");
+                System.out.println("La contraseña actual es incorrecta.");
                 return "redirect:/profile";
             }
 
@@ -126,8 +129,10 @@ public class ProfileController {
             gestor.setPassword(passwordEncoder.encode(newPassword));
             gestorRepository.save(gestor);
             session.setAttribute("message", "Contraseña actualizada con éxito.");
+            System.out.println("Contraseña actualizada con éxito.");
         } else {
             session.setAttribute("error", "Usuario no encontrado.");
+            System.out.println("Usuario no encontrado.");
         }
 
         return "redirect:/profile";

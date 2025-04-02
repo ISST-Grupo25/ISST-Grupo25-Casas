@@ -43,7 +43,7 @@
         <div class="nav-right">
           <div
             class="user-menu"
-            th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'gestor'}"
+            th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn }"
             tabindex="0"
           >
             <button id="userBtn" class="user-btn">
