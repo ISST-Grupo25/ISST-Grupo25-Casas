@@ -36,18 +36,15 @@ public class CerraduraController {
     }
     
     @PostMapping("/cerradura/guardar")
-    public String guardarReserva(@RequestParam("ubicacion") String ubicacion,
-                                @RequestParam("token") String token) {
-
-
+    @ResponseBody
+    public String guardarCerraduraAjax(@RequestParam("ubicacion") String ubicacion,
+                                    @RequestParam("token") String token) {
         try {
-            cerraduraService.guardarCerradura(ubicacion, token);
-            return "redirect:/calendar"; // Redirigir al calendario
-
-
+            Cerradura nueva = cerraduraService.guardarCerradura(ubicacion, token);
+            return String.valueOf(nueva.getId()); // ✅ Devuelve el ID al JS
         } catch (Exception e) {
-            System.out.println("❌ Error al guardar reserva: " + e.getMessage());
-            return "redirect:/calendar?error"; // Mostrar error en la vista
+            System.out.println("❌ Error al guardar cerradura: " + e.getMessage());
+            return "-1"; // Puedes personalizarlo más si quieres
         }
     }
 }
