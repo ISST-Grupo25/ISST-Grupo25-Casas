@@ -1,5 +1,4 @@
 package com.isst.ISST_Grupo25_Casas.controllers;
-
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,7 +11,6 @@ import com.isst.ISST_Grupo25_Casas.services.HuespedService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
 import com.isst.ISST_Grupo25_Casas.services.GestorService;
 import jakarta.servlet.http.HttpSession;
-
 import org.checkerframework.checker.units.qual.s;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -32,8 +30,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,114 +40,105 @@ import java.util.List;
 @Controller
 public class CerraduraController {
 
-    @Autowired
-    private final CerraduraService cerraduraService;
-    @Autowired
-    private ReservaRepository reservaRepository; // Acceso al repositorio de reservas
+   @Autowired
+   private final CerraduraService cerraduraService;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+   @Autowired
+   private ReservaRepository reservaRepository; // Acceso al repositorio de reservas
 
-    public CerraduraController(CerraduraService cerraduraService) {
-        this.cerraduraService = cerraduraService;
-        this.reservaRepository = reservaRepository;
-        
-    }
-    
-    @PostMapping("/cerradura/guardar")
-    @ResponseBody
-    public String guardarCerraduraAjax(@RequestParam("ubicacion") String ubicacion,
-                                    @RequestParam("token") String token) {
-        try {
-            Cerradura nueva = cerraduraService.guardarCerradura(ubicacion, token);
-            return String.valueOf(nueva.getId()); // ✅ Devuelve el ID al JS
-        } catch (Exception e) {
-            System.out.println("❌ Error al guardar cerradura: " + e.getMessage());
-            return "-1"; // Puedes personalizarlo más si quieres
-        }
-    }
+   private final RestTemplate restTemplate = new RestTemplate();
 
-    @PostMapping("/cerradura/abrir")
-    public String abrirCerradura(@RequestParam("pin") String pin,
-                                 @RequestParam("reservaId") Long reservaId,
-                                 @RequestParam("cerraduraId") Long cerraduraId,
-                                 Model model,
-                                 RedirectAttributes redirectAttributes) {
-        try {
-            // Obtener la cerradura por su ID
-            Cerradura cerradura = cerraduraService.obtenerCerraduraPorId(cerraduraId);
-    
-            // Verificar el PIN
-            if (esPinValido(pin, reservaId)) {
-                // Generar un token
-                String token = cerraduraService.obtenerTokenPorCerradura(cerradura);
-                
-                // Crear un objeto para enviar el token en formato JSON
-                Map<String, String> requestBody = new HashMap<>();
-                requestBody.put("token", token);
-    
-                // Enviar el token a Backend 2 para abrir la cerradura
-                String backend2Url = "http://localhost:3555/abrirCerradura"; // URL de Backend 2
-                ResponseEntity<String> response = restTemplate.exchange(
-                    backend2Url, 
-                    HttpMethod.POST, 
-                    new HttpEntity<>(requestBody), // Enviar el token en el cuerpo de la solicitud
-                    String.class
-                );
-    
-                                // Parse the JSON response
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode responseJson = mapper.readTree(response.getBody());
-                String estado = responseJson.get("estado").asText();
+   public CerraduraController(CerraduraService cerraduraService) {
+       this.cerraduraService = cerraduraService;
+       this.reservaRepository = reservaRepository;
+   }
 
-                if (response.getStatusCode().is2xxSuccessful() && "abierta".equals(estado)) {
-                    model.addAttribute("message", "Puerta Abierta");
-                    redirectAttributes.addFlashAttribute("success", true);
-                    redirectAttributes.addFlashAttribute("message", "✅ Cerradura abierta correctamente");
-                    System.out.println("✅ Cerradura abierta con éxito.");
-                    // Simulamos que la cerradura se cierra después de un tiempo (en este caso 10 segundos)
-                    // Puedes enviar una solicitud para cerrarla si lo deseas
-    
-                } else {
-                    model.addAttribute("message", "Error al abrir la puerta");
-                    redirectAttributes.addFlashAttribute("errorMessage", "❌ Error al abrir la cerradura: " + response.getBody());
-                    System.out.println("❌ Error al abrir la cerradura: " + response.getBody());
-                }
-                return "redirect:/home-access"; // Redirigir al calendario
-    
-            } else {
-                model.addAttribute("message", "PIN Inválido");
-                return "redirect:/home-access"; // Mostrar error en la vista
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error al abrir la cerradura: " + e.getMessage());
-            return "redirect:/home-access"; // Mostrar error en la vista
-        }
-    }
+   @PostMapping("/cerradura/guardar")
+   public String guardarCerradura(@RequestParam("ubicacion") String ubicacion,
+                               @RequestParam("token") String token) {
+       try {
+           cerraduraService.guardarCerradura(ubicacion, token);
+           return "redirect:/calendar"; // Redirigir al calendario
+       } catch (Exception e) {
+           System.out.println("❌ Error al guardar reserva: " + e.getMessage());
+           return "redirect:/calendar?error"; // Mostrar error en la vista
+       }
+   }
 
-    // Método para cerrar la cerradura desde Backend 1
-    public void cerrarCerradura(String token) {
-        String backend2Url = "http://localhost:3555/cerrarCerradura";
-        Map<String, String> requestBody = new HashMap<>();
-        requestBody.put("token", token);
-    
-        // Enviar el token a Backend 2 para cerrar la cerradura
-        restTemplate.exchange(
-            backend2Url, 
-            HttpMethod.POST, 
-            new HttpEntity<>(requestBody), 
-            String.class
-        );
-    }
-    
-    private boolean esPinValido(String pin, Long reservaId) {
-        // Buscar la reserva por su ID
-        Reserva reserva = reservaRepository.findById(reservaId).orElse(null);
+   @PostMapping("/cerradura/abrir")
+   public String abrirCerradura(@RequestParam("pin") String pin,
+                                @RequestParam("reservaId") Long reservaId,
+                                @RequestParam("cerraduraId") Long cerraduraId,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+       try {
+           // Obtener la cerradura por su ID
+           Cerradura cerradura = cerraduraService.obtenerCerraduraPorId(cerraduraId);
+           // Verificar el PIN
+           if (esPinValido(pin, reservaId)) {
+               // Generar un token
+               String token = cerraduraService.obtenerTokenPorCerradura(cerradura);
+               // Crear un objeto para enviar el token en formato JSON
+               Map<String, String> requestBody = new HashMap<>();
+               requestBody.put("token", token);
+               // Enviar el token a Backend 2 para abrir la cerradura
+               String backend2Url = "http://localhost:3555/abrirCerradura"; // URL de Backend 2
+               ResponseEntity<String> response = restTemplate.exchange(
+                   backend2Url,
+                   HttpMethod.POST,
+                   new HttpEntity<>(requestBody), // Enviar el token en el cuerpo de la solicitud
+                   String.class
+               );
+                               // Parse the JSON response
+               ObjectMapper mapper = new ObjectMapper();
+               JsonNode responseJson = mapper.readTree(response.getBody());
+               String estado = responseJson.get("estado").asText();
+               if (response.getStatusCode().is2xxSuccessful() && "abierta".equals(estado)) {
+                   model.addAttribute("message", "Puerta Abierta");
+                   redirectAttributes.addFlashAttribute("success", true);
+                   redirectAttributes.addFlashAttribute("message", "✅ Cerradura abierta correctamente");
+                   System.out.println("✅ Cerradura abierta con éxito.");
+                   return "redirect:/home-access?pinValido=true";
+                   // Simulamos que la cerradura se cierra después de un tiempo (en este caso 10 segundos)
+                   // Puedes enviar una solicitud para cerrarla si lo deseas
+               } else {
+                   model.addAttribute("message", "Error al abrir la puerta");
+                   redirectAttributes.addFlashAttribute("errorMessage", "❌ Error al abrir cerradura: " + response.getBody());
+                   System.out.println("❌ Error al abrir la cerradura:" + response.getBody());
+               }
+               return "redirect:/home-access"; // Redirigir al calendario
+           } else {
+               model.addAttribute("message", "PIN Inválido");
+               return "redirect:/home-access"; // Mostrar error en la vista
+           }
+       } catch (Exception e) {
+           System.out.println("❌ Error al abrir la cerradura: " + e.getMessage());
+           return "redirect:/home-access"; // Mostrar error en la vista
+       }
+   }
 
-        // Verificar si la reserva existe y si el PIN coincide
-        if (reserva != null && reserva.getPin().equals(pin)) {
-            System.out.println("✅ PIN válido para la reserva: " + reservaId);
-            return true; // El PIN es válido para esta reserva
-        }
-        return false; // PIN inválido
-    }
+   // Método para cerrar la cerradura desde Backend 1
+   public void cerrarCerradura(String token) {
+       String backend2Url = "http://localhost:3555/cerrarCerradura";
+       Map<String, String> requestBody = new HashMap<>();
+       requestBody.put("token", token);
+       // Enviar el token a Backend 2 para cerrar la cerradura
+       restTemplate.exchange(
+           backend2Url,
+           HttpMethod.POST,
+           new HttpEntity<>(requestBody),
+           String.class
+       );
+   }
+
+   private boolean esPinValido(String pin, Long reservaId) {
+       // Buscar la reserva por su ID
+       Reserva reserva = reservaRepository.findById(reservaId).orElse(null);
+       // Verificar si la reserva existe y si el PIN coincide
+       if (reserva != null && reserva.getPin().equals(pin)) {
+           System.out.println("✅ PIN válido para la reserva: " + reservaId);
+           return true; // El PIN es válido para esta reserva
+       }
+       return false; // PIN inválido
+   }
 }
