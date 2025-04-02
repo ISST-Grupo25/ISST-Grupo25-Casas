@@ -1,3 +1,4 @@
+// ReservaController.java -----------------------------------------------------------
 package com.isst.ISST_Grupo25_Casas.controllers;
 
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
@@ -370,7 +371,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
                 evento.put("end", r.getFechafin().toString());
                 evento.put("extendedProps", Map.of(
                     "cerraduraId", r.getCerradura().getId(),
-                    "huespedIds", r.getHuespedes().stream().map(Huesped::getId).toList()
+                    "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getName())).toList()
                 ));
                 evento.put("color", generarColorDesdeId(r.getCerradura().getId()));
                 eventos.add(evento);
