@@ -14,6 +14,8 @@
               <h2>Acceder a tu reserva actual</h2>
             </div>
           </header>
+          <!-- Por ejemplo, justo debajo de la cabecera -->
+          <div id="statusMessage" style="text-align:center; font-size:18px; margin-top:10px;"></div>
           <section class="houses">
             <div th:if="${reservas == null or reservas.isEmpty()}">
               <p>No tienes reservas activas.</p>
@@ -80,6 +82,26 @@
 
     <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>
+
+    <!-- Incluye el cliente de Socket.IO -->
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script>
+      // Conéctate al servidor de Socket.IO (ajusta la URL según corresponda)
+      const socket = io("http://localhost:3555");
+
+      // Escucha el evento 'lockStatus'
+      socket.on('lockStatus', function(data) {
+        if (data.status === 'abierta') {
+          // Actualiza la UI: por ejemplo, muestra un mensaje
+          alert('¡Cerradura abierta!');
+          // También puedes actualizar un elemento en la página:
+          document.getElementById('statusMessage').innerText = 'Cerradura abierta';
+        } else if (data.status === 'cerrada') {
+          alert('¡Cerradura cerrada!');
+          document.getElementById('statusMessage').innerText = 'Cerradura cerrada';
+        }
+      });
+    </script>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
