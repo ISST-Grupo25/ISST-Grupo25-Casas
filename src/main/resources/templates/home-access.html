@@ -37,10 +37,15 @@
           </section>
         </section>
 
-         <!-- Mostrar mensaje desde el backend -->
-         <div th:if="${message != null}">
-          <div class="alert" th:text="${message}"></div> <!-- Mostramos el mensaje -->
-        </div>
+        <!-- Mensaje de éxito -->
+          <div th:if="${success}" class="alert-container">
+            <div class="alert alert-success" th:text="${message}"></div>
+          </div>
+
+          <!-- Mensaje de error -->
+          <div th:if="${errorMessage}" class="alert-container">
+            <div class="alert alert-danger" th:text="${errorMessage}"></div>
+          </div>
 
       </main>
     </div>
