@@ -103,6 +103,19 @@
       });
     </script>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pinValido = urlParams.get('pinValido');
+
+      if (pinValido === 'true') {
+        alert('✅ PIN válido, acérquese a la cerradura');
+      } else if (pinValido === 'false') {
+        alert('❌ PIN incorrecto');
+      }
+    });
+  </script>
+
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById("pin-dialog");

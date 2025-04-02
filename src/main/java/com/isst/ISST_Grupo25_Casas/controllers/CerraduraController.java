@@ -111,6 +111,7 @@ public class CerraduraController {
                     redirectAttributes.addFlashAttribute("success", true);
                     redirectAttributes.addFlashAttribute("message", "✅ Cerradura abierta correctamente");
                     System.out.println("✅ Cerradura abierta con éxito.");
+                    return "redirect:/home-access?pinValido=true";
                     // Simulamos que la cerradura se cierra después de un tiempo (en este caso 10 segundos)
                     // Puedes enviar una solicitud para cerrarla si lo deseas
     
