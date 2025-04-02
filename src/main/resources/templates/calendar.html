@@ -1,3 +1,4 @@
+<!-- calendar.html -->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}">
@@ -207,15 +208,18 @@
             const title = info.event.title;
             const start = info.event.startStr;
             const end = info.event.endStr;
+            const huespedes = info.event.extendedProps.huespedes || [];
 
-            // Muestra el modal
+            let nombresHuespedes = huespedes.map(h => h.nombre).join(", ");
+
             document.getElementById("modal-title").textContent = title;
-            document.getElementById("modal-dates").textContent = `Inicio: ${start}\nFin: ${end}`;
-            
-            // Guarda ID del evento si es necesario (puedes extender con info.event.id)
-            window.selectedEvent = info.event;
+            document.getElementById("modal-dates").innerHTML = `
+              Inicio: ${start}<br>
+              Fin: ${end}<br>
+              Huésped(es): ${nombresHuespedes || "Sin asignar"}
+            `;
 
-            // Mostrar el modal
+            window.selectedEvent = info.event;
             document.getElementById("eventModal").style.display = "block";
           },
         });
