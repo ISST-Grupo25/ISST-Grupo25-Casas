@@ -4,11 +4,11 @@
 :root {
   --marron-claro: #a6866a;
   --marron-oscuro: #8b6b50;
-  --texto: white;
-  --fondo: #6d6c6cb0;
-  --boton: white;
-  --textoboton: #8b6b50;
-  --boton-hover: #8b6b50;
+  --texto: #a6866a;
+  --fondo: #a48d790f;
+  --boton: #a6866a;
+  --textoboton: #a6866a;
+  --boton-hover: #a6866a;
   --botontexto-hover: white;
   --footer: #b2b2b23d;
   --sidenav: white;
@@ -44,10 +44,11 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--marron-claro);
+  background-color: white;
   padding: 15px 30px;
-  color: var(--texto);
+  color: var(--marron-claro);
   z-index: 10;
+  border-bottom: 2px solid var(--marron-claro);
 }
 
 .navbar .material-icons {
@@ -74,7 +75,7 @@ main {
   margin: 0;
   padding: 0;
   transition: color 0.3s ease;
-  color: var(--texto);
+  color: var(--marron-claro);
 }
 
 .nav-title h1 {
@@ -84,7 +85,7 @@ main {
 }
 
 .nav-title a {
-  color: var(--texto);
+  color: var(--marron-claro);
   font-size: 24px;
   font-weight: bold;
   text-decoration: none;
@@ -104,7 +105,7 @@ main {
 }
 
 .nav-links a {
-  color: white;
+  color: var(--marron-claro);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.3s ease;
@@ -129,7 +130,7 @@ main {
 
 .btn-login {
   background-color: var(--boton);
-  color: var(--textoboton);
+  color: white;
   border: 2px solid var(--boton);
 }
 
@@ -276,7 +277,7 @@ main {
 }
 
 .user-btn {
-  color: var(--texto);
+  color: var(--marron-claro);
   background-color: transparent;
   border: none;
   padding: 10px;
@@ -286,8 +287,8 @@ main {
 }
 
 .user-btn:hover {
-  color: white;
-  background-color: var(--marron-oscuro);
+  background-color: white;
+  color: var(--marron-oscuro);
 }
 
 /* 🔹 Asegurar que el borde derecho del dropdown esté alineado con el botón */
@@ -341,6 +342,52 @@ main {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 60px;
   box-sizing: border-box;
+}
+
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--marron-claro);
+  z-index: 999;
+}
+
+.mobile-nav-item {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-nav-item .material-icons {
+  font-size: 28px;
+}
+
+/* Por defecto, el sidebar aparece, mobile-nav oculto */
+#mySidenav {
+  display: block;
+}
+
+#mobileNav {
+  display: none;
+}
+
+/* Cuando pantalla es móvil, ocultamos el sidebar y mostramos mobile nav */
+@media (max-width: 768px) {
+  #mySidenav {
+    display: none;
+  }
+
+  #mobileNav {
+    display: flex;
+  }
 }

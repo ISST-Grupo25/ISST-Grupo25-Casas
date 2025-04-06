@@ -24,6 +24,7 @@
       <nav class="navbar" th:fragment="nav">
         <div class="nav-left">
           <span
+          id="menuButton"
             th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn }"
             class="material-icons menu-icon"
             onclick="openNav()"
@@ -31,7 +32,7 @@
           >
           <a th:href="@{/}">
             <img
-              th:src="@{/images/logo_IoH_white.png}"
+              th:src="@{/images/logo_IoH.png}"
               alt="IoH Logo"
               class="logo"
             />
@@ -49,7 +50,7 @@
             <button id="userBtn" class="user-btn">
               <span th:text="${session.usuario.name }"></span></span
               ><span
-                style="padding-left: 10px; color: white"
+                style="padding-left: 5px;"
                 class="material-icons"
                 >keyboard_arrow_down</span
               >
@@ -114,6 +115,32 @@
             </li>
           </ul>
         </div>
+        <div id="mobileNav" class="mobile-nav" th:fragment="mobilenav">
+          <a th:href="@{/index}" class="mobile-nav-item">
+            <span class="material-icons">home</span>
+          </a>
+        
+          <a th:href="@{/calendar}" th:if="${session.role == 'gestor'}" class="mobile-nav-item">
+            <span class="material-icons">calendar_month</span>
+          </a>
+        
+          <a th:href="@{/monitor}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+            <span class="material-icons">bar_chart</span>
+          </a>
+        
+          <a th:href="@{/home-access}" th:if="${session.role == 'huesped'}" class="mobile-nav-item">
+            <span class="material-icons">key</span>
+          </a>
+        
+          <a th:href="@{/profile}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+            <span class="material-icons">account_circle</span>
+          </a>
+        
+          <a th:href="@{/settings}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+            <span class="material-icons">settings</span>
+          </a>
+        </div>
+        
         <div class="contentview">
           <div id="maincontent" class="viewinfo" th:insert="~{::section}"></div>
           <footer class="footer" th:fragment="footer">
@@ -138,6 +165,26 @@
         document.getElementById("mySidenav").style.width = "0";
         document.getElementById("maincontent").style.marginLeft = "0";
       }
+
+      window.addEventListener('resize', function() {
+        var menuBtn = document.getElementById('menuButton');
+        if (window.innerWidth <= 768) {
+          menuBtn.style.display = 'none';
+        } else {
+          menuBtn.style.display = 'inline-block';
+        }
+      });
+
+      // También ejecutarlo al cargar
+      window.addEventListener('load', function() {
+        var menuBtn = document.getElementById('menuButton');
+        if (window.innerWidth <= 768) {
+          menuBtn.style.display = 'none';
+        } else {
+          menuBtn.style.display = 'inline-block';
+        }
+      });
+
     </script>
 
     <!-- Fragmento "layout" que envuelve toda la estructura -->
@@ -148,6 +195,7 @@
         <div th:replace="~{nav}"></div>
         <main>
           <div th:replace="~{sidenav}"></div>
+          <div th:replace="~{mobilenav}"></div>
           <div id="maincontent" th:insert="${content}"></div>
           <div th:replace="~{footer}"></div>
         </main>

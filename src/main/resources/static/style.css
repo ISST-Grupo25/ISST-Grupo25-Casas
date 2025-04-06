@@ -1,18 +1,6 @@
 /* Importar Montserrat */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap");
 
-:root {
-  --marron-claro: #a6866a;
-  --marron-oscuro: #8b6b50;
-  --texto: white;
-  --fondo: #edecec90;
-  --boton: white;
-  --textoboton: #8b6b50;
-  --boton-hover: #8b6b50;
-  --botontexto-hover: white;
-  --footer: #b2b2b23d;
-}
-
 /* Para que el footer siempre esté abajo */
 html,
 body {
@@ -46,7 +34,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--marron-claro);
   text-align: center;
   padding: 20px;
   padding-bottom: 0px;
@@ -274,9 +262,8 @@ input {
   margin-bottom: 15px;
 }
 
-/* 🔹 Asegurar que los checkboxes y labels estén alineados en línea */
-.settings-container h2 {
-  color: white;
+h2 {
+  color: var(--marron-oscuro);
 }
 
 .settings-section label {

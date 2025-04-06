@@ -10,7 +10,7 @@
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />   
+    />
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   </head>
@@ -20,13 +20,19 @@
 
       <main class="contentview" th:replace="~{layout :: content}">
         <section class="section-container" th:fragment="section">
-          <h2 class="h2-white">Gestión de Reservas</h2>
-          <button id="addEvent" class="btn"> <span class="material-icons">add</span>Añadir Reserva</button>
-
+          <div class="tittle-button">
+            <h2>Gestión de Reservas</h2>
+            <button id="addEvent" class="btn-add-reserva">
+              <span class="material-icons">add</span>Añadir Reserva
+            </button>
+          </div>
           <div id="calendar"></div>
 
           <form method="post" th:action="@{/calendar/sincronizar}">
-            <button type="submit" class="btn"> <span class="material-icons">autorenew</span> Sincronizar con Google Calendar</button>
+            <button type="submit" class="btn">
+              <span class="material-icons">autorenew</span> Sincronizar con
+              Google Calendar
+            </button>
           </form>
           <div th:if="${param.syncSuccess}" class="alert alert-success">
             ✅ Google Calendar ha sido sincronizado con la app.
@@ -35,116 +41,100 @@
             ❌ <span th:text="${errorSincronizar}"></span>
           </div>
 
-
           <div id="modalOverlay" class="modal-calendar-overlay"></div>
 
           <!-- MODAL de Modificación o eliminación -->
-          <div id="eventModal" class="calendar-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); z-index:9999;">
-            <div style="background:#fff; margin:10% auto; padding:20px; width:300px; border-radius:8px; position:relative;">
-              <h3 id="modal-title">Reserva</h3>
+          <div id="eventModal" class="modal-calendar" style="display: none">
+            <div class="modal-calendar-content">
+              <button class="close" onclick="closeEventModal()">
+                <span class="material-icons">close</span>
+              </button>
+
+              <h3 id="modal-title">Editar Reserva</h3>
               <p id="modal-dates"></p>
-              <button id="editEventBtn">Modificar</button>
-              <button id="deleteEventBtn">Eliminar</button>
-              <button onclick="closeEventModal()"><span class="material-icons">close</span></button> 
-              <!-- Parte formulario -->
+
+              <div class="modal-calendar-actions">
+                <button
+                  id="editEventBtn"
+                  type="button"
+                  class="btn-edit-calendar"
+                >
+                  <span class="material-icons">edit</span> Modificar
+                </button>
+                <button
+                  id="deleteEventBtn"
+                  type="button"
+                  class="btn-delete-calendar"
+                >
+                  <span class="material-icons">delete</span> Eliminar
+                </button>
+              </div>
+
+              <!-- Parte formulario (oculta hasta pulsar Modificar) -->
               <form
                 id="editForm"
                 method="post"
                 action="/calendar/editar-modal"
-                style="display:none;"
                 class="access-form"
-              >
-                <label for="editCasa">Casa:</label>
-                <select id="editCasa" name="casa" required>
-                  <option th:each="c : ${cerraduras}" th:value="${c.id}" th:text="${c.ubicacion}"></option>
-                </select>
-          
-                <label for="editFechaInicio">Fecha de Inicio:</label>
-                <input type="date" id="editFechaInicio" name="fechaInicio" required />
-          
-                <label for="editFechaFin">Fecha de Fin:</label>
-                <input type="date" id="editFechaFin" name="fechaFin" required />
-          
-                <label for="editHuespedes">Huéspedes:</label>
-                <select id="editHuespedes" name="huespedes" multiple required>
-                  <option th:each="h : ${huespedes}" th:value="${h.id}" th:text="${h.name}"></option>
-                </select>
-          
-                <input type="hidden" id="editReservaId" name="id" />
-          
-                <div class="modal-calendar-actions">
-                  <button type="submit" class="btn-confirm-calendar">Guardar Cambios</button>
-                </div>
-              </form>
-            </div>
-          </div>
-
-          <!-- Modal de Reservas -->
-          <div id="accessModal" class="modal-calendar">
-            <div class="modal-calendar-content">
-              <button id="closeModal" class="close"><span class="material-icons">close</span></button> 
-
-              <h3>Programar Acceso</h3>
-
-              <div class="añadir-casa">
-                <form id="newCasaInputs" style="display: none;">
-                  <label for="ubicacion">Ubicación:</label>
-                  <input type="text" id="ubicacion" name="ubicacion" placeholder="Ubicación" required />
-              
-                  <label for="token">Token:</label>
-                  <input type="text" id="token" name="token" placeholder="Token" required />
-                  <div>
-                  <button type= "button" class="btn-cancelar-cerradura" style="background-color: lightgrey; color: gray; border-color:gray; border: none; border-radius: 10px; padding: 5px;">Cancelar</button> 
-                  <button type="submit" class="btn-confirmar-cerradura" style="background-color: darkseagreen; color: green; border-color: darkseagreen; border: none; border-radius: 10px; padding: 5px;">Confirmar</button> 
-                </div>
-              </form>
-            </div>
-
-
-              <form
-                th:action="@{/calendar/guardar}"
-                method="post"
-                id="accessForm"
-                class="access-form"
+                style="display: none"
               >
                 <!-- Selección de Casa -->
-                <label for="casa">Casa:</label>
                 <div class="input-group">
-                  <select id="casa" name="casa" class="select-keys" required>
-                    <option
-                      th:each="c : ${cerraduras}"
-                      th:value="${c.id}"
-                      th:text="${c.ubicacion}"
-                    ></option>
-                  </select>
-                  <button 
-                        type="button" 
-                        id="addCasa" 
-                        class="add-icon">+</button>              
+                  <input type="hidden" id="editReservaId" name="id" />
 
-                <!-- Selección de Fechas -->
-                <label for="fechaInicio">Fecha de Inicio:</label>
-                <input
-                  type="date"
-                  id="fechaInicio"
-                  name="fechaInicio"
-                  required
-                />
+                  <label for="editCasa">Casa:</label>
+                  <div class="flex-row">
+                    <select
+                      id="editCasa"
+                      name="casa"
+                      class="select-keys"
+                      required
+                    >
+                      <option
+                        th:each="c : ${cerraduras}"
+                        th:value="${c.id}"
+                        th:text="${c.ubicacion}"
+                      ></option>
+                    </select>
+                  </div>
+                </div>
 
-                <label for="fechaFin">Fecha de Fin:</label>
-                <input type="date" id="fechaFin" name="fechaFin" required />
-
+                <div class="flex-row-between">
+                  <div>
+                    <label for="editFechaInicio">Fecha de Inicio:</label>
+                    <input
+                      type="date"
+                      id="editFechaInicio"
+                      name="fechaInicio"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="editFechaFin">Fecha de Fin:</label>
+                    <input
+                      type="date"
+                      id="editFechaFin"
+                      name="fechaFin"
+                      required
+                    />
+                  </div>
+                </div>
                 <!-- Selección de Huéspedes -->
-                <label for="huespedes">Huéspedes:</label>
-                <select id="huespedes" name="huespedes" multiple required>
-                  <option
-                    th:each="h : ${huespedes}"
-                    th:value="${h.id}"
-                    th:text="${h.name}"
-                  ></option>
-                </select>
-
-
+                <div>
+                  <label for="editHuespedes">Huéspedes:</label>
+                  <div id="edit-huespedes-container">
+                    <div class="huesped-checkbox" th:each="h : ${huespedes}">
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="huespedes"
+                          th:value="${h.id}"
+                        />
+                        <span th:text="${h.name}"></span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
 
                 <div class="modal-calendar-actions">
                   <button
@@ -159,10 +149,118 @@
                   </button>
                 </div>
               </form>
-              <div th:if="${errorReserva}" class="alert alert-danger">
-                <span th:text="${errorReserva}"></span>
+            </div>
+          </div>
+
+          <!-- Modal de Nueva Reserva -->
+          <div id="accessModal" class="modal-calendar">
+            <div class="modal-calendar-content">
+              <button id="closeModal" class="close">
+                <span class="material-icons">close</span>
+              </button>
+
+              <h3>Programar Acceso</h3>
+              <form id="newCasaInputs" style="display: none">
+                <div class="añadir-casa">
+                  <div>
+                    <label for="ubicacion">Ubicación:</label>
+                    <input
+                      type="text"
+                      id="ubicacion"
+                      name="ubicacion"
+                      placeholder="Ubicación"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label for="token">Token:</label>
+                    <input
+                      type="text"
+                      id="token"
+                      name="token"
+                      placeholder="Token"
+                      required
+                    />
+                  </div>
+                  <div class="botones-cerradura">
+                    <button type="button" class="btn-cancelar-cerradura">
+                      Cancelar
+                    </button>
+                    <button type="submit" class="btn-confirmar-cerradura">
+                      Confirmar
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <form
+              th:action="@{/calendar/guardar}"
+              method="post"
+              id="accessForm"
+              class="access-form"
+            >
+              <!-- Selección de Casa -->
+              <div class="input-group">
+                <label for="casa">Casa:</label>
+                <div class="flex-row">
+                  <select id="casa" name="casa" class="select-keys" required>
+                    <option
+                      th:each="c : ${cerraduras}"
+                      th:value="${c.id}"
+                      th:text="${c.ubicacion}"
+                    ></option>
+                  </select>
+                  <button type="button" id="addCasa" class="add-icon">+</button>
+                </div>
               </div>
 
+              <div class="flex-row-between">
+                <div>
+                  <label for="fechaInicio">Fecha de Inicio:</label>
+                  <input
+                    type="date"
+                    id="fechaInicio"
+                    name="fechaInicio"
+                    required
+                  />
+                </div>
+                <div>
+                  <label for="fechaFin">Fecha de Fin:</label>
+                  <input type="date" id="fechaFin" name="fechaFin" required />
+                </div>
+              </div>
+              <!-- Selección de Huéspedes -->
+              <div>
+                <label for="huespedes">Huéspedes:</label>
+                <div id="huespedes-container">
+                  <div class="huesped-checkbox" th:each="h : ${huespedes}">
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="huespedes"
+                        th:value="${h.id}"
+                      />
+                      <span th:text="${h.name}"></span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal-calendar-actions">
+                <button
+                  type="button"
+                  id="cancelModal"
+                  class="btn-cancel-calendar"
+                >
+                  Cancelar
+                </button>
+                <button type="submit" class="btn-confirm-calendar">
+                  Confirmar
+                </button>
+              </div>
+            </form>
+            <div th:if="${errorReserva}" class="alert alert-danger">
+              <span th:text="${errorReserva}"></span>
             </div>
           </div>
         </section>
@@ -177,6 +275,8 @@
         const openModalBtn = document.getElementById("addEvent");
         const closeModalBtn = document.getElementById("closeModal");
         const cancelModalBtn = document.getElementById("cancelModal");
+        const editForm = document.getElementById("editForm");
+        const editEventBtn = document.getElementById("editEventBtn");
 
         function openModal() {
           modal.classList.add("show");
@@ -186,6 +286,7 @@
         function closeModal() {
           modal.classList.remove("show");
           modalOverlay.classList.remove("show");
+          closeEventModal();
         }
 
         openModalBtn.addEventListener("click", openModal);
@@ -204,13 +305,13 @@
           },
           events: "/reservas",
           eventClick: function (info) {
-            // Guarda los datos del evento
+            modalOverlay.classList.add("show");
             const title = info.event.title;
             const start = info.event.startStr;
             const end = info.event.endStr;
             const huespedes = info.event.extendedProps.huespedes || [];
 
-            let nombresHuespedes = huespedes.map(h => h.nombre).join(", ");
+            const nombresHuespedes = huespedes.map((h) => h.nombre).join(", ");
 
             document.getElementById("modal-title").textContent = title;
             document.getElementById("modal-dates").innerHTML = `
@@ -227,170 +328,132 @@
 
         window.closeEventModal = function () {
           document.getElementById("eventModal").style.display = "none";
-          document.getElementById("editForm").style.display = "none";
-        }
+          modalOverlay.classList.remove("show");
+          editForm.style.display = "none";
+        };
 
-
-        document.getElementById("deleteEventBtn").addEventListener("click", function () {
-          const reservaId = window.selectedEvent.id;
-          console.log("🧪 ID de reserva:", reservaId);
-          if (confirm("¿Estás segura de que quieres eliminar esta reserva?")) {
-            fetch("/calendar/eliminar", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-              body: `id=${reservaId}`,
-            })
-              .then((res) => {
+        document
+          .getElementById("deleteEventBtn")
+          .addEventListener("click", function () {
+            const reservaId = window.selectedEvent.id;
+            if (
+              confirm("¿Estás segura de que quieres eliminar esta reserva?")
+            ) {
+              fetch("/calendar/eliminar", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `id=${reservaId}`,
+              }).then((res) => {
                 if (res.ok) {
-                  window.selectedEvent.remove(); // Elimina del calendario
+                  window.selectedEvent.remove();
                   closeEventModal();
                 } else {
                   alert("❌ Error al eliminar la reserva");
                 }
               });
-          }
-        });
+            }
+          });
 
-        document.addEventListener("DOMContentLoaded", function () {
-          const editBtn = document.getElementById("editEventBtn");
-          const editForm = document.getElementById("editForm");
+        editEventBtn.addEventListener("click", function () {
+          if (!window.selectedEvent) return;
 
-          if (editBtn && editForm) {
-            editBtn.addEventListener("click", () => {
-              editForm.classList.add("show"); // Agrega la clase para mostrar el formulario
-            });
-          }
+          editForm.style.display = "flex";
 
-          const closeModalBtn = document.querySelector("#eventModal button[onclick='closeEventModal()']");
-          if (closeModalBtn) {
-            closeModalBtn.addEventListener("click", () => {
-              editForm.classList.remove("show"); // Quita la clase para ocultar el formulario
-            });
-          }
-        });
+          document.getElementById("editReservaId").value =
+            window.selectedEvent.id;
+          document.getElementById("editFechaInicio").value =
+            window.selectedEvent.startStr.substring(0, 10);
+          document.getElementById("editFechaFin").value = window.selectedEvent
+            .endStr
+            ? window.selectedEvent.endStr.substring(0, 10)
+            : window.selectedEvent.startStr.substring(0, 10);
 
-        document.getElementById("editEventBtn").addEventListener("click", function () {
-          const event = window.selectedEvent;
+          if (window.selectedEvent.extendedProps) {
+            const props = window.selectedEvent.extendedProps;
 
-          // Ocultar vista info, mostrar formulario
-          //document.getElementById("modalInfo").style.display = "none";
-          document.getElementById("editForm").style.display = "flex";
-
-          // Rellenar campos del formulario
-          document.getElementById("editReservaId").value = event.id;
-          document.getElementById("editFechaInicio").value = event.startStr.substring(0, 10);
-          document.getElementById("editFechaFin").value = event.endStr?.substring(0, 10) || event.startStr.substring(0, 10);
-
-          // Opcional: puedes rellenar casa y huéspedes si están en extendedProps
-          if (event.extendedProps) {
-            if (event.extendedProps.cerraduraId) {
-              document.getElementById("editCasa").value = event.extendedProps.cerraduraId;
+            if (props.cerraduraId) {
+              document.getElementById("editCasa").value = props.cerraduraId;
             }
 
-            if (event.extendedProps.huespedIds) {
-              const huespedesSelect = document.getElementById("editHuespedes");
-              const huespedIds = event.extendedProps.huespedIds;
-              for (const option of huespedesSelect.options) {
-                option.selected = huespedIds.includes(parseInt(option.value));
-              }
+            if (props.huespedIds) {
+              const huespedCheckboxes = document.querySelectorAll(
+                '#edit-huespedes-container input[name="editHuespedes"]'
+              );
+              huespedCheckboxes.forEach((checkbox) => {
+                checkbox.checked = props.huespedIds.includes(
+                  parseInt(checkbox.value)
+                );
+              });
             }
           }
         });
 
+        // Flatpickr no usado directamente en edit (se usa input type="date"), así que no lo aplicamos aquí.
 
-
-        // Datepicker
-        flatpickr("#fecha", {
-          mode: "range",
-          dateFormat: "Y-m-d",
-          minDate: "today",
-        });
-
-        // Mostrar el formulario de nueva casa cuando se hace clic en "+"
-        document.getElementById('addCasa').addEventListener('click', function() {
-          document.getElementById('newCasaInputs').style.display = 'flex'; // Mostrar el formulario
-        });
-
-        // Ocultar el formulario después de hacer clic en "Confirmar"
-        document.querySelector('.btn-confirmar-cerradura').addEventListener('click', function() {
-          document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
-        });
-
-        // Ocultar el formulario después de hacer clic en "Cancelar"
-        document.querySelector('.btn-cancelar-cerradura').addEventListener('click', function(event) {
-          event.preventDefault();  // Prevenir cualquier acción por defecto (como el envío del formulario)
-          document.getElementById('newCasaInputs').style.display = 'none'; // Ocultar el formulario
-        });
-        
-        document.querySelector('.btn-confirmar-cerradura').addEventListener('click', async function (event) {
-          event.preventDefault();
-
-          const ubicacion = document.getElementById('ubicacion').value;
-          const token = document.getElementById('token').value;
-
-          if (!ubicacion || !token) {
-            alert("Por favor, completa los campos de ubicación y token.");
-            return;
-          }
-
-          try {
-            const response = await fetch("/cerradura/guardar", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-              body: `ubicacion=${encodeURIComponent(ubicacion)}&token=${encodeURIComponent(token)}`
-            });
-
-            if (response.ok) {
-              const nuevaCerraduraId = await response.text();
-              const select = document.getElementById('casa');
-              const nuevaOpcion = document.createElement('option');
-              nuevaOpcion.value = nuevaCerraduraId;
-              nuevaOpcion.text = ubicacion;
-              select.appendChild(nuevaOpcion);
-              select.value = nuevaCerraduraId;
-
-              // Limpiar campos y ocultar formulario
-              document.getElementById('ubicacion').value = "";
-              document.getElementById('token').value = "";
-              document.getElementById('newCasaInputs').style.display = 'none';
-            } else {
-              alert("❌ Error al guardar la cerradura.");
-            }
-          } catch (error) {
-            alert("❌ Error de red o del servidor.");
-          }
-        });
-      });
-
-      document.addEventListener("DOMContentLoaded", function () {
+        // Añadir nueva casa
         const addCasaBtn = document.getElementById("addCasa");
         const newCasaInputs = document.getElementById("newCasaInputs");
-        const confirmCasaBtn = document.querySelector(".btn-confirmar-cerradura");
+
+        if (addCasaBtn) {
+          addCasaBtn.addEventListener("click", () => {
+            newCasaInputs.style.display = "flex";
+          });
+        }
+
+        const confirmCasaBtn = document.querySelector(
+          ".btn-confirmar-cerradura"
+        );
         const cancelCasaBtn = document.querySelector(".btn-cancelar-cerradura");
 
-        // Mostrar el formulario al hacer clic en "+"
-        if (addCasaBtn && newCasaInputs) {
-          addCasaBtn.addEventListener("click", () => {
-            newCasaInputs.classList.add("show"); // Agrega la clase para mostrar el formulario
+        if (confirmCasaBtn) {
+          confirmCasaBtn.addEventListener("click", async function (event) {
+            event.preventDefault();
+            const ubicacion = document.getElementById("ubicacion").value;
+            const token = document.getElementById("token").value;
+
+            if (!ubicacion || !token) {
+              alert("Por favor, completa los campos de ubicación y token.");
+              return;
+            }
+
+            try {
+              const response = await fetch("/cerradura/guardar", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `ubicacion=${encodeURIComponent(
+                  ubicacion
+                )}&token=${encodeURIComponent(token)}`,
+              });
+
+              if (response.ok) {
+                const nuevaCerraduraId = await response.text();
+                const select = document.getElementById("casa");
+                const nuevaOpcion = document.createElement("option");
+                nuevaOpcion.value = nuevaCerraduraId;
+                nuevaOpcion.text = ubicacion;
+                select.appendChild(nuevaOpcion);
+                select.value = nuevaCerraduraId;
+
+                document.getElementById("ubicacion").value = "";
+                document.getElementById("token").value = "";
+                newCasaInputs.style.display = "none";
+              } else {
+                alert("❌ Error al guardar la cerradura.");
+              }
+            } catch (error) {
+              alert("❌ Error de red o del servidor.");
+            }
           });
         }
 
-        // Ocultar el formulario al hacer clic en "Confirmar"
-        if (confirmCasaBtn && newCasaInputs) {
-          confirmCasaBtn.addEventListener("click", () => {
-            newCasaInputs.classList.remove("show"); // Quita la clase para ocultar el formulario
-          });
-        }
-
-        // Ocultar el formulario al hacer clic en "Cancelar"
-        if (cancelCasaBtn && newCasaInputs) {
-          cancelCasaBtn.addEventListener("click", (event) => {
-            event.preventDefault(); // Prevenir cualquier acción por defecto
-            newCasaInputs.classList.remove("show"); // Quita la clase para ocultar el formulario
+        if (cancelCasaBtn) {
+          cancelCasaBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            newCasaInputs.style.display = "none";
           });
         }
       });
