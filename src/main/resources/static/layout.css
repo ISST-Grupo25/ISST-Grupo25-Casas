@@ -62,7 +62,7 @@
 
 .btn-login {
   background-color: var(--boton);
-  color: white;
+  color: var(--botontexto, black);
   border: 2px solid var(--boton);
 }
 

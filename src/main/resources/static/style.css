@@ -6,6 +6,15 @@
 /* -----------------------------------------------------
    VARIABLES DE TEMA
 ----------------------------------------------------- */
+/* Tema por Defecto */
+:root {
+  --fondo: #f8f4f1;
+  --marron-claro: #6b4c3b;
+  --marron-oscuro: #3f2e23;
+  --boton-hover: #4a362a;
+  --texto: #333;
+  --card-bg: white;
+}
 
 /* Tema Claro */
 body.light {
