@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
   <link rel="stylesheet" th:href="@{/login.css}" />
-  <body>
+  <body th:class="${session.theme}">
     <div id="main">
       <div th:replace="~{layout :: nav}"></div>
 
