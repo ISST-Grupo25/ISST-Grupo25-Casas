@@ -1,7 +1,10 @@
 package com.isst.ISST_Grupo25_Casas.services;
 
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
+import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.repository.CerraduraRepository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,10 @@ public class CerraduraService {
         return cerraduraRepository.findAll();
     }
 
+    public List<Cerradura> obtenerCerradurasPorGestor(Long gestorId) {
+        return cerraduraRepository.findByGestorId(gestorId);
+    }
+
     public Cerradura obtenerCerraduraPorId(Long id) {
         return cerraduraRepository.findById(id).orElse(null);
     }
@@ -28,11 +35,17 @@ public class CerraduraService {
         return Cerradura.getToken();
     }
 
-    public Cerradura guardarCerradura(String ubicación, String token) {
+    public Cerradura guardarCerradura(String ubicacion, String token, Long gestorId) {
         Cerradura cerradura = new Cerradura();
-        cerradura.setUbicacion(ubicación);
+        cerradura.setUbicacion(ubicacion);
         cerradura.setToken(token);
-        cerradura.setBateria(100);  //Se implementará en el siguiente sprint el monitoreo de la batería
+        cerradura.setBateria(100); // Se implementará en el siguiente sprint el monitoreo de la batería
+    
+        // Asociar el gestor a la cerradura
+        Gestor gestor = new Gestor();
+        gestor.setId(gestorId); // Solo necesitas establecer el ID si no tienes el objeto completo
+        cerradura.setGestor(gestor);
+    
         return cerraduraRepository.save(cerradura);
     }
 

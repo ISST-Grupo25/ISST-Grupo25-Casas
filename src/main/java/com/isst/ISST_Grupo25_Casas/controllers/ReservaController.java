@@ -81,25 +81,26 @@ public class ReservaController {
     public String mostrarFormularioReserva(Model model, HttpSession session) {
 
             Object obj = session.getAttribute("usuario");
+
+            if (obj instanceof Gestor gestor) { // Validar y castear correctamente
+                List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
+                List<Cerradura> cerraduras = cerraduraService.obtenerCerradurasPorGestor(gestor.getId());
+                List<Huesped> huespedes = huespedService.obtenerTodosLosHuespedes();
         
-            if (obj == null) {  // Si no hay usuario en sesión
-                return "redirect:/login";  // Redirigir al login (o página de inicio)
+                if (cerraduras.isEmpty()) {
+                    System.out.println("⚠️ No hay cerraduras registradas para este gestor");
+                }
+                if (huespedes.isEmpty()) {
+                    System.out.println("⚠️ No hay huéspedes registrados en la BD");
+                }
+        
+                model.addAttribute("reservas", reservas);
+                model.addAttribute("cerraduras", cerraduras);
+                model.addAttribute("huespedes", huespedes);
+            } else {
+                System.out.println("❌ Error: No hay un gestor en sesión");
+                return "redirect:/login";
             }
-
-            List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
-            List<Cerradura> cerraduras = cerraduraService.obtenerTodasLasCerraduras();
-            List<Huesped> huespedes = huespedService.obtenerTodosLosHuespedes();
-
-            if (cerraduras.isEmpty()) {
-                System.out.println("⚠️ No hay cerraduras registradas en la BD");
-            }
-            if (huespedes.isEmpty()) {
-                System.out.println("⚠️ No hay huéspedes registrados en la BD");
-            }
-
-            model.addAttribute("reservas", reservas);
-            model.addAttribute("cerraduras", cerraduras);
-            model.addAttribute("huespedes", huespedes);
             
             return "calendar"; // Carga la vista "calendar.html"
     }
