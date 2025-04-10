@@ -87,29 +87,9 @@ public class ReservaService {
             h.getReservas().remove(reserva);
         }
 
-        // // Si tiene un eventId asociado, intentamos borrarlo del calendario
-        // if (reserva.getEventId() != null) {
-        //     try {
-        //         GoogleCalendarService.deleteEvent(reserva.getEventId());
-        //     } catch (Exception e) {
-        //         System.out.println("⚠️ No se pudo eliminar el evento de Google Calendar: " + e.getMessage());
-        //     }
-        // }
-
         reservaRepository.delete(reserva);
     }
 
-    // public int importarDesdeFicheroIcs(InputStream icsInputStream, Cerradura cerradura, List<Huesped> huespedes, Gestor gestor) {
-    //     List<Timestamp[]> fechas = IcsParserUtil.parseFechas(icsInputStream);
-    //     int count = 0;
-
-    //     for (Timestamp[] par : fechas) {
-    //         guardarReserva(new Date(par[0].getTime()), new Date(par[1].getTime()), cerradura, huespedes, gestor);
-    //         count++;
-    //     }
-
-    //     return count;
-    // }
 
 
     public List<Reserva> obtenerReservasPorHuesped(Long huespedId) {
@@ -124,45 +104,6 @@ public class ReservaService {
         return reservaRepository.findByGestor(gestor);
     }
 
-
-    // public int importarDesdeGoogle(Cerradura cerradura, Huesped huesped, Gestor gestor) {
-    //     int importadas = 0;
-    //     try {
-    //         Calendar calendar = GoogleCalendarService.getCalendarService();
-    
-    //         List<Event> eventos = calendar.events().list("primary")
-    //                 .setTimeMin(new DateTime(System.currentTimeMillis()))
-    //                 .setOrderBy("startTime")
-    //                 .setSingleEvents(true)
-    //                 .execute()
-    //                 .getItems();
-    
-    //         for (Event event : eventos) {
-    //             if (event.getStart() != null && event.getEnd() != null) {
-    //                 Date fechaInicio = new Date(event.getStart().getDateTime().getValue());
-    //                 Date fechaFin = new Date(event.getEnd().getDateTime().getValue());
-    
-    //                 boolean existe = existeReservaEnEseRangoYCasa(fechaInicio, fechaFin, cerradura);
-    
-    //                 if (!existe) {
-    //                     List<Huesped> huespedes = new ArrayList<>();
-    //                     huespedes.add(huesped);
-    
-    //                     guardarReserva(fechaInicio, fechaFin, cerradura, huespedes, gestor);
-    //                     importadas++;
-    //                 }
-    //             }
-    //         }
-    //     } catch (Exception e) {
-    //         System.out.println("❌ Error al importar eventos: " + e.getMessage());
-    //     }
-    //     return importadas;
-    // }
-
-
-
-
-
     public boolean existeReservaEnEseRangoYCasa(Date inicio, Date fin, Cerradura cerradura) {
         List<Reserva> reservas = obtenerReservasPorCerradura(cerradura.getId());
     
@@ -174,6 +115,27 @@ public class ReservaService {
         }
         return false;
     }
+
+
+    public List<Reserva> obtenerProximasReservasPorCerradura(Long cerraduraId) {
+        List<Reserva> reservas = reservaRepository.findByCerraduraId(cerraduraId);
+        List<Reserva> proximasReservas = new ArrayList<>();
+
+        for (Reserva reserva : reservas) {
+            if (reserva.getFechafin().after(new Date(System.currentTimeMillis()))) {
+                proximasReservas.add(reserva);
+            }
+        }
+
+        return proximasReservas;
+    }
+
+    @Transactional
+    public void eliminarReservaYHuespedes(Long reservaId) {
+        reservaRepository.eliminarHuespedesDeReserva(reservaId); // 🔥 Primero borrar los enlaces
+        reservaRepository.deleteById(reservaId); // 🔥 Después borrar la reserva
+    }
+
 
 }
 

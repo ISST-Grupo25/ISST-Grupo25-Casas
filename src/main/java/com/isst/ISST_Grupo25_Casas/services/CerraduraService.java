@@ -2,22 +2,29 @@ package com.isst.ISST_Grupo25_Casas.services;
 
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
+import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.isst.ISST_Grupo25_Casas.repository.CerraduraRepository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class CerraduraService {
-
     private final CerraduraRepository cerraduraRepository;
+    private final ReservaRepository reservaRepository;
+    private final ReservaService reservaService;
 
-    public CerraduraService(CerraduraRepository cerraduraRepository) {
+    public CerraduraService(CerraduraRepository cerraduraRepository, ReservaRepository reservaRepository, ReservaService reservaService) {
         this.cerraduraRepository = cerraduraRepository;
+        this.reservaRepository = reservaRepository;
+        this.reservaService = reservaService;
     }
+    
 
     public List<Cerradura> obtenerTodasLasCerraduras() {
         return cerraduraRepository.findAll();
@@ -55,7 +62,30 @@ public class CerraduraService {
         return cerraduras.get(0);
     }
     throw new NoSuchElementException("No hay cerraduras disponibles.");
+    }
 
+    @Transactional
+    public void eliminarCerradura(Long id) {
+        try {
+            Cerradura cerradura = cerraduraRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("❌ Cerradura no encontrada con ID: " + id));
 
-}
+            List<Reserva> reservas = reservaRepository.findByCerraduraId(id);
+
+            for (Reserva reserva : reservas) {
+                reservaService.eliminarReservaYHuespedes(reserva.getId());
+            }
+
+            reservaRepository.deleteAll(reservas); // Ahora sí, borrar las reservas
+            cerraduraRepository.delete(cerradura); // Finalmente borrar la cerradura
+
+            System.out.println("✅ Cerradura y reservas asociadas eliminadas correctamente (ID: " + id + ")");
+        } catch (Exception e) {
+            System.out.println("❌ Error al eliminar cerradura: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    
+
 }
