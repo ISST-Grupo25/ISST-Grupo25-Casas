@@ -48,13 +48,16 @@ public class CerraduraController {
 
    private final RestTemplate restTemplate = new RestTemplate();
 
+   @Autowired
+   private ReservaService reservaService; // Add ReservaService dependency
+
    public CerraduraController(CerraduraService cerraduraService) {
        this.cerraduraService = cerraduraService;
        this.reservaRepository = reservaRepository;
    }
 
    @PostMapping("/cerradura/guardar")
-   @ResponseBody // 🔥 esto es CLAVE
+   @ResponseBody //  esto es CLAVE
    public String guardarCerradura(@RequestParam("ubicacion") String ubicacion,
                                   @RequestParam("token") String token,
                                   HttpSession session) {
@@ -64,15 +67,15 @@ public class CerraduraController {
                // Guardar y recuperar la cerradura guardada
                Cerradura nuevaCerradura = cerraduraService.guardarCerradura(ubicacion, token, gestor.getId());
                
-               // 🔥 Devolver directamente el ID como texto
+               //  Devolver directamente el ID como texto
                return String.valueOf(nuevaCerradura.getId());
            } else {
                System.out.println("❌ Error: No hay un gestor en sesión");
-               return "-1"; // 🔥 devolvemos error de forma sencilla
+               return "-1"; // devolvemos error de forma sencilla
            }
        } catch (Exception e) {
            System.out.println("❌ Error al guardar cerradura: " + e.getMessage());
-           return "-1"; // 🔥 devolvemos error también aquí
+           return "-1"; // devolvemos error también aquí
        }
    }
 
@@ -152,4 +155,52 @@ public class CerraduraController {
        }
        return false; // PIN inválido
    }
+    
+   
+    @GetMapping("/homes")
+    public String mostrarCerradurasConReservas(Model model, HttpSession session) {
+        Object obj = session.getAttribute("usuario");
+    
+        if (obj instanceof Gestor gestor) {
+            List<Cerradura> cerraduras = cerraduraService.obtenerCerradurasPorGestor(gestor.getId());
+    
+            // Para cada cerradura, obtenemos sus reservas
+            Map<Long, List<Reserva>> reservasPorCerradura = new HashMap<>();
+            for (Cerradura c : cerraduras) {
+                List<Reserva> reservas = reservaService.obtenerProximasReservasPorCerradura(c.getId());
+                if (reservas == null) { 
+                    reservas = new ArrayList<>(); // 🚀 Si es null, ponemos una lista vacía
+                }
+                reservasPorCerradura.put(c.getId(), reservas);
+            }
+    
+            model.addAttribute("cerraduras", cerraduras);
+            model.addAttribute("reservasPorCerradura", reservasPorCerradura);
+            return "homes"; // tu HTML homes.html
+        }
+    
+        return "redirect:/login";
+    }
+
+    @GetMapping("reservasPorCerradura")
+    public List<Reserva> obtenerReservasPorCerradura(@RequestParam("cerraduraId") Long cerraduraId) {
+        // Obtener la cerradura por su ID
+        Cerradura cerradura = cerraduraService.obtenerCerraduraPorId(cerraduraId);
+        // Obtener las reservas asociadas a la cerradura
+        List<Reserva> reservas = reservaRepository.findByCerraduraId(cerradura.getId());
+        return reservas;
+    }
+
+    @PostMapping("/cerradura/eliminar")
+    public String eliminarCerradura(@RequestParam("id") Long id, RedirectAttributes redirectAttributes) {
+        try {
+            cerraduraService.eliminarCerradura(id);
+            redirectAttributes.addFlashAttribute("mensajeExito", "✅ Casa eliminada correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("mensajeError", "❌ Error al eliminar la casa.");
+        }
+        return "redirect:/homes"; // o donde tengas el listado de casas
+    }
+
+
 }

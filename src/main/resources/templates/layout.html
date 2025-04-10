@@ -79,6 +79,11 @@
               <a th:href="@{/calendar}">Gestionar Reservas</a>
             </li>
 
+            <li th:if="${session.role == 'gestor'}" class="nav-item">
+              <span class="material-icons">key</span>
+              <a th:href="@{/homes}">Gestionar casas</a>
+            </li>
+
             <li th:if="${session.isLoggedIn}" class="nav-item">
               <span class="material-icons">bar_chart</span>
               <a th:href="@{/monitor}">Monitorizar Acessos</a>
