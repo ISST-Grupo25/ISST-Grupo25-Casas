@@ -263,6 +263,9 @@
               <span th:text="${errorReserva}"></span>
             </div>
           </div>
+          <div th:if="${errorReserva}" id="errorReserva" class="alert alert-danger">
+            <span th:text="${errorReserva}"></span>
+          </div>
         </section>
       </main>
     </div>
@@ -277,6 +280,12 @@
         const cancelModalBtn = document.getElementById("cancelModal");
         const editForm = document.getElementById("editForm");
         const editEventBtn = document.getElementById("editEventBtn");
+        const errorReserva = document.getElementById("errorReserva");
+
+        if (errorReserva) {
+          console.log("⚠️ Error de reserva detectado. Abriendo modal automáticamente...");
+          openModal(); // 🔥 Abrimos el modal automáticamente
+        }
 
         function openModal() {
           modal.classList.add("show");
@@ -308,7 +317,7 @@
             modalOverlay.classList.add("show");
             const title = info.event.title;
             const start = info.event.startStr;
-            const end = info.event.endStr;
+            const end = info.event.extendedProps.fechaFinReal;
             const huespedes = info.event.extendedProps.huespedes || [];
 
             const nombresHuespedes = huespedes.map((h) => h.nombre).join(", ");
@@ -409,45 +418,53 @@
 
         if (confirmCasaBtn) {
           confirmCasaBtn.addEventListener("click", async function (event) {
-            event.preventDefault();
-            const ubicacion = document.getElementById("ubicacion").value;
-            const token = document.getElementById("token").value;
+          event.preventDefault();
 
-            if (!ubicacion || !token) {
-              alert("Por favor, completa los campos de ubicación y token.");
+          const ubicacion = document.getElementById("ubicacion").value;
+          const token = document.getElementById("token").value;
+
+          if (!ubicacion || !token) {
+            alert("Por favor, completa los campos de ubicación y token.");
+            return;
+          }
+
+          try {
+            const response = await fetch("/cerradura/guardar", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: `ubicacion=${encodeURIComponent(ubicacion)}&token=${encodeURIComponent(token)}`,
+            });
+
+            const texto = await response.text();
+            console.log("🔵 Respuesta recibida del servidor:", texto);
+
+            if (texto === "-1") {
+              alert("❌ Error al guardar cerradura.");
               return;
             }
 
-            try {
-              const response = await fetch("/cerradura/guardar", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: `ubicacion=${encodeURIComponent(
-                  ubicacion
-                )}&token=${encodeURIComponent(token)}`,
-              });
+            // Aquí el texto es la ID
+            const nuevaCerraduraId = texto;
+            const select = document.getElementById("casa");
+            const nuevaOpcion = document.createElement("option");
+            nuevaOpcion.value = nuevaCerraduraId;
+            nuevaOpcion.text = ubicacion;
+            select.appendChild(nuevaOpcion);
+            select.value = nuevaCerraduraId;
+            select.dispatchEvent(new Event('change'));
 
-              if (response.ok) {
-                const nuevaCerraduraId = await response.text();
-                const select = document.getElementById("casa");
-                const nuevaOpcion = document.createElement("option");
-                nuevaOpcion.value = nuevaCerraduraId;
-                nuevaOpcion.text = ubicacion;
-                select.appendChild(nuevaOpcion);
-                select.value = nuevaCerraduraId;
+            document.getElementById("ubicacion").value = "";
+            document.getElementById("token").value = "";
+            newCasaInputs.style.display = "none";
 
-                document.getElementById("ubicacion").value = "";
-                document.getElementById("token").value = "";
-                newCasaInputs.style.display = "none";
-              } else {
-                alert("❌ Error al guardar la cerradura.");
-              }
-            } catch (error) {
-              alert("❌ Error de red o del servidor.");
-            }
-          });
+            alert("✅ Cerradura creada con éxito.");
+          } catch (error) {
+            console.error("Error de red:", error);
+            alert("❌ Error real de red o del servidor.");
+          }
+        });
         }
 
         if (cancelCasaBtn) {
