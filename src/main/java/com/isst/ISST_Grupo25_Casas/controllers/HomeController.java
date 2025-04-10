@@ -62,14 +62,14 @@ public class HomeController {
         return "settings";
     }
 
-    @GetMapping("/monitor") 
-    public String monitor(Model model, HttpSession session) {
-        if (session.getAttribute("usuario") == null) {  
-            System.out.println("❌ No hay usuario en la sesión");
-            return "redirect:/login";  // Redirigir a la página de login
-        }
-        model.addAttribute("usuario", session.getAttribute("usuario"));
-        return "monitor";
-    }
+    // @GetMapping("/monitor") 
+    // public String monitor(Model model, HttpSession session) {
+    //     if (session.getAttribute("usuario") == null) {  
+    //         System.out.println("❌ No hay usuario en la sesión");
+    //         return "redirect:/login";  // Redirigir a la página de login
+    //     }
+    //     model.addAttribute("usuario", session.getAttribute("usuario"));
+    //     return "monitor";
+    // }
 
 }

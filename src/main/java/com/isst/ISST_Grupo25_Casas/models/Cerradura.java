@@ -23,6 +23,10 @@ public class Cerradura {
     @Column(nullable = true)
     private Integer bateria;
 
+    @ManyToOne
+    @JoinColumn(name = "ID_gestor", foreignKey = @ForeignKey(name = "fk_cerradura_gestor"))
+    private Gestor gestor;
+
     // 🔹 GETTERS Y SETTERS MANUALES
     public Long getId() {
         return id;
@@ -56,5 +60,11 @@ public class Cerradura {
         this.bateria = bateria;
     }
 
+    public Gestor getGestor() {
+        return gestor;
+    }
+    public void setGestor(Gestor gestor) {
+        this.gestor = gestor;
+    }
     
 }

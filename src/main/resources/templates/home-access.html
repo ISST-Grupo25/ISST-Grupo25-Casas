@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
-  <body>
+  <body th:class="${session.theme}">
     <div id="main">
       <!-- Barra de navegación -->
       <div th:replace="~{layout :: nav}"></div>
@@ -23,9 +23,7 @@
               <p>No tienes reservas activas.</p>
             </div>
             <div class="house" th:each="reserva : ${reservas}">
-              <!-- Formulario para abrir la cerradura -->
               <form th:action="@{/cerradura/abrir}" method="POST">
-                <!-- Enviar el ID de la reserva y el PIN -->
                 <input
                   type="hidden"
                   th:name="reservaId"
@@ -40,16 +38,15 @@
                 <button
                   class="key-btn"
                   type="button"
-                  data-pin="${reserva.pin}"
-                  data-reserva-id="${reserva.id}"
+                  th:attr="data-pin=${reserva.pin}, data-reserva-id=${reserva.id}"
                 >
                   <span class="material-icons">key</span>
                 </button>
                 <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
                 <p
                   th:text="'Desde: ' +
-${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' +
-${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
+                    ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' +
+                    ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
                 ></p>
               </form>
             </div>
@@ -66,7 +63,7 @@ ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
       </main>
     </div>
     <!-- Modal para ingresar PIN -->
-    <div id="pin-dialog" class="access-modal">
+    <div id="pin-dialog" class="access-modal" style="display: none">
       <div class="modal-content">
         <h2>Ingresa tu código</h2>
         <input type="password" id="pin-input" maxlength="6" readonly />
@@ -114,17 +111,7 @@ ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
     </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const pinValido = urlParams.get("pinValido");
-        if (pinValido === "true") {
-          alert("✅ PIN válido, acérquese a la cerradura");
-        } else if (pinValido === "false") {
-          alert("❌ PIN incorrecto");
-        }
-      });
-    </script>
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
+        // Código relacionado con el modal y el PIN
         const modal = document.getElementById("pin-dialog");
         modal.style.display = "none";
         const pinInputModal = document.getElementById("pin-input"); // Para el PIN del modal
@@ -137,19 +124,22 @@ ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
         const blankBtn = document.getElementById("blank-btn");
         let currentPin = null; // Variable para almacenar el PIN de la reserva seleccionada
         let currentReservaId = null; // Variable para almacenar el ID de la reserva seleccionada
+
         // Abrir modal y obtener el PIN de la reserva seleccionada
         openModalBtns.forEach((btn) => {
           btn.addEventListener("click", () => {
-            currentPin = btn.getAttribute("data-pin"); // Obtener elPIN de la reserva
-            currentReservaId = btn.getAttribute("data-reserva-id"); //Obtener el ID de la reserva
+            currentPin = btn.getAttribute("data-pin"); // Obtener el PIN de la reserva
+            currentReservaId = btn.getAttribute("data-reserva-id"); // Obtener el ID de la reserva
             modal.style.display = "flex";
             pinInputModal.value = "";
           });
         });
+
         // Cerrar modal
         cancelBtn.addEventListener("click", () => {
           modal.style.display = "none";
         });
+
         // Teclado numérico
         buttons.forEach((button) => {
           button.addEventListener("click", () => {
@@ -161,32 +151,82 @@ ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
             }
           });
         });
+
         // Borrar último dígito
         clearBtn.addEventListener("click", () => {
           pinInputModal.value = pinInputModal.value.slice(0, -1);
         });
+
         // Borrar todo
         blankBtn.addEventListener("click", () => {
           pinInputModal.value = "";
         });
-        // Aceptar PIN (Asignar el PIN al formulario y enviarlo)
+
+        // Aceptar PIN (Validar y luego registrar el acceso)
         acceptBtn.addEventListener("click", () => {
           const pin = pinInputModal.value;
           if (pin.length >= 4) {
-            // Asignar el PIN al formulario antes de enviarlo
-            pinInputForm.value = pin;
-            document.querySelector("form").submit(); // Enviar el formulario
+            console.log("PIN ingresado:", pin);
+            console.log("PIN de reserva:", currentPin);
+            const resultado = pin === currentPin; // Validar si el PIN es correcto
+            const horario = new Date().toISOString(); // Obtener la fecha y hora actual
+
+            // Mostrar mensaje según el resultado
+            if (resultado) {
+              alert("✅ PIN válido, acérquese a la cerradura");
+            } else {
+              alert("❌ PIN incorrecto");
+            }
+
+            // Registrar el acceso en el backend
+            fetch("/acceso/guardar", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams({
+                horario: horario, // Fecha y hora actual
+                resultado: resultado, // true si el PIN es correcto, false si no
+                reservaId: currentReservaId, // ID de la reserva seleccionada
+              }),
+            })
+              .then((response) => {
+                if (response.ok) {
+                  console.log("✅ Acceso registrado correctamente");
+                } else {
+                  console.error("❌ Error al registrar el acceso");
+                }
+              })
+              .catch((error) => console.error("❌ Error:", error));
+
             modal.style.display = "none";
           } else {
             alert("El PIN debe tener al menos 4 dígitos.");
           }
         });
+
         // Cerrar modal si se hace clic fuera
         window.addEventListener("click", (event) => {
           if (event.target === modal) {
             modal.style.display = "none";
           }
         });
+
+        // Código relacionado con la validación de PIN en la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const pinValido = urlParams.get("pinValido");
+        const reservaIdFromUrl = urlParams.get("reservaId"); // Si se necesita desde la URL
+
+        if (pinValido === "true") {
+          alert("✅ PIN válido, acérquese a la cerradura");
+        } else if (pinValido === "false") {
+          alert("❌ PIN incorrecto");
+        }
+
+        console.log("Datos enviados al backend:");
+        console.log("Horario:", new Date().toISOString());
+        console.log("Resultado:", pinValido === "true");
+        console.log("Reserva ID:", reservaIdFromUrl);
       });
     </script>
   </body>

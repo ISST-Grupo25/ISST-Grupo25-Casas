@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head th:replace="~{layout :: head}"></head>
-  <body>
+  <body th:class="${session.theme}">
     <div id="main">
       <!-- Barra de navegación -->
       <div th:replace="~{layout :: nav}"></div>
@@ -9,35 +9,104 @@
       <!-- Contenido principal -->
       <main class="contentview" th:replace="~{layout :: content}">
         <section class="section-container" th:fragment="section">
-          <header class="hero">
-            <div class="hero-content">
-              <h2>Accesos Inteligentes para tu Propiedad</h2>
-              <p class="!bg-black !text-amber-300">
-                Gestión remota y segura de cerraduras con tecnología Bluetooth e
-                Internet.
-              </p>
-            </div>
-          </header>
-          <section class="features">
-            <div class="feature">
-              <h3>Acceso Bluetooth</h3>
-              <p>
-                Abre puertas con tu smartphone sin necesidad de llaves físicas.
-              </p>
-            </div>
-            <div class="feature">
-              <h3>Integración con Google Calendar</h3>
-              <p>Planifica accesos y controla el horario de cada usuario.</p>
-            </div>
-            <div class="feature">
-              <h3>Monitoreo en Tiempo Real</h3>
-              <p>Historial de accesos y notificaciones de seguridad.</p>
-            </div>
+          <section class="feature hero-fullscreen">
+            <h1>Accesos Inteligentes para tu Propiedad</h1>
+            <p>Gestión remota y segura de cerraduras con tecnología Bluetooth e Internet.</p>
           </section>
+          
+          <section class="feature feature-1 fade-in">
+            <h2>Acceso Bluetooth</h2>
+            <p>Abre puertas con tu smartphone sin necesidad de llaves físicas.</p>
+          </section>
+          
+          <section class="feature feature-2 fade-in">
+            <h2>Integración con Google Calendar</h2>
+            <p>Planifica accesos y controla el horario de cada usuario.</p>
+          </section>
+          
+          <section class="feature feature-3 fade-in">
+            <h2>Monitoreo en Tiempo Real</h2>
+            <p>Historial de accesos y notificaciones de seguridad.</p>
+          </section>          
         </section>
       </main>
     </div>
     <!-- Inclusión de los scripts del layout -->
     <script th:replace="~{layout :: scripts}"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const faders = document.querySelectorAll('.fade-in');
+    
+        const observer = new IntersectionObserver(
+          entries => {
+            entries.forEach(entry => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target); // Solo se anima una vez
+              }
+            });
+          },
+          {
+            threshold: 0.3 // Se activa cuando un 30% de la sección está visible
+          }
+        );
+    
+        faders.forEach(fader => {
+          observer.observe(fader);
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const features = document.querySelectorAll(".feature");
+    
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+          }
+        );
+    
+        features.forEach((feature) => {
+          observer.observe(feature);
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll(".feature");
+    
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              const el = entry.target;
+              if (entry.isIntersecting) {
+                el.classList.add("visible");
+                el.classList.remove("fade-out");
+              } else {
+                if (el.classList.contains("visible")) {
+                  el.classList.add("fade-out");
+                  el.classList.remove("visible");
+                }
+              }
+            });
+          },
+          {
+            threshold: 0.3, // Ajusta si quieres que entre/salga antes o después
+          }
+        );
+    
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+      });
+    </script>
+    
   </body>
 </html>

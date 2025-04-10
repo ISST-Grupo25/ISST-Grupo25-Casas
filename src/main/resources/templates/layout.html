@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)" th:with="theme=${session.theme}">
   <head th:fragment="head">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IoH - Internet de las Casas</title>
     <link rel="icon" th:href="@{/images/logo_IoH.ico}" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" th:href="@{/styles.css}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <link
       rel="stylesheet"
@@ -19,19 +19,20 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   </head>
-  <body>
-    <div id="main" th:fragment="main">
+
+  <body th:class="${theme}">
+    <div id="main">
       <nav class="navbar" th:fragment="nav">
         <div class="nav-left">
           <span
+            id="menuButton"
             th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn }"
             class="material-icons menu-icon"
             onclick="openNav()"
-            >menu</span
-          >
+          >menu</span>
           <a th:href="@{/}">
             <img
-              th:src="@{/images/logo_IoH_white.png}"
+              th:src="@{/images/logo_IoH.png}"
               alt="IoH Logo"
               class="logo"
             />
@@ -40,6 +41,7 @@
             <h1><a th:href="@{/}">Internet de las Casas</a></h1>
           </div>
         </div>
+
         <div class="nav-right">
           <div
             class="user-menu"
@@ -47,14 +49,10 @@
             tabindex="0"
           >
             <button id="userBtn" class="user-btn">
-              <span th:text="${session.usuario.name }"></span></span
-              ><span
-                style="padding-left: 10px; color: white"
-                class="material-icons"
-                >keyboard_arrow_down</span
-              >
+              <span th:text="${session.usuario.name}"></span>
+              <span style="padding-left: 5px;" class="material-icons">keyboard_arrow_down</span>
             </button>
-            <ul class="dropdown" th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn}">
+            <ul class="dropdown">
               <li><a th:href="@{/profile}">Mi Perfil</a></li>
               <li><a th:href="@{/settings}">Ajustes</a></li>
               <li><a th:href="@{/logout}">Cerrar Sesión</a></li>
@@ -76,50 +74,72 @@
               <a th:href="@{/}">Inicio</a>
             </li>
 
-            <li
-              th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'gestor'}"
-              class="nav-item"
-            >
+            <li th:if="${session.role == 'gestor'}" class="nav-item">
               <span class="material-icons">calendar_month</span>
               <a th:href="@{/calendar}">Gestionar Reservas</a>
             </li>
+
             <li th:if="${session.isLoggedIn}" class="nav-item">
               <span class="material-icons">bar_chart</span>
               <a th:href="@{/monitor}">Monitorizar Acessos</a>
             </li>
-            <li
-              th:if="${session != null and session.isLoggedIn != null and session.isLoggedIn and session.role == 'huesped'}"
-              class="nav-item"
-            >
+
+            <li th:if="${session.role == 'huesped'}" class="nav-item">
               <span class="material-icons">key</span>
               <a th:href="@{/home-access}">Acesso Actual</a>
             </li>
+
             <li class="expand"></li>
+
             <li class="nav-item">
               <span class="material-icons">account_circle</span>
               <a th:href="@{/profile}">Perfil</a>
             </li>
+
             <li class="setting-item">
               <span class="material-icons">settings</span>
               <a th:href="@{/settings}">Ajustes</a>
             </li>
+
             <li class="setting-item">
               <span class="material-icons">drafts</span>
               <a th:href="@{/contact}">Contacto</a>
             </li>
+
             <hr class="separator" />
+
             <li class="logout-item">
               <span class="material-icons">logout</span>
               <a th:href="@{/logout}">Cerrar sesión</a>
             </li>
           </ul>
         </div>
+
+        <div id="mobileNav" class="mobile-nav" th:fragment="mobilenav">
+          <a th:href="@{/index}" class="mobile-nav-item">
+            <span class="material-icons">home</span>
+          </a>
+          <a th:href="@{/calendar}" th:if="${session.role == 'gestor'}" class="mobile-nav-item">
+            <span class="material-icons">calendar_month</span>
+          </a>
+          <a th:href="@{/monitor}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+            <span class="material-icons">bar_chart</span>
+          </a>
+          <a th:href="@{/home-access}" th:if="${session.role == 'huesped'}" class="mobile-nav-item">
+            <span class="material-icons">key</span>
+          </a>
+          <a th:href="@{/profile}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+            <span class="material-icons">account_circle</span>
+          </a>
+          <a th:href="@{/settings}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+            <span class="material-icons">settings</span>
+          </a>
+        </div>
+
         <div class="contentview">
           <div id="maincontent" class="viewinfo" th:insert="~{::section}"></div>
           <footer class="footer" th:fragment="footer">
-            <p>
-              &copy; 2025 Internet de las Casas. Todos los derechos reservados.
-            </p>
+            <p>&copy; 2025 Internet de las Casas. Todos los derechos reservados.</p>
           </footer>
         </div>
       </main>
@@ -127,32 +147,31 @@
 
     <script th:fragment="scripts">
       function openNav() {
-        if (document.getElementById("mySidenav").style.width == "250px") {
-          closeNav();
+        const nav = document.getElementById("mySidenav");
+        const content = document.getElementById("maincontent");
+        if (nav.style.width == "250px") {
+          nav.style.width = "0";
+          content.style.marginLeft = "0";
         } else {
-          document.getElementById("mySidenav").style.width = "250px";
-          document.getElementById("maincontent").style.marginLeft = "0";
+          nav.style.width = "250px";
+          content.style.marginLeft = "0";
         }
       }
+
       function closeNav() {
         document.getElementById("mySidenav").style.width = "0";
         document.getElementById("maincontent").style.marginLeft = "0";
       }
+
+      function toggleMenuBtnDisplay() {
+        const menuBtn = document.getElementById("menuButton");
+        if (menuBtn) {
+          menuBtn.style.display = window.innerWidth <= 768 ? 'none' : 'inline-block';
+        }
+      }
+
+      window.addEventListener('resize', toggleMenuBtnDisplay);
+      window.addEventListener('load', toggleMenuBtnDisplay);
     </script>
-
-    <!-- Fragmento "layout" que envuelve toda la estructura -->
-    <div th:fragment="layout(content)">
-      <div th:replace="~{head}"></div>
-
-      <div id="main">
-        <div th:replace="~{nav}"></div>
-        <main>
-          <div th:replace="~{sidenav}"></div>
-          <div id="maincontent" th:insert="${content}"></div>
-          <div th:replace="~{footer}"></div>
-        </main>
-      </div>
-      <div th:replace="~{scripts}"></div>
-    </div>
   </body>
 </html>

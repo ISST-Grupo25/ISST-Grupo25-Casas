@@ -104,6 +104,10 @@
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
 
+.modal-content h2 {
+  color: black;
+}
+
 #pin-input {
   font-size: 20px;
   text-align: center;
