@@ -54,25 +54,27 @@ public class CerraduraController {
    }
 
    @PostMapping("/cerradura/guardar")
+   @ResponseBody // 🔥 esto es CLAVE
    public String guardarCerradura(@RequestParam("ubicacion") String ubicacion,
-                               @RequestParam("token") String token,
-                               HttpSession session) {
-        try {
-            // Obtener el gestor actual desde la sesión
-            Object obj = session.getAttribute("usuario");
-            if (obj instanceof Gestor gestor) {
-                // Llamar al servicio para guardar la cerradura con el gestor asociado
-                cerraduraService.guardarCerradura(ubicacion, token, gestor.getId());
-                return "redirect:/calendar"; // Redirigir al calendario
-            } else {
-                System.out.println("❌ Error: No hay un gestor en sesión");
-                return "redirect:/calendar?error=sinGestor"; // Mostrar error en la vista
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error al guardar cerradura: " + e.getMessage());
-            return "redirect:/calendar?error"; // Mostrar error en la vista
-        }
-    }
+                                  @RequestParam("token") String token,
+                                  HttpSession session) {
+       try {
+           Object obj = session.getAttribute("usuario");
+           if (obj instanceof Gestor gestor) {
+               // Guardar y recuperar la cerradura guardada
+               Cerradura nuevaCerradura = cerraduraService.guardarCerradura(ubicacion, token, gestor.getId());
+               
+               // 🔥 Devolver directamente el ID como texto
+               return String.valueOf(nuevaCerradura.getId());
+           } else {
+               System.out.println("❌ Error: No hay un gestor en sesión");
+               return "-1"; // 🔥 devolvemos error de forma sencilla
+           }
+       } catch (Exception e) {
+           System.out.println("❌ Error al guardar cerradura: " + e.getMessage());
+           return "-1"; // 🔥 devolvemos error también aquí
+       }
+   }
 
    @PostMapping("/cerradura/abrir")
    public String abrirCerradura(@RequestParam("pin") String pin,

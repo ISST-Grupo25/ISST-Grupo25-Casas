@@ -1,6 +1,5 @@
 // ReservaController.java -----------------------------------------------------------
 package com.isst.ISST_Grupo25_Casas.controllers;
-
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.google.api.client.util.DateTime;
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
@@ -38,6 +37,7 @@ import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,7 +83,7 @@ public class ReservaController {
             Object obj = session.getAttribute("usuario");
 
             if (obj instanceof Gestor gestor) { // Validar y castear correctamente
-                List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
                 List<Cerradura> cerraduras = cerraduraService.obtenerCerradurasPorGestor(gestor.getId());
                 List<Huesped> huespedes = huespedService.obtenerTodosLosHuespedes();
         
@@ -119,18 +119,6 @@ public class ReservaController {
                 return "redirect:/calendar?error";
             }
     
-            // // Verificar si está autorizado con Google
-            // var credential = GoogleCalendarService.getFlow().loadCredential("isst");
-            // if (credential == null || credential.getAccessToken() == null) {
-            //     // Guardar temporalmente los datos necesarios
-            //     session.setAttribute("pendingAction", "guardar");
-            //     session.setAttribute("form_cerraduraId", cerraduraId);
-            //     session.setAttribute("form_fechaInicio", fechaInicioStr);
-            //     session.setAttribute("form_fechaFin", fechaFinStr);
-            //     session.setAttribute("form_huespedIds", huespedIds);
-            //     return "redirect:/google-calendar/authorize";
-            // }
-    
             return ejecutarGuardarReserva(gestor, cerraduraId, fechaInicioStr, fechaFinStr, huespedIds, redirectAttributes);
         } catch (Exception e) {
             System.out.println("❌ Error al guardar reserva: " + e.getMessage());
@@ -159,14 +147,6 @@ public class ReservaController {
         reservaService.guardarReserva(fechaInicio, fechaFin, cerradura, huespedes, gestor);
         System.out.println("✅ Reserva creada en base de datos");
 
-        // Crear evento en Google Calendar
-        String resumen = "Reserva para casa: " + cerradura.getUbicacion();
-        String descripcion = "Reserva gestionada desde IoH. Huéspedes: " + huespedes.size();
-        String inicioStr = fechaInicioStr + "T12:00:00+02:00";
-        String finStr = fechaFinStr + "T14:00:00+02:00";
-
-        GoogleCalendarService.createEvent(resumen, descripcion, inicioStr, finStr);
-        System.out.println("✅ Evento creado en Google Calendar");
 
         return "redirect:/calendar";
 
@@ -263,60 +243,6 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
 
 
 
-
-
-
-
-    // @PostMapping("/calendar/importar")
-    // public String importarDesdeGoogle(HttpSession session, RedirectAttributes redirectAttributes) {
-    //     try {
-    //         Object obj = session.getAttribute("usuario");
-    //         if (obj instanceof Gestor gestor) {
-    //             Cerradura cerradura = cerraduraService.obtenerPrimera();
-    //             Huesped huesped = huespedService.obtenerPrimero();
-
-    //             int importadas = reservaService.importarDesdeGoogle(cerradura, huesped, gestor);
-    //             redirectAttributes.addFlashAttribute("importadas", importadas);
-    //             return "redirect:/calendar";
-    //         } else {
-    //             return "redirect:/calendar?error";
-    //         }
-    //     } catch (Exception e) {
-    //         return "redirect:/calendar?errorGoogle";
-    //     }
-    // }
-
-
-
-    // @PostMapping("/calendar/importar-fichero")
-    // public String importarDesdeIcs(@RequestParam("file") MultipartFile file,
-    //                                HttpSession session,
-    //                                RedirectAttributes redirectAttributes) {
-    //     try {
-    //         Object obj = session.getAttribute("usuario");
-    //         if (!(obj instanceof Gestor gestor)) {
-    //             return "redirect:/calendar?error=NoAutenticado";
-    //         }
-    
-    //         // Puedes ajustar esto: por ahora cogemos la primera cerradura y primer huésped
-    //         Cerradura cerradura = cerraduraService.obtenerPrimera(); // ← Asegúrate que este método existe
-    //         List<Huesped> huespedes = List.of(huespedService.obtenerPrimero()); // ← También asegúrate
-            
-    //         int importadas = reservaService.importarDesdeFicheroIcs(file.getInputStream(), cerradura, huespedes, gestor);
-    //         redirectAttributes.addFlashAttribute("importadasFichero", importadas);
-    //         return "redirect:/calendar";
-    //     } catch (Exception e) {
-    //         redirectAttributes.addFlashAttribute("errorReserva", "❌ Error al importar ICS: " + e.getMessage());
-    //         return "redirect:/calendar";
-    //     }
-    // }
-
-
-
-    
-
-
-
     // Método para generar un color único basado en el ID de la cerradura y mostrarlo luego en el calendario
     private String generarColorDesdeId(Long id) {
         if (id == null) return "#999999";
@@ -359,26 +285,39 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
 
     @GetMapping("/reservas")
         @ResponseBody
-        public List<Map<String, Object>> obtenerReservasParaCalendario() {
-            List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
+        public List<Map<String, Object>> obtenerReservasParaCalendario(HttpSession session) {
+            Object obj = session.getAttribute("usuario");
 
-            List<Map<String, Object>> eventos = new ArrayList<>();
+            if (obj instanceof Gestor gestor) {
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+                List<Map<String, Object>> eventos = new ArrayList<>();
 
-            for (Reserva r : reservas) {
-                Map<String, Object> evento = new HashMap<>();
-                evento.put("id", r.getId()); // ✅ Añadir esto
-                evento.put("title", "Reserva casa " + r.getCerradura().getUbicacion());
-                evento.put("start", r.getFechainicio().toString());
-                evento.put("end", r.getFechafin().toString());
-                evento.put("extendedProps", Map.of(
-                    "cerraduraId", r.getCerradura().getId(),
-                    "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getName())).toList()
-                ));
-                evento.put("color", generarColorDesdeId(r.getCerradura().getId()));
-                eventos.add(evento);
+                for (Reserva r : reservas) {
+                    Map<String, Object> evento = new HashMap<>();
+                    evento.put("id", r.getId()); // ✅ Añadir esto
+                    evento.put("title", "Reserva casa " + r.getCerradura().getUbicacion());
+                    evento.put("start", r.getFechainicio().toString());
+                    
+                    LocalDate fechaFin = r.getFechafin().toLocalDate(); // 🔥 Convertimos java.sql.Date a LocalDate
+                    fechaFin = fechaFin.plusDays(1); // 🔥 Sumamos 1 día directamente
+                    evento.put("end", fechaFin.toString()); //
+                    evento.put("allDay", true);
+
+                    evento.put("extendedProps", Map.of(
+                        "cerraduraId", r.getCerradura().getId(),
+                        "fechaFinReal", r.getFechafin().toString(),
+                        "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getName())).toList()
+                    ));
+                    evento.put("color", generarColorDesdeId(r.getCerradura().getId()));
+                    
+                    eventos.add(evento);
+                }
+
+                return eventos;
+
+            } else {
+                return new ArrayList<>(); // Retorna una lista vacía si no hay un gestor en sesión
             }
-
-            return eventos;
         }
 
 
