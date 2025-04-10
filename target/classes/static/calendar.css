@@ -57,7 +57,7 @@
   box-sizing: border-box;
 }
 
-.btn-add-reserva {
+.btn-calendar {
   background: linear-gradient(
     135deg,
     var(--marron-oscuro),
@@ -81,7 +81,7 @@
   gap: 10px;
 }
 
-.btn-add-reserva::after {
+.btn-calendar::after {
   content: "";
   position: absolute;
   top: 0;
@@ -93,15 +93,15 @@
   transition: all 0.5s ease;
 }
 
-.btn-add-reserva:hover::after {
+.btn-calendar:hover::after {
   left: 125%;
 }
 
-.btn-add-reserva .material-icons {
+.btn-calendar .material-icons {
   color: white;
 }
 
-.btn-add-reserva:hover {
+.btn-calendar:hover {
   background: linear-gradient(
     135deg,
     var(--marron-claro),

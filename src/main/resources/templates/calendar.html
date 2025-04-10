@@ -22,14 +22,14 @@
         <section class="section-container" th:fragment="section">
           <div class="tittle-button">
             <h2>Gestión de Reservas</h2>
-            <button id="addEvent" class="btn-add-reserva">
+            <button id="addEvent" class="btn-calendar">
               <span class="material-icons">add</span>Añadir Reserva
             </button>
           </div>
-          <div id="calendar"></div>
+          <div id="calendar" class="fade-in"></div>
 
           <form method="post" th:action="@{/calendar/sincronizar}">
-            <button type="submit" class="btn">
+            <button type="submit" class="btn-calendar">
               <span class="material-icons">autorenew</span> Sincronizar con
               Google Calendar
             </button>
@@ -45,7 +45,7 @@
 
           <!-- MODAL de Modificación o eliminación -->
           <div id="eventModal" class="modal-calendar" style="display: none">
-            <div class="modal-calendar-content">
+            <div class="modal-calendar-content scale-up">
               <button class="close" onclick="closeEventModal()">
                 <span class="material-icons">close</span>
               </button>
@@ -53,7 +53,7 @@
               <h3 id="modal-title">Editar Reserva</h3>
               <p id="modal-dates"></p>
 
-              <div class="modal-calendar-actions">
+              <div class="modal-calendar-actions scale-up">
                 <button
                   id="editEventBtn"
                   type="button"
@@ -136,7 +136,7 @@
                   </div>
                 </div>
 
-                <div class="modal-calendar-actions">
+                <div class="modal-calendar-actions scale-up">
                   <button
                     type="button"
                     id="cancelModal"
@@ -154,7 +154,7 @@
 
           <!-- Modal de Nueva Reserva -->
           <div id="accessModal" class="modal-calendar">
-            <div class="modal-calendar-content">
+            <div class="modal-calendar-content scale-up">
               <button id="closeModal" class="close">
                 <span class="material-icons">close</span>
               </button>
@@ -246,7 +246,7 @@
                 </div>
               </div>
 
-              <div class="modal-calendar-actions">
+              <div class="modal-calendar-actions scale-up">
                 <button
                   type="button"
                   id="cancelModal"
@@ -455,6 +455,12 @@
             event.preventDefault();
             newCasaInputs.style.display = "none";
           });
+        }
+
+        // Forzar visibilidad del calendario si tiene clase fade-in
+        const calendarElement = document.getElementById("calendar");
+        if (calendarElement.classList.contains("fade-in")) {
+          calendarElement.classList.add("visible");
         }
       });
     </script>

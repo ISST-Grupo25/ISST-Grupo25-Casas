@@ -11,26 +11,31 @@
   --fondo: #f8f4f1;
   --marron-claro: #6b4c3b;
   --marron-oscuro: #3f2e23;
-  --boton-hover: #4a362a;
-  --texto: #333;
-  --card-bg: white;
-  
-}
+  --marron-medium: #5a3e2c;
 
-/* Tema Claro */
-body.light {
-  --fondo: #f8f4f1;
-  --marron-claro: #6b4c3b;
-  --marron-oscuro: #3f2e23;
+  --boton: var(--marron-claro); 
   --boton-hover: #4a362a;
-  --texto: #333;
-  --card-bg: white;
-  --boton: var(--marron-claro);
-  --botontexto: white;
+  --botontexto: #ffffff;        
   --botontexto-hover: white;
+
+  --texto: #333;
+  --texto-secundario: #666;
+
+  --card-bg: white;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
+
+  --acento: #69e5a7;
+  --error: #dc3545;
+  --success: #28a745;
+  --warning: #ffc107;
+
   --input-bg: white;
   --input-text: #212121;
   --borde: #ccc;
+
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
 }
 
 /* Tema Oscuro */
@@ -38,16 +43,20 @@ body.dark {
   --fondo: #1e1e1e;
   --marron-claro: #d8bfa4;
   --marron-oscuro: #cbb29a;
-  --boton-hover: #a68e74;
+
+
   --texto: #f0f0f0;
+  --texto-secundario: #aaa;
   --card-bg: #2c2c2c;
-  --boton: var(--marron-claro);
-  --botontexto: white;
-  --botontexto-hover: black;
+
+  --boton: var(--marron-oscuro); 
+  --boton-hover: #a68e74;
+  --botontexto: #1e1e1e;        
+  --botontexto-hover: rgb(0, 0, 0);
+
   --input-bg: #1e1e1e;
   --input-text: #f5f5f5;
   --borde: #444;
-
 }
 
 /* -----------------------------------------------------
@@ -74,26 +83,61 @@ main {
 ----------------------------------------------------- */
 
 /* Botones */
+.btn,
 .btn-primary {
-  background-color: var(--marron-claro);
-  color: white;
-  padding: 10px 20px;
+  background: linear-gradient(
+    135deg,
+    var(--marron-oscuro),
+    var(--marron-claro)
+  );
+  color: var(--botontexto);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
   font-size: 16px;
-  border: 2px solid var(--marron-claro);
-  border-radius: 5px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
+.btn:hover,
 .btn-primary:hover {
-  background-color: var(--marron-oscuro);
+  background: linear-gradient(
+    135deg,
+    var(--marron-claro),
+    var(--marron-oscuro)
+  );
+  color: var(--botontexto-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
 
-.btn-secondary {
+.btn::after, .btn-primary::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: skewX(-20deg);
+  transition: all 0.5s ease;
+}
+
+.btn:hover::after, .btn-primary:hover::after {
+  left: 125%;
+}
+
+.btn .material-icons, .btn-primary .material-icons {
   color: white;
-  padding: 12px 20px;
-  font-size: 16px;
-  text-decoration: none;
 }
 
 /* Formularios e Inputs */
@@ -101,17 +145,24 @@ input,
 textarea,
 select {
   width: 100%;
-  font-size: 14px;
-  padding: 10px;
+  padding: 10px 14px;
+  font-size: 15px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-  margin-top: 5px;
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
-label {
-  font-weight: 600;
+input:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid var(--marron-oscuro);
+  box-shadow: 0 0 0 3px rgba(107, 76, 59, 0.2);
+  outline: none;
 }
+
 
 /* Tarjetas y contenedores */
 .card,
@@ -130,6 +181,110 @@ label {
 /* -----------------------------------------------------
    SECCIONES ESPECÍFICAS
 ----------------------------------------------------- */
+/* Sección inicial */
+.hero-fullscreen {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom right, #fdf6f0, #eee2da);
+  text-align: center;
+  padding: 0 20px;
+  scroll-snap-align: start;
+  font-size: 1.5rem;
+}
+
+.hero-fullscreen h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: var(--texto);
+}
+
+.hero-fullscreen p {
+  font-size: 1.2rem;
+  color: var(--texto);
+}
+
+/* Secciones de características */
+.feature {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  scroll-snap-align: start;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.feature h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.feature p {
+  font-size: 1.1rem;
+  max-width: 600px;
+}
+
+/* Fondos distintos para cada feature */
+.feature-1 {
+  background: linear-gradient(to right, #3c3b3f, #605c3c); /* gris/marrón oscuro */
+}
+
+.feature-2 {
+  background: linear-gradient(to right, #283e51, #485563); /* azul/gris */
+}
+
+.feature-3 {
+  background: linear-gradient(to right, #1e3c72, #2a5298); /* azul intenso */
+}
+
+/* Scroll suave y snap */
+body {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
+/* Estado inicial: oculto y desplazado */
+
+
+/* Cuando entra en el viewport */
+.feature.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Cuando empieza a salir */
+.feature.fade-out {
+  opacity: 0;
+  transform: translateY(-40px);
+}
+
+body.dark .hero-fullscreen {
+  background: linear-gradient(to bottom right, #2b2b2b, #1e1e1e);
+  color: var(--texto);
+}
+
+body.dark .feature-1 {
+  background: linear-gradient(to bottom right, #3f342b, #2a211a);
+}
+
+body.dark .feature-2 {
+  background: linear-gradient(to bottom right, #2a3b4d, #1c2a38);
+}
+
+body.dark .feature-3 {
+  background: linear-gradient(to bottom right, #372447, #241533);
+}
 
 /* Hero */
 .hero {
@@ -150,23 +305,6 @@ label {
 .hero-content p {
   font-size: 18px;
   margin-bottom: 20px;
-}
-
-/* Features */
-.features {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  padding: 50px 20px;
-  text-align: center;
-}
-
-.feature h3 {
-  font-size: 22px;
-}
-
-.feature p {
-  color: #888;
 }
 
 /* Calendario */
@@ -375,3 +513,50 @@ label {
     font-size: 14px;
   }
 }
+
+/* -----------------------------------------------------
+   ANIMACIONES GLOBALES
+----------------------------------------------------- */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.scale-up {
+  animation: scaleUp 0.3s ease-in-out;
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+
+
+
+
+
