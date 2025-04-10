@@ -1,20 +1,23 @@
-/* Formularios */
+/* Contenedor del formulario */
 .contact-form {
   min-width: 500px;
   margin: 50px auto;
-  background: white;
+  background-color: var(--card-bg);
+  color: var(--texto);
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .contact-form h2 {
   margin-bottom: 10px;
+  color: var(--texto);
 }
 
 .contact-form p {
-  color: #666;
+  color: var(--texto);
   margin-bottom: 20px;
 }
 
@@ -23,36 +26,51 @@
   flex-direction: column;
 }
 
+/* Etiquetas */
 .contact-form label {
   text-align: left;
   font-weight: 600;
   margin-top: 10px;
+  color: var(--texto);
 }
 
-.contact-form input {
+/* Inputs y textarea */
+.contact-form input,
+.contact-form textarea {
   padding: 10px;
-  border: 1px solid #ccc;
+  background-color: var(--input-bg, #fff);
+  color: var(--input-text, #000);
+  border: 1px solid var(--borde, #ccc);
   border-radius: 5px;
   margin-top: 5px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
+.contact-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Botón de envío */
 .contact-form .btn-primary {
-  background-color: var(--marron-claro);
-  color: white;
+  background-color: var(--boton);
+  color: var(--botontexto);
   padding: 10px;
   border: none;
   border-radius: 5px;
   margin-top: 15px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
 
 .contact-form .btn-primary:hover {
-  background-color: var(--marron-oscuro);
+  background-color: var(--boton-hover);
+  color: var(--botontexto-hover);
 }
 
+/* Enlaces */
 .contact-form a {
-  color: var(--marron-claro);
+  color: var(--boton);
   text-decoration: none;
   font-weight: 600;
 }
@@ -61,7 +79,7 @@
   text-decoration: underline;
 }
 
-/* 🔹 Estilos responsive para vista móvil */
+/* =============== Responsive =============== */
 @media screen and (max-width: 768px) {
   .contact-form {
     min-width: 0;
@@ -86,10 +104,6 @@
   .contact-form textarea {
     width: 100%;
     box-sizing: border-box;
-  }
-
-  .contact-form textarea {
-    resize: vertical;
   }
 
   .contact-form .btn-primary {
