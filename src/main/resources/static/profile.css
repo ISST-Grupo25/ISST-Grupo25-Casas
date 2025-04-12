@@ -9,13 +9,6 @@ body {
 	color: #333;
 }
 
-header {
-	background-color: #af844c;
-	color: white;
-	padding: 10px 20px;
-	text-align: center;
-}
-
 h1 {
 	font-size: 24px;
 	margin: 20px 0;
@@ -42,3 +35,42 @@ button {
 button:hover {
 	background-color: #45a049;
 }
+
+.profile-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+	text-align: center;
+}
+
+.avatar {
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+	border-radius: 50%;
+	border: 3px solid #af844c;
+  }
+
+.avatar:hover {
+	transform: scale(1.05);
+	transition: transform 0.3s ease;
+	cursor: pointer;
+}
+
+input[type="file"] {
+	border: 1px solid #ccc;
+	padding: 5px;
+	border-radius: 6px;
+	background-color: #fff;
+	cursor: pointer;
+  }
+
+.profile-info form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
