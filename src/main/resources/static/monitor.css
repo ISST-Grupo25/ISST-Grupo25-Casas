@@ -1,0 +1,74 @@
+.dashboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .stats-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    background: linear-gradient(135deg, var(--marron-oscuro), var(--marron-claro));
+    color: var(--botontexto);
+    padding: 20px;
+    border-radius: 12px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0px 8px 16px var(--shadow-medium);
+  }
+  
+  .access-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .access-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 8px 16px var(--shadow-light);
+    transition: transform 0.3s ease;
+    color: var(--texto);
+  }
+  
+  .access-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .access-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: var(--texto);
+  }
+  
+  .access-info {
+    font-size: 14px;
+    color: var(--texto-secundario);
+    line-height: 1.6;
+  }
+  
+  .search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .search-bar input {
+    max-width: 400px;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 10px;
+  }
+  
