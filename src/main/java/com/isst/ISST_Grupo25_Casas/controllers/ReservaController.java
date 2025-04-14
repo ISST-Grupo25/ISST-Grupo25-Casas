@@ -67,7 +67,7 @@ public class ReservaController {
         }
         
         if (obj instanceof Huesped huesped) { // Validar y castear correctamente
-            System.out.println("📌 Usuario logueado: " + huesped.getName());
+            System.out.println("📌 Usuario logueado: " + huesped.getNombre());
             List<Reserva> reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
             model.addAttribute("reservas", reservas);
         } else {
@@ -83,7 +83,7 @@ public class ReservaController {
             Object obj = session.getAttribute("usuario");
 
             if (obj instanceof Gestor gestor) { // Validar y castear correctamente
-                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
                 List<Cerradura> cerraduras = cerraduraService.obtenerCerradurasPorGestor(gestor.getId());
                 List<Huesped> huespedes = huespedService.obtenerTodosLosHuespedes();
         
@@ -196,7 +196,7 @@ public String googleCalendarCallback(@RequestParam("code") String code, HttpSess
             Gestor gestor = (Gestor) session.getAttribute("usuario");
             session.removeAttribute("pendingAction");
 
-            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
             GoogleCalendarService.sincronizarConGoogle(reservas);
 
             return "redirect:/calendar?syncSuccess";
@@ -218,7 +218,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
     try {
         Object obj = session.getAttribute("usuario");
         if (obj instanceof Gestor gestor) {
-            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
             GoogleCalendarService.sincronizarConGoogle(reservas);
             redirectAttributes.addFlashAttribute("sincronizado", true);
             return "redirect:/calendar";
@@ -289,7 +289,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
             Object obj = session.getAttribute("usuario");
 
             if (obj instanceof Gestor gestor) {
-                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
                 List<Map<String, Object>> eventos = new ArrayList<>();
 
                 for (Reserva r : reservas) {
@@ -306,7 +306,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
                     evento.put("extendedProps", Map.of(
                         "cerraduraId", r.getCerradura().getId(),
                         "fechaFinReal", r.getFechafin().toString(),
-                        "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getName())).toList()
+                        "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getNombre())).toList()
                     ));
                     evento.put("color", generarColorDesdeId(r.getCerradura().getId()));
                     

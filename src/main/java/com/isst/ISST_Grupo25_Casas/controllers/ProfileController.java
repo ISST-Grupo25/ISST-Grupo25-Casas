@@ -72,7 +72,7 @@ public class ProfileController {
 
         if (usuario instanceof Huesped) {
             Huesped huesped = (Huesped) usuario;
-            huesped.setName(name);
+            huesped.setNombre(name);
             huesped.setEmail(email);
             huespedRepository.save(huesped);  // Guardar cambios en la BD
 
@@ -81,7 +81,7 @@ public class ProfileController {
             session.setAttribute("email", email);
         } else if (usuario instanceof Gestor) {
             Gestor gestor = (Gestor) usuario;
-            gestor.setName(name);
+            gestor.setNombre(name);
             gestor.setEmail(email);
             gestorRepository.save(gestor);  // Guardar cambios en la BD
 

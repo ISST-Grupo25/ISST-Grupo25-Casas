@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     List<Reserva> findByHuespedesId(Long huespedId);
     List<Reserva> findByCerraduraId(Long cerraduraId);
-    List<Reserva> findByGestor(Gestor gestor);
+    List<Reserva> findByGestorId(Long gestorId);
     void deleteByCerraduraId(Long cerraduraId);
     @Modifying
     @Transactional

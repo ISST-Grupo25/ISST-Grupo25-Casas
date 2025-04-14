@@ -100,8 +100,8 @@ public class ReservaService {
         return reservaRepository.findByCerraduraId(cerraduraId);
     }
 
-    public List<Reserva> obtenerReservasPorGestor(Gestor gestor) {
-        return reservaRepository.findByGestor(gestor);
+    public List<Reserva> obtenerReservasPorGestor(Long gestorId) {
+        return reservaRepository.findByGestorId(gestorId);
     }
 
     public boolean existeReservaEnEseRangoYCasa(Date inicio, Date fin, Cerradura cerradura) {

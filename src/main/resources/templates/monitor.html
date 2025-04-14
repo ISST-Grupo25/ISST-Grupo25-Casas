@@ -76,6 +76,33 @@
         border-radius: 8px;
         border: 1px solid #ccc;
       }
+
+      .access-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 80%;
+        max-width: 600px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      }
+
+      .close-btn {
+        float: right;
+        font-size: 24px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body th:class="${session.theme}">
@@ -109,7 +136,11 @@
           </div>
 
           <div class="access-cards" id="accessCards">
-            <div class="access-card" th:each="reserva : ${reservas}">
+            <div
+              class="access-card"
+              th:each="reserva : ${reservas}"
+              th:attr="data-reserva-id=${reserva.id}"
+            >
               <div
                 class="access-title"
                 th:text="${reserva.cerradura.ubicacion}"
@@ -131,7 +162,7 @@
                 </p>
                 <p>
                   <strong>Huéspedes:</strong>
-                  <span th:each="h : ${reserva.huespedes}" th:text="${h.name}"
+                  <span th:each="h : ${reserva.huespedes}" th:text="${h.nombre}"
                     >Nombre</span
                   >
                 </p>
@@ -140,6 +171,17 @@
           </div>
         </section>
       </main>
+    </div>
+
+    <!-- Modal para mostrar los accesos -->
+    <div id="accessModal" class="access-modal" style="display: none">
+      <div class="modal-content">
+        <span id="closeModal" class="close-btn">&times;</span>
+        <h2>Accesos de la Reserva</h2>
+        <div id="accessList">
+          <!-- Aquí se cargarán los accesos dinámicamente -->
+        </div>
+      </div>
     </div>
 
     <script th:replace="~{layout :: scripts}"></script>
@@ -159,6 +201,62 @@
               card.style.display = "none";
             }
           });
+        });
+
+        const modal = document.getElementById("accessModal");
+        const closeModal = document.getElementById("closeModal");
+        const accessList = document.getElementById("accessList");
+
+        // Abrir modal al hacer clic en una tarjeta
+        cards.forEach((card) => {
+          card.addEventListener("click", () => {
+            const reservaId = card.getAttribute("data-reserva-id"); // Asegúrate de agregar este atributo en el HTML
+            fetch(`/accesos/reserva/${reservaId}`)
+              .then((response) => response.json())
+              .then((data) => {
+                // Limpiar el contenido previo
+                accessList.innerHTML = "";
+
+                if (data.length === 0) {
+                  accessList.innerHTML =
+                    "<p>No hay accesos para esta reserva.</p>";
+                } else {
+                  // Crear una lista de accesos
+                  const list = document.createElement("ul");
+                  data.forEach((acceso) => {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = `Fecha: ${
+                      acceso.horario
+                    }, Resultado: ${
+                      acceso.resultado ? "Éxito" : "Fallo"
+                    }, Huesped: ${acceso.huesped.nombre}`;
+                    console.log(acceso.huesped);
+                    list.appendChild(listItem);
+                  });
+                  accessList.appendChild(list);
+                }
+
+                modal.style.display = "flex";
+              })
+              .catch((error) => {
+                console.error("Error al cargar los accesos:", error);
+                accessList.innerHTML =
+                  "<p>Error al cargar los accesos. Inténtalo de nuevo más tarde.</p>";
+                modal.style.display = "flex";
+              });
+          });
+        });
+
+        // Cerrar modal
+        closeModal.addEventListener("click", () => {
+          modal.style.display = "none";
+        });
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener("click", (event) => {
+          if (event.target === modal) {
+            modal.style.display = "none";
+          }
         });
       });
     </script>

@@ -27,7 +27,7 @@ public class HuespedService {
         }
     
         Huesped huesped = new Huesped();
-        huesped.setName(name);
+        huesped.setNombre(name);
         huesped.setEmail(email);
         huesped.setPassword(passwordEncoder.encode(password));
     
