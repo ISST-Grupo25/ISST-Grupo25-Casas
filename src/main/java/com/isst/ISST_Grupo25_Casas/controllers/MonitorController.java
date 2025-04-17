@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.isst.ISST_Grupo25_Casas.models.Acceso;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
+import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.isst.ISST_Grupo25_Casas.services.AccesoService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
@@ -31,19 +32,29 @@ public class MonitorController {
     public String monitor(Model model, HttpSession session) {
         // Comprobar que haya sesión iniciada
         Object usuario = session.getAttribute("usuario");
-        if (usuario == null || !(usuario instanceof Gestor)) {
-            System.out.println("❌ No hay un gestor en la sesión");
-            return "redirect:/login"; // Redirigir a login si no está logueado o no es un gestor
+        if (usuario == null) {
+            System.out.println("❌ No hay un usuario en la sesión");
+            return "redirect:/login"; // Redirigir a login si no está logueado
         }
 
-        Gestor gestor = (Gestor) usuario;
+        List<Reserva> reservas;
+        if (usuario instanceof Huesped huesped) {
+            // Obtener reservas asociadas al huésped
+            reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
+            model.addAttribute("usuario", huesped);
+        } else if (usuario instanceof Gestor gestor) {
+            // Obtener reservas asociadas al gestor
+            reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
+            model.addAttribute("usuario", gestor);
+        } else {
+            System.out.println("❌ Usuario no autorizado");
+            return "redirect:/login"; // Redirigir si el usuario no es válido
+        }
 
-        // Obtener reservas y accesos asociados al gestor
-        List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
+        // Obtener accesos asociados a las reservas
         List<Acceso> accesos = accesoService.obtenerAccesosPorReservas(reservas);
 
         // Añadir datos al modelo
-        model.addAttribute("usuario", gestor);
         model.addAttribute("reservas", reservas);
         model.addAttribute("totalReservas", reservas.size());
         model.addAttribute("accesosHoy", calcularAccesosHoy(accesos));

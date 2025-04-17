@@ -12,10 +12,11 @@
   --marron-claro: #6b4c3b;
   --marron-oscuro: #3f2e23;
   --marron-medium: #5a3e2c;
+  --marron-claro-opacity: rgba(205, 133, 63, 0.6);
 
-  --boton: var(--marron-claro); 
+  --boton: var(--marron-claro);
   --boton-hover: #4a362a;
-  --botontexto: #ffffff;        
+  --botontexto: #ffffff;
   --botontexto-hover: white;
 
   --texto: #333;
@@ -44,14 +45,13 @@ body.dark {
   --marron-claro: #d8bfa4;
   --marron-oscuro: #cbb29a;
 
-
   --texto: #f0f0f0;
   --texto-secundario: #aaa;
   --card-bg: #2c2c2c;
 
-  --boton: var(--marron-oscuro); 
+  --boton: var(--marron-oscuro);
   --boton-hover: #a68e74;
-  --botontexto: #1e1e1e;        
+  --botontexto: #1e1e1e;
   --botontexto-hover: rgb(0, 0, 0);
 
   --input-bg: #1e1e1e;
@@ -120,7 +120,8 @@ main {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
 
-.btn::after, .btn-primary::after {
+.btn::after,
+.btn-primary::after {
   content: "";
   position: absolute;
   top: 0;
@@ -132,11 +133,13 @@ main {
   transition: all 0.5s ease;
 }
 
-.btn:hover::after, .btn-primary:hover::after {
+.btn:hover::after,
+.btn-primary:hover::after {
   left: 125%;
 }
 
-.btn .material-icons, .btn-primary .material-icons {
+.btn .material-icons,
+.btn-primary .material-icons {
   color: white;
 }
 
@@ -162,7 +165,6 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(107, 76, 59, 0.2);
   outline: none;
 }
-
 
 /* Tarjetas y contenedores */
 .card,
@@ -236,7 +238,11 @@ select:focus {
 
 /* Fondos distintos para cada feature */
 .feature-1 {
-  background: linear-gradient(to right, #3c3b3f, #605c3c); /* gris/marrón oscuro */
+  background: linear-gradient(
+    to right,
+    #3c3b3f,
+    #605c3c
+  ); /* gris/marrón oscuro */
 }
 
 .feature-2 {
@@ -255,7 +261,6 @@ body {
 }
 
 /* Estado inicial: oculto y desplazado */
-
 
 /* Cuando entra en el viewport */
 .feature.visible {
@@ -553,10 +558,3 @@ body.dark .feature-3 {
     opacity: 1;
   }
 }
-
-
-
-
-
-
-
