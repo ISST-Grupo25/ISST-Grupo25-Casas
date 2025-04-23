@@ -34,6 +34,15 @@
               </div>
 
               <p>
+                <form
+                  th:action="@{/cerradura/forzar-bateria}"
+                  method="post"
+                  style="display: inline;"
+                  onsubmit="return forzarBateriaConRetardo(this);"
+                >
+                  <input type="hidden" name="token" th:value="${cerradura.token}" />
+                  <button type="submit" class="btn-bateria-recarga">🔁</button>
+                </form>
                 <strong>Batería:</strong>
                 <span class="badge-bateria" th:text="${cerradura.bateria + '%'}"
                   >87%</span
@@ -166,6 +175,29 @@
         return confirm(
           "⚠️ Si borras la casa, se eliminarán también todas las reservas asociadas.\n¿Estás segura/o que quieres continuar?"
         );
+      }
+    </script>
+
+    <script>
+      function forzarBateriaConRetardo(form) {
+        mostrarToast("⏳ Consultando batería...", "info");
+
+        // Enviar el formulario manualmente
+        fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+        })
+          .then(() => {
+            setTimeout(() => {
+              location.reload(); // 💥 Recarga después de un pequeño retardo
+            }, 1500); // Puedes ajustar este valor
+          })
+          .catch((error) => {
+            console.error("❌ Error al forzar batería:", error);
+            mostrarToast("❌ Error al forzar batería", "error");
+          });
+
+        return false; // 🔒 Evita el submit tradicional
       }
     </script>
   </body>
