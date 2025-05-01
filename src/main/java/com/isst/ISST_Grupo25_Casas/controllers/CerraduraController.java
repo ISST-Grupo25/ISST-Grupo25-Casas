@@ -8,6 +8,7 @@ import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.services.BatteryMonitorService;
 import com.isst.ISST_Grupo25_Casas.services.CerraduraService;
+import com.isst.ISST_Grupo25_Casas.services.EmailService;
 import com.isst.ISST_Grupo25_Casas.services.HuespedService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
 import com.isst.ISST_Grupo25_Casas.services.GestorService;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +56,10 @@ public class CerraduraController {
 
    @Autowired
    private ReservaService reservaService; // Add ReservaService dependency
+
+   @Autowired
+    private EmailService emailService;
+
 
    public CerraduraController(CerraduraService cerraduraService) {
        this.cerraduraService = cerraduraService;
@@ -88,12 +94,28 @@ public class CerraduraController {
                                 @RequestParam("reservaId") Long reservaId,
                                 @RequestParam("cerraduraId") Long cerraduraId,
                                 Model model,
-                                RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
+                                    System.out.println(">>> En abrirCerradura() — PIN=" + pin + " reservaId=" + reservaId);
        try {
            // Obtener la cerradura por su ID
            Cerradura cerradura = cerraduraService.obtenerCerraduraPorId(cerraduraId);
            // Verificar el PIN
            if (esPinValido(pin, reservaId)) {
+            System.out.println(">> PIN válido, vamos a intentar enviar el correo");
+                // ENVÍA EMAIL INMEDIATAMENTE tras validar PIN
+                Gestor gestor = cerradura.getGestor();
+                LocalDateTime ahora = LocalDateTime.now();
+                String nombreHuesped = session.getAttribute("usuario") instanceof Huesped h
+                        ? h.getNombre()
+                        : "Desconocido";
+                System.out.println(">> PIN válido: enviando correo a " + gestor.getEmail());
+                emailService.sendLockNotification(
+                    gestor,
+                    cerradura.getUbicacion(),
+                    ahora,
+                    nombreHuesped
+                );
                // Generar un token
                String token = cerraduraService.obtenerTokenPorCerradura(cerradura);
                // Crear un objeto para enviar el token en formato JSON
