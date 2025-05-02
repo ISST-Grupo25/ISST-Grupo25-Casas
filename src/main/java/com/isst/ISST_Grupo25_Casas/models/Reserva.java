@@ -17,7 +17,6 @@ public class Reserva {
     @Column(name = "pin", nullable = false, unique = true)
     private String pin;
 
-
     @Column(nullable = false)
     private Date fechainicio;
 
@@ -35,6 +34,9 @@ public class Reserva {
     @ManyToMany(mappedBy = "reservas") // Relación bidireccional
     private List<Huesped> huespedes;
 
+    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Acceso> accesos;
+
     // 🔹 GETTERS Y SETTERS MANUALES
     public Long getId() {
         return id;
@@ -51,7 +53,6 @@ public class Reserva {
     public void setPin(String pin) {
         this.pin = pin;
     }
-
 
     public Date getFechainicio() {
         return fechainicio;
@@ -91,5 +92,13 @@ public class Reserva {
 
     public void setHuespedes(List<Huesped> huespedes) {
         this.huespedes = huespedes;
+    }
+
+    public List<Acceso> getAccesos() {
+        return accesos;
+    }
+
+    public void setAccesos(List<Acceso> accesos) {
+        this.accesos = accesos;
     }
 }

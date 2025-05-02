@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)" th:with="theme=${session.theme}">
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  th:fragment="layout(content)"
+  th:with="theme=${session.theme}"
+>
   <head th:fragment="head">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IoH - Internet de las Casas</title>
     <link rel="icon" th:href="@{/images/logo_IoH.ico}" />
     <link rel="stylesheet" th:href="@{/styles.css}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <link
@@ -29,13 +37,10 @@
             th:if="${session.usuario != null and session.isLoggedIn != null and session.isLoggedIn }"
             class="material-icons menu-icon"
             onclick="openNav()"
-          >menu</span>
+            >menu</span
+          >
           <a th:href="@{/}">
-            <img
-              th:src="@{/images/logo_IoH.png}"
-              alt="IoH Logo"
-              class="logo"
-            />
+            <img th:src="@{/images/logo_IoH.png}" alt="IoH Logo" class="logo" />
           </a>
           <div class="nav-title">
             <h1><a th:href="@{/}">Internet de las Casas</a></h1>
@@ -49,8 +54,10 @@
             tabindex="0"
           >
             <button id="userBtn" class="user-btn">
-              <span th:text="${session.usuario.name}"></span>
-              <span style="padding-left: 5px;" class="material-icons">keyboard_arrow_down</span>
+              <span th:text="${session.usuario.nombre}"></span>
+              <span style="padding-left: 5px" class="material-icons"
+                >keyboard_arrow_down</span
+              >
             </button>
             <ul class="dropdown">
               <li><a th:href="@{/profile}">Mi Perfil</a></li>
@@ -59,7 +66,10 @@
             </ul>
           </div>
 
-          <div class="auth-buttons" th:unless="${session.usuario != null and session.isLoggedIn}">
+          <div
+            class="auth-buttons"
+            th:unless="${session.usuario != null and session.isLoggedIn}"
+          >
             <a th:href="@{/login}" class="btn-login">Iniciar Sesión</a>
             <a th:href="@{/signup}" class="btn-register">Crear Cuenta</a>
           </div>
@@ -124,19 +134,39 @@
           <a th:href="@{/index}" class="mobile-nav-item">
             <span class="material-icons">home</span>
           </a>
-          <a th:href="@{/calendar}" th:if="${session.role == 'gestor'}" class="mobile-nav-item">
+          <a
+            th:href="@{/calendar}"
+            th:if="${session.role == 'gestor'}"
+            class="mobile-nav-item"
+          >
             <span class="material-icons">calendar_month</span>
           </a>
-          <a th:href="@{/monitor}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+          <a
+            th:href="@{/monitor}"
+            th:if="${session.isLoggedIn}"
+            class="mobile-nav-item"
+          >
             <span class="material-icons">bar_chart</span>
           </a>
-          <a th:href="@{/home-access}" th:if="${session.role == 'huesped'}" class="mobile-nav-item">
+          <a
+            th:href="@{/home-access}"
+            th:if="${session.role == 'huesped'}"
+            class="mobile-nav-item"
+          >
             <span class="material-icons">key</span>
           </a>
-          <a th:href="@{/profile}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+          <a
+            th:href="@{/profile}"
+            th:if="${session.isLoggedIn}"
+            class="mobile-nav-item"
+          >
             <span class="material-icons">account_circle</span>
           </a>
-          <a th:href="@{/settings}" th:if="${session.isLoggedIn}" class="mobile-nav-item">
+          <a
+            th:href="@{/settings}"
+            th:if="${session.isLoggedIn}"
+            class="mobile-nav-item"
+          >
             <span class="material-icons">settings</span>
           </a>
         </div>
@@ -144,7 +174,9 @@
         <div class="contentview">
           <div id="maincontent" class="viewinfo" th:insert="~{::section}"></div>
           <footer class="footer" th:fragment="footer">
-            <p>&copy; 2025 Internet de las Casas. Todos los derechos reservados.</p>
+            <p>
+              &copy; 2025 Internet de las Casas. Todos los derechos reservados.
+            </p>
           </footer>
         </div>
       </main>
@@ -171,12 +203,13 @@
       function toggleMenuBtnDisplay() {
         const menuBtn = document.getElementById("menuButton");
         if (menuBtn) {
-          menuBtn.style.display = window.innerWidth <= 768 ? 'none' : 'inline-block';
+          menuBtn.style.display =
+            window.innerWidth <= 768 ? "none" : "inline-block";
         }
       }
 
-      window.addEventListener('resize', toggleMenuBtnDisplay);
-      window.addEventListener('load', toggleMenuBtnDisplay);
+      window.addEventListener("resize", toggleMenuBtnDisplay);
+      window.addEventListener("load", toggleMenuBtnDisplay);
     </script>
   </body>
 </html>

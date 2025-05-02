@@ -26,7 +26,7 @@ public class GestorService {
         }
     
         Gestor gestor = new Gestor();
-        gestor.setName(name);
+        gestor.setNombre(name);
         gestor.setEmail(email);
         gestor.setTelefono(phone);
         gestor.setPassword(passwordEncoder.encode(password));

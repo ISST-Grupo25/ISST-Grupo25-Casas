@@ -1,146 +1,224 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout :: head}">
-  <title>Gestionar Casas</title>
-</head>
-<body th:class="${session.theme}">
-	<div id="main">
-			<div th:replace="~{layout :: nav}"></div>
+  <head th:replace="~{layout :: head}">
+    <title>Gestionar Casas</title>
+  </head>
+  <body th:class="${session.theme}">
+    <div id="main">
+      <div th:replace="~{layout :: nav}"></div>
 
-			<main class="contentview" th:replace="~{layout :: content}">
-					<section class="section-container" th:fragment="section">
-							<h2 style="text-align: center; margin-top: 1rem;">Mis Casas</h2>
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="section-container" th:fragment="section">
+          <h2 style="text-align: center; margin-top: 1rem">Mis Casas</h2>
 
-							<button class="add-casa-button" onclick="openModal()"> + Añadir Nueva Casa</button>
+          <button class="btn-primary" onclick="openModal()">
+            + Añadir Nueva Casa
+          </button>
 
-							<div class="casas-container">
-								<div class="casa-card" th:each="cerradura : ${cerraduras}">
-									<div class="casa-header">
-										<h3 th:text="${cerradura.ubicacion}">Nombre Casa</h3>
-						
-										<form th:action="@{/cerradura/eliminar}" method="post" th:object="${cerradura}" onsubmit="return confirmarEliminarCasa()">
-											<input type="hidden" name="id" th:value="${cerradura.id}" />
-											<button type="submit" class="btn-delete-casa">
-															<span class="material-icons">delete</span> Eliminar Casa
-											</button>
-										</form>
-								</div>
+          <div class="casas-container">
+            <div class="casa-card" th:each="cerradura : ${cerraduras}">
+              <div class="casa-header">
+                <h3 th:text="${cerradura.ubicacion}">Nombre Casa</h3>
 
-										<p><strong>Batería:</strong> 
-												<span class="badge-bateria" th:text="${cerradura.bateria + '%'}">87%</span>
-										</p>
-						
-										<details class="details-reservas">
-												<summary>📅 Ver próximas reservas</summary>
-												<div class="reservas-container">
-														<ul th:if="${#lists.isEmpty(reservasPorCerradura[cerradura.id])}">
-																<li>❌ No hay próximas reservas.</li>
-														</ul>
-														<ul th:if="${not #lists.isEmpty(reservasPorCerradura[cerradura.id])}">
-																<li th:each="reserva : ${reservasPorCerradura[cerradura.id]}">
-																		🗓️ Del <span th:text="${reserva.fechainicio}"></span> al <span th:text="${reserva.fechafin}"></span><br/>
-																		👤
-																		<span th:each="huesped : ${reserva.huespedes}" th:text="${huesped.name} + ' '"></span>
-																</li>
-														</ul>
-												</div>
-										</details>
-								</div>
-						</div>
-						
-						
+                <form
+                  th:action="@{/cerradura/eliminar}"
+                  method="post"
+                  th:object="${cerradura}"
+                  onsubmit="return confirmarEliminarCasa()"
+                >
+                  <input type="hidden" name="id" th:value="${cerradura.id}" />
+                  <button type="submit" class="btn-delete-casa">
+                    <span class="material-icons">delete</span> Eliminar Casa
+                  </button>
+                </form>
+              </div>
 
-					</section>
-			</main>
+              <p>
+                <form
+                  th:action="@{/cerradura/forzar-bateria}"
+                  method="post"
+                  style="display: inline;"
+                  onsubmit="return forzarBateriaConRetardo(this);"
+                >
+                  <input type="hidden" name="token" th:value="${cerradura.token}" />
+                  <button type="submit" class="btn-bateria-recarga">🔁</button>
+                </form>
+                <strong>Batería:</strong>
+                <span
+                  class="badge-bateria"
+                  th:attr="data-nivel=${cerradura.bateria}"
+                  th:text="${cerradura.bateria + '%'}"
+                >
+                  87%
+                </span>
+              </p>
 
-						<!-- Modal para añadir nueva casa -->
-			<div id="modalOverlay" class="modal-overlay" style="display: none;">
-				<div class="modal-content">
-						<h3>Añadir Nueva Casa</h3>
-						<form id="addCasaForm" onsubmit="guardarNuevaCasa(); return false;">
-								<label for="ubicacion">Ubicación:</label>
-								<input type="text" id="ubicacion" name="ubicacion" required>
-								
-								<label for="token">Token:</label>
-								<input type="text" id="token" name="token" required>
+              <details class="details-reservas">
+                <summary>📅 Ver próximas reservas</summary>
+                <div class="reservas-container">
+                  <ul
+                    th:if="${#lists.isEmpty(reservasPorCerradura[cerradura.id])}"
+                  >
+                    <li>❌ No hay próximas reservas.</li>
+                  </ul>
+                  <ul
+                    th:if="${not #lists.isEmpty(reservasPorCerradura[cerradura.id])}"
+                  >
+                    <li
+                      th:each="reserva : ${reservasPorCerradura[cerradura.id]}"
+                    >
+                      🗓️ Del <span th:text="${reserva.fechainicio}"></span> al
+                      <span th:text="${reserva.fechafin}"></span><br />
+                      👤
+                      <span
+                        th:each="huesped : ${reserva.huespedes}"
+                        th:text="${huesped.nombre} + ' '"
+                      ></span>
+                    </li>
+                  </ul>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+      </main>
 
-								<div class="modal-actions">
-										<button type="button" onclick="closeModal()">Cancelar</button>
-										<button type="submit">Guardar</button>
-								</div>
-						</form>
-				</div>
-			</div>
+      <!-- Modal para añadir nueva casa -->
+      <div id="modalOverlay" class="modal-overlay" style="display: none">
+        <div class="modal-content">
+          <h3>Añadir Nueva Casa</h3>
+          <form id="addCasaForm" onsubmit="guardarNuevaCasa(); return false;">
+            <label for="ubicacion">Ubicación:</label>
+            <input type="text" id="ubicacion" name="ubicacion" required />
 
-			<div class="alert-container">
-    <div th:if="${mensajeExito}" class="alert success" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert error" th:text="${mensajeError}"></div>
-			</div>
+            <label for="token">Token:</label>
+            <input type="text" id="token" name="token" required />
 
-	</div>
+            <div class="modal-actions">
+              <button type="button" onclick="closeModal()">Cancelar</button>
+              <button type="submit">Guardar</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-	<script th:replace="~{layout :: scripts}"></script>
+      <div class="alert-container">
+        <div
+          th:if="${mensajeExito}"
+          class="alert success"
+          th:text="${mensajeExito}"
+        ></div>
+        <div
+          th:if="${mensajeError}"
+          class="alert error"
+          th:text="${mensajeError}"
+        ></div>
+      </div>
+    </div>
 
-	<script>
-			function openModal() {
-					document.getElementById('modalOverlay').style.display = 'flex';
-			}
+    <script th:replace="~{layout :: scripts}"></script>
 
-			function closeModal() {
-					document.getElementById('modalOverlay').style.display = 'none';
-			}
-	</script>
-	<script>
-		function guardarNuevaCasa() {
-				const ubicacion = document.getElementById('ubicacion').value.trim();
-				const token = document.getElementById('token').value.trim();
-		
-				if (!ubicacion || !token) {
-						mostrarToast('❌ Por favor, completa todos los campos.', 'error');
-						return;
-				}
-		
-				fetch('/cerradura/guardar', {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-						body: `ubicacion=${encodeURIComponent(ubicacion)}&token=${encodeURIComponent(token)}`
-				})
-				.then(response => response.text())
-				.then(id => {
-						if (id !== "-1") {
-								mostrarToast('✅ Casa añadida correctamente.', 'success');
-								setTimeout(() => {
-										window.location.reload(); // 🔥 Recarga la página para mostrar la nueva casa
-								}, 1000); // Esperamos 1s para que el usuario vea el aviso
-						} else {
-								mostrarToast('❌ Error al guardar la casa.', 'error');
-						}
-				})
-				.catch(error => {
-						console.error('Error:', error);
-						mostrarToast('❌ Error de red.', 'error');
-				});
-		}
-		
-		// Función para mostrar toasts bonitos
-		function mostrarToast(mensaje, tipo) {
-				const toast = document.createElement('div');
-				toast.className = `toast ${tipo}`;
-				toast.innerText = mensaje;
-				document.body.appendChild(toast);
-		
-				setTimeout(() => {
-						toast.remove();
-				}, 3000);
-		}
-		</script>
+    <script>
+      function openModal() {
+        document.getElementById("modalOverlay").style.display = "flex";
+      }
 
-		<script>
-			function confirmarEliminarCasa() {
-							return confirm("⚠️ Si borras la casa, se eliminarán también todas las reservas asociadas.\n¿Estás segura/o que quieres continuar?");
-			}
-	</script>
+      function closeModal() {
+        document.getElementById("modalOverlay").style.display = "none";
+      }
+    </script>
+    <script>
+      function guardarNuevaCasa() {
+        const ubicacion = document.getElementById("ubicacion").value.trim();
+        const token = document.getElementById("token").value.trim();
 
+        if (!ubicacion || !token) {
+          mostrarToast("❌ Por favor, completa todos los campos.", "error");
+          return;
+        }
 
-</body>
+        fetch("/cerradura/guardar", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `ubicacion=${encodeURIComponent(
+            ubicacion
+          )}&token=${encodeURIComponent(token)}`,
+        })
+          .then((response) => response.text())
+          .then((id) => {
+            if (id !== "-1") {
+              mostrarToast("✅ Casa añadida correctamente.", "success");
+              setTimeout(() => {
+                window.location.reload(); // 🔥 Recarga la página para mostrar la nueva casa
+              }, 1000); // Esperamos 1s para que el usuario vea el aviso
+            } else {
+              mostrarToast("❌ Error al guardar la casa.", "error");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            mostrarToast("❌ Error de red.", "error");
+          });
+      }
+
+      // Función para mostrar toasts bonitos
+      function mostrarToast(mensaje, tipo) {
+        const toast = document.createElement("div");
+        toast.className = `toast ${tipo}`;
+        toast.innerText = mensaje;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+    </script>
+
+    <script>
+      function confirmarEliminarCasa() {
+        return confirm(
+          "⚠️ Si borras la casa, se eliminarán también todas las reservas asociadas.\n¿Estás segura/o que quieres continuar?"
+        );
+      }
+    </script>
+
+    <script>
+      function forzarBateriaConRetardo(form) {
+        mostrarToast("⏳ Consultando batería...", "info");
+
+        // Enviar el formulario manualmente
+        fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+        })
+          .then(() => {
+            setTimeout(() => {
+              location.reload(); // 💥 Recarga después de un pequeño retardo
+            }, 1500); // Puedes ajustar este valor
+          })
+          .catch((error) => {
+            console.error("❌ Error al forzar batería:", error);
+            mostrarToast("❌ Error al forzar batería", "error");
+          });
+
+        return false; // 🔒 Evita el submit tradicional
+      }
+    </script>
+    <script>
+      document.querySelectorAll(".badge-bateria").forEach((badge) => {
+        const nivel = parseInt(badge.getAttribute("data-nivel"));
+    
+        if (nivel >= 75) {
+          badge.style.backgroundColor = "#4CAF50"; // verde
+        } else if (nivel >= 50) {
+          badge.style.backgroundColor = "#FFEB3B"; // amarillo
+          badge.style.color = "#000"; // mejor contraste
+        } else if (nivel >= 25) {
+          badge.style.backgroundColor = "#FF9800"; // naranja
+        } else {
+          badge.style.backgroundColor = "#f44336"; // rojo
+        }
+      });
+    </script>
+  </body>
 </html>

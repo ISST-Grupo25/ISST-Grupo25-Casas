@@ -1,4 +1,3 @@
-
 package com.isst.ISST_Grupo25_Casas.models;
 
 import java.util.ArrayList;
@@ -31,6 +30,9 @@ public class Huesped {
     )
     private List<Reserva> reservas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "huesped", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Acceso> accesos;
+
     // 🔹 GETTERS Y SETTERS MANUALES
     public Long getId() {
         return id;
@@ -48,11 +50,11 @@ public class Huesped {
         this.email = email;
     }
 
-    public String getName() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setName(String nombre) {
+    public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
@@ -70,5 +72,13 @@ public class Huesped {
 
     public void setReservas(List<Reserva> reservas) {
         this.reservas = reservas;
+    }
+
+    public List<Acceso> getAccesos() {
+        return accesos;
+    }
+
+    public void setAccesos(List<Acceso> accesos) {
+        this.accesos = accesos;
     }
 }

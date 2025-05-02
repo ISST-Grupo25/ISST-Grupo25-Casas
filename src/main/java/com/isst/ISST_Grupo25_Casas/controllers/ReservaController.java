@@ -61,21 +61,29 @@ public class ReservaController {
     @GetMapping("/home-access")
     public String mostrarReservas(Model model, HttpSession session) {
         Object obj = session.getAttribute("usuario");
-
-        if (obj == null) {  // Si no hay usuario en sesión
-            return "redirect:/login";  // Redirigir al login (o página de inicio)
+    
+        if (obj instanceof Huesped huesped) {
+            List<Reserva> activas = reservaService.obtenerReservasActivasOFuturasPorHuesped(huesped);
+            List<Reserva> antiguas = reservaService.obtenerReservasAntiguasPorHuesped(huesped);
+    
+            Map<Long, Boolean> estadoReservas = new HashMap<>();
+            LocalDate hoy = LocalDate.now();
+    
+            for (Reserva r : activas) {
+                boolean activa = !r.getFechainicio().after(Date.valueOf(hoy)) && !r.getFechafin().before(Date.valueOf(hoy));
+                estadoReservas.put(r.getId(), activa);
+            }
+    
+            model.addAttribute("reservas", activas);
+            model.addAttribute("reservasAntiguas", antiguas);
+            System.out.println("Antiguas: " + antiguas.size());
+            model.addAttribute("estadoReservas", estadoReservas);
+            return "home-access";
         }
-        
-        if (obj instanceof Huesped huesped) { // Validar y castear correctamente
-            System.out.println("📌 Usuario logueado: " + huesped.getName());
-            List<Reserva> reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
-            model.addAttribute("reservas", reservas);
-        } else {
-            System.out.println("❌ Error: No hay un huésped en sesión");
-            model.addAttribute("reservas", null);
-        }
-        return "home-access";
+    
+        return "redirect:/login";
     }
+
 
     @GetMapping("/calendar")
     public String mostrarFormularioReserva(Model model, HttpSession session) {
@@ -83,7 +91,7 @@ public class ReservaController {
             Object obj = session.getAttribute("usuario");
 
             if (obj instanceof Gestor gestor) { // Validar y castear correctamente
-                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
                 List<Cerradura> cerraduras = cerraduraService.obtenerCerradurasPorGestor(gestor.getId());
                 List<Huesped> huespedes = huespedService.obtenerTodosLosHuespedes();
         
@@ -196,7 +204,7 @@ public String googleCalendarCallback(@RequestParam("code") String code, HttpSess
             Gestor gestor = (Gestor) session.getAttribute("usuario");
             session.removeAttribute("pendingAction");
 
-            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
             GoogleCalendarService.sincronizarConGoogle(reservas);
 
             return "redirect:/calendar?syncSuccess";
@@ -218,7 +226,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
     try {
         Object obj = session.getAttribute("usuario");
         if (obj instanceof Gestor gestor) {
-            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
             GoogleCalendarService.sincronizarConGoogle(reservas);
             redirectAttributes.addFlashAttribute("sincronizado", true);
             return "redirect:/calendar";
@@ -289,7 +297,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
             Object obj = session.getAttribute("usuario");
 
             if (obj instanceof Gestor gestor) {
-                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor);
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
                 List<Map<String, Object>> eventos = new ArrayList<>();
 
                 for (Reserva r : reservas) {
@@ -306,7 +314,7 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
                     evento.put("extendedProps", Map.of(
                         "cerraduraId", r.getCerradura().getId(),
                         "fechaFinReal", r.getFechafin().toString(),
-                        "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getName())).toList()
+                        "huespedes", r.getHuespedes().stream().map(h -> Map.of("id", h.getId(), "nombre", h.getNombre())).toList()
                     ));
                     evento.put("color", generarColorDesdeId(r.getCerradura().getId()));
                     

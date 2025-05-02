@@ -1,83 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="~{layout :: head}">
-    <style>
-      .dashboard-header {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-        text-align: center;
-        margin-bottom: 30px;
-      }
-
-      .stats-container {
-        display: flex;
-        gap: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-bottom: 30px;
-      }
-
-      .stat-card {
-        background: linear-gradient(
-          135deg,
-          var(--marron-oscuro),
-          var(--marron-claro)
-        );
-        color: white;
-        padding: 20px;
-        border-radius: 12px;
-        width: 200px;
-        text-align: center;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-      }
-
-      .access-cards {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-      }
-
-      .access-card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s;
-      }
-
-      .access-card:hover {
-        transform: translateY(-5px);
-      }
-
-      .access-title {
-        font-size: 18px;
-        font-weight: bold;
-        margin-bottom: 10px;
-      }
-
-      .access-info {
-        font-size: 14px;
-        color: #666;
-        line-height: 1.6;
-      }
-
-      .search-bar {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-
-      .search-bar input {
-        width: 100%;
-        max-width: 400px;
-        padding: 10px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-      }
-    </style>
-  </head>
+  <head th:replace="~{layout :: head}"> </head>
   <body th:class="${session.theme}">
     <div id="main">
       <div th:replace="~{layout :: nav}"></div>
@@ -90,7 +13,7 @@
           </div>
 
           <div class="stats-container">
-            <div class="stat-card">
+            <div class="stat-card" id="totalReservasCard">
               <h3 th:text="${totalReservas}">0</h3>
               <p>Reservas Totales</p>
             </div>
@@ -108,33 +31,47 @@
             />
           </div>
 
-          <div class="access-cards" id="accessCards">
-            <div class="access-card" th:each="reserva : ${reservas}">
+          <div class="main-container">
+            <div class="access-cards" id="accessCards">
               <div
-                class="access-title"
-                th:text="${reserva.cerradura.ubicacion}"
+                class="access-card"
+                th:each="reserva : ${reservas}"
+                th:attr="data-reserva-id=${reserva.id}"
               >
-                Casa X
+                <div
+                  class="access-title"
+                  th:text="${reserva.cerradura.ubicacion}"
+                >
+                  Casa X
+                </div>
+                <div class="access-info">
+                  <p>
+                    <strong>Fecha inicio:</strong>
+                    <span
+                      th:text="${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')}"
+                    ></span>
+                  </p>
+                  <p>
+                    <strong>Fecha fin:</strong>
+                    <span
+                      th:text="${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
+                    ></span>
+                  </p>
+                  <p>
+                    <strong>Huéspedes:</strong>
+                    <span th:each="h, iterStat : ${reserva.huespedes}">
+                      <span th:text="${h.nombre}"></span
+                      ><span th:if="${!iterStat.last}">, </span>
+                    </span>
+                  </p>
+                </div>
               </div>
-              <div class="access-info">
-                <p>
-                  <strong>Fecha inicio:</strong>
-                  <span
-                    th:text="${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')}"
-                  ></span>
-                </p>
-                <p>
-                  <strong>Fecha fin:</strong>
-                  <span
-                    th:text="${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
-                  ></span>
-                </p>
-                <p>
-                  <strong>Huéspedes:</strong>
-                  <span th:each="h : ${reserva.huespedes}" th:text="${h.name}"
-                    >Nombre</span
-                  >
-                </p>
+            </div>
+
+            <div class="access-details" id="accessDetails">
+              <h2>Accesos de la Reserva</h2>
+              <div id="accessList">
+                <!-- Aquí se cargarán los accesos dinámicamente -->
               </div>
             </div>
           </div>
@@ -147,19 +84,72 @@
       document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("searchInput");
         const cards = document.querySelectorAll(".access-card");
+        const mainContainer = document.querySelector(".main-container");
+        const accessList = document.getElementById("accessList");
+        const totalReservasCard = document.getElementById("totalReservasCard");
 
         searchInput.addEventListener("input", function () {
           const value = this.value.toLowerCase();
-
           cards.forEach((card) => {
             const text = card.textContent.toLowerCase();
-            if (text.includes(value)) {
-              card.style.display = "block";
-            } else {
-              card.style.display = "none";
-            }
+            card.style.display = text.includes(value) ? "block" : "none";
           });
         });
+
+        cards.forEach((card) => {
+          card.addEventListener("click", () => {
+            cards.forEach((c) => c.classList.remove("selected"));
+            card.classList.add("selected");
+            document.getElementById("accessDetails").style.display = "block";
+
+            const reservaId = card.getAttribute("data-reserva-id");
+
+            fetch(`/accesos/reserva/${reservaId}`)
+              .then((response) => response.json())
+              .then((data) => {
+                accessList.innerHTML = "";
+                if (data.length === 0) {
+                  accessList.innerHTML =
+                    "<p>No hay accesos para esta reserva.</p>";
+                } else {
+                  data.forEach((acceso) => {
+                    const listItem = document.createElement("li");
+                    listItem.innerHTML = `
+            <strong>Fecha:</strong> ${formatDate(acceso.horario)}<br>
+            <strong>Resultado:</strong> ${
+              acceso.resultado ? "Éxito" : "Fallo"
+            }<br>
+            <strong>Huésped:</strong> ${acceso.huesped.nombre}
+          `;
+                    accessList.appendChild(listItem);
+                  });
+                }
+              })
+              .catch((error) => {
+                console.error("Error al cargar los accesos:", error);
+                accessList.innerHTML =
+                  "<p>Error al cargar los accesos. Inténtalo de nuevo más tarde.</p>";
+              });
+          });
+        });
+
+        totalReservasCard.addEventListener("click", () => {
+          cards.forEach((card) => {
+            card.classList.remove("selected");
+            card.style.display = "block";
+          });
+
+          mainContainer.style.transform = "translateX(0)";
+          document.getElementById("accessDetails").style.display = "none";
+        });
+
+        function formatDate(dateString) {
+          const date = new Date(dateString);
+          const day = String(date.getDate()).padStart(2, "0");
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const year = date.getFullYear();
+          return `${day}/${month}/${year}`;
+        }
       });
     </script>
   </body>

@@ -201,7 +201,11 @@
 
 .dropdown li:hover {
   background-color: var(--boton-hover);
-  color: var(--botontexto-hover);
+  color: white;
+}
+
+.dropdown li:hover a {
+  color: white;
 }
 
 .user-menu:focus-within .dropdown {
@@ -280,4 +284,3 @@
     display: flex;
   }
 }
-

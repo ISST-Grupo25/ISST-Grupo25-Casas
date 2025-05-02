@@ -44,4 +44,18 @@ public class AccesoService {
     
         return accesoRepository.save(acceso);
     }
+
+    public List<Acceso> obtenerAccesosPorReserva(Long reservaId) {
+        return accesoRepository.findByReservaId(reservaId);
+    }
+
+    public List<Acceso> obtenerAccesosPorReservas(List<Reserva> reservas) {
+        // Extraer los IDs de las reservas
+        List<Long> reservaIds = reservas.stream()
+                .map(Reserva::getId)
+                .toList();
+    
+        // Consultar los accesos directamente desde el repositorio
+        return accesoRepository.findByReservaIdIn(reservaIds);
+    }
 }

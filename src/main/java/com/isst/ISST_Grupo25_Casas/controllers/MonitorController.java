@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.isst.ISST_Grupo25_Casas.models.Acceso;
+import com.isst.ISST_Grupo25_Casas.models.Gestor;
+import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.isst.ISST_Grupo25_Casas.services.AccesoService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
@@ -29,19 +31,30 @@ public class MonitorController {
     @GetMapping
     public String monitor(Model model, HttpSession session) {
         // Comprobar que haya sesión iniciada
-        if (session.getAttribute("usuario") == null) {
-            System.out.println("❌ No hay usuario en la sesión");
-            return "redirect:/login";  // Redirigir a login si no está logueado
+        Object usuario = session.getAttribute("usuario");
+        if (usuario == null) {
+            System.out.println("❌ No hay un usuario en la sesión");
+            return "redirect:/login"; // Redirigir a login si no está logueado
         }
 
-        // Añadir usuario actual al modelo
-        model.addAttribute("usuario", session.getAttribute("usuario"));
+        List<Reserva> reservas;
+        if (usuario instanceof Huesped huesped) {
+            // Obtener reservas asociadas al huésped
+            reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
+            model.addAttribute("usuario", huesped);
+        } else if (usuario instanceof Gestor gestor) {
+            // Obtener reservas asociadas al gestor
+            reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
+            model.addAttribute("usuario", gestor);
+        } else {
+            System.out.println("❌ Usuario no autorizado");
+            return "redirect:/login"; // Redirigir si el usuario no es válido
+        }
 
-        // Obtener reservas y accesos
-        List<Reserva> reservas = reservaService.obtenerTodasLasReservas();
-        List<Acceso> accesos = accesoService.obtenerTodasLasAccesos();
+        // Obtener accesos asociados a las reservas
+        List<Acceso> accesos = accesoService.obtenerAccesosPorReservas(reservas);
 
-        // Añadir al modelo los datos
+        // Añadir datos al modelo
         model.addAttribute("reservas", reservas);
         model.addAttribute("totalReservas", reservas.size());
         model.addAttribute("accesosHoy", calcularAccesosHoy(accesos));

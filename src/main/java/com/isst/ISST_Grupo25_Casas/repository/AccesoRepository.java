@@ -15,4 +15,9 @@ public interface AccesoRepository extends JpaRepository<Acceso, Long> {
 
     // 🔵 Buscar accesos por reserva (por objeto)
     List<Acceso> findByReserva(Reserva reserva);
+
+    List<Acceso> findByReservaId(Long reservaId);
+
+    List<Acceso> findByReservaIdIn(List<Long> reservaIds);
+
 }

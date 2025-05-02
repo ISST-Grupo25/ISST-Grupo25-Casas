@@ -22,13 +22,18 @@
             <div th:if="${reservas == null or reservas.isEmpty()}">
               <p>No tienes reservas activas.</p>
             </div>
-            <div class="house" th:each="reserva : ${reservas}">
+            <div class="house" th:each="reserva : ${reservas}" th:classappend="${!estadoReservas[reserva.id]} ? 'reserva-inactiva'">
               <form th:action="@{/cerradura/abrir}" method="POST">
                 <input
                   type="hidden"
                   th:name="reservaId"
                   th:value="${reserva.id}"
                 />
+                <p th:if="${!estadoReservas[reserva.id]}"
+                  style="font-style: italic; color: #888;">
+                  ⏳ Disponible a partir del 
+                  <span th:text="${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')}"></span>
+                </p>
                 <input type="hidden" th:name="pin" id="form-pin-input" />
                 <input
                   type="hidden"
@@ -39,6 +44,7 @@
                   class="key-btn"
                   type="button"
                   th:attr="data-pin=${reserva.pin}, data-reserva-id=${reserva.id}"
+                  th:disabled="${!estadoReservas[reserva.id]}"
                 >
                   <span class="material-icons">key</span>
                 </button>
@@ -48,10 +54,39 @@
                     ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' +
                     ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}"
                 ></p>
+                
               </form>
             </div>
           </section>
+
+          <div th:if="${reservasAntiguas != null and !reservasAntiguas.isEmpty()}" style="text-align: center; margin-top: 1rem;">
+            <button id="mostrarAntiguasBtn" class="btn-ver-antiguas">Ver reservas antiguas</button>
+          </div>
+  
+          <section id="antiguasSection" class="section-container" style="display: none;">
+            <section class="houses">
+              <div th:if="${reservasAntiguas == null or reservasAntiguas.isEmpty()}">
+                <p>No tienes reservas antiguas.</p>
+              </div>
+              <div class="house reserva-inactiva" th:each="reserva : ${reservasAntiguas}">
+                <form>
+                  <button class="key-btn" type="button" disabled>
+                    <span class="material-icons">key</span>
+                  </button>
+                  <p th:text="'Ubicación: ' + ${reserva.cerradura.ubicacion}"></p>
+                  <p th:text="'Desde: ' +
+                              ${#dates.format(reserva.fechainicio, 'dd/MM/yyyy')} + ' hasta ' +
+                              ${#dates.format(reserva.fechafin, 'dd/MM/yyyy')}">
+                  </p>
+                </form>
+              </div>
+            </section>
+          </section>
+       
         </section>
+
+
+      
         <!-- Mensaje de éxito -->
         <div th:if="${success}" class="alert-container">
           <div class="alert alert-success" th:text="${message}"></div>
@@ -60,6 +95,7 @@
         <div th:if="${errorMessage}" class="alert-container">
           <div class="alert alert-danger" th:text="${errorMessage}"></div>
         </div>
+ 
       </main>
     </div>
     <!-- Modal para ingresar PIN -->
@@ -92,23 +128,43 @@
     <!-- Incluye el cliente de Socket.IO -->
     <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
     <script>
-      // Conéctate al servidor de Socket.IO (ajusta la URL según corresponda)
-      const socket = io("http://localhost:3555");
-      // Escucha el evento 'lockStatus'
+      // Conéctate al servidor de Socket.IO solo por WebSocket (evita 'polling')
+      const socket = io("http://localhost:3555", {
+        transports: ["websocket"], // 👈 SOLUCIÓN clave
+      });
+    
+      socket.on("connect", () => {
+        console.log("✅ Conectado al WebSocket");
+      });
+    
       socket.on("lockStatus", function (data) {
         if (data.status === "abierta") {
-          // Actualiza la UI: por ejemplo, muestra un mensaje
           alert("¡Cerradura abierta!");
-          // También puedes actualizar un elemento en la página:
-          document.getElementById("statusMessage").innerText =
-            "Cerradura abierta";
+          document.getElementById("statusMessage").innerText = "Cerradura abierta";
         } else if (data.status === "cerrada") {
           alert("¡Cerradura cerrada!");
-          document.getElementById("statusMessage").innerText =
-            "Cerradura cerrada";
+          document.getElementById("statusMessage").innerText = "Cerradura cerrada";
         }
       });
+    
+      socket.on("connect_error", (err) => {
+        console.error("❌ Error al conectar al WebSocket:", err);
+      });
     </script>
+   <script>
+    const botonAntiguas = document.getElementById("mostrarAntiguasBtn");
+    const seccionAntiguas = document.getElementById("antiguasSection");
+  
+    if (botonAntiguas && seccionAntiguas) {
+      let visibles = false;
+  
+      botonAntiguas.addEventListener("click", () => {
+        visibles = !visibles;
+        seccionAntiguas.style.display = visibles ? "block" : "none";
+        botonAntiguas.textContent = visibles ? "Ocultar reservas antiguas" : "Ver reservas antiguas";
+      });
+    }
+  </script>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Código relacionado con el modal y el PIN

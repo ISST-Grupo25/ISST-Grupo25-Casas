@@ -8,11 +8,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import com.isst.ISST_Grupo25_Casas.models.Acceso;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
@@ -28,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -48,8 +47,6 @@ public class KeyController {
         this.huespedRepository = huespedRepository;
         this.gestorRepository = gestorRepository;
     }
-
-    
 
     @GetMapping("/cerradura")
     public String home(Model model, HttpSession session) {
@@ -84,6 +81,12 @@ public class KeyController {
         } else {
             return ResponseEntity.status(HttpStatus.SC_UNAUTHORIZED).body("Usuario no autorizado");
         }
+    }
+
+    @GetMapping("/accesos/reserva/{reservaId}")
+    @ResponseBody
+    public List<Acceso> obtenerAccesosPorReserva(@PathVariable Long reservaId) {
+        return accesoService.obtenerAccesosPorReserva(reservaId);
     }
 
 }
