@@ -20,6 +20,7 @@ import java.io.InputStream;
 //import java.util.Date;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,6 +135,15 @@ public class ReservaService {
     public void eliminarReservaYHuespedes(Long reservaId) {
         reservaRepository.eliminarHuespedesDeReserva(reservaId); // 🔥 Primero borrar los enlaces
         reservaRepository.deleteById(reservaId); // 🔥 Después borrar la reserva
+    }
+
+    public List<Reserva> obtenerReservasActivasOFuturasPorHuesped(Huesped huesped) {
+        return reservaRepository.findReservasActivasOFuturasPorHuesped(huesped);
+    }
+
+    public List<Reserva> obtenerReservasAntiguasPorHuesped(Huesped huesped) {
+        LocalDate hoy = LocalDate.now();
+        return reservaRepository.findByHuespedesContainingAndFechafinBefore(huesped, Date.valueOf(hoy));
     }
 
 

@@ -61,21 +61,29 @@ public class ReservaController {
     @GetMapping("/home-access")
     public String mostrarReservas(Model model, HttpSession session) {
         Object obj = session.getAttribute("usuario");
-
-        if (obj == null) {  // Si no hay usuario en sesión
-            return "redirect:/login";  // Redirigir al login (o página de inicio)
+    
+        if (obj instanceof Huesped huesped) {
+            List<Reserva> activas = reservaService.obtenerReservasActivasOFuturasPorHuesped(huesped);
+            List<Reserva> antiguas = reservaService.obtenerReservasAntiguasPorHuesped(huesped);
+    
+            Map<Long, Boolean> estadoReservas = new HashMap<>();
+            LocalDate hoy = LocalDate.now();
+    
+            for (Reserva r : activas) {
+                boolean activa = !r.getFechainicio().after(Date.valueOf(hoy)) && !r.getFechafin().before(Date.valueOf(hoy));
+                estadoReservas.put(r.getId(), activa);
+            }
+    
+            model.addAttribute("reservas", activas);
+            model.addAttribute("reservasAntiguas", antiguas);
+            System.out.println("Antiguas: " + antiguas.size());
+            model.addAttribute("estadoReservas", estadoReservas);
+            return "home-access";
         }
-        
-        if (obj instanceof Huesped huesped) { // Validar y castear correctamente
-            System.out.println("📌 Usuario logueado: " + huesped.getNombre());
-            List<Reserva> reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
-            model.addAttribute("reservas", reservas);
-        } else {
-            System.out.println("❌ Error: No hay un huésped en sesión");
-            model.addAttribute("reservas", null);
-        }
-        return "home-access";
+    
+        return "redirect:/login";
     }
+
 
     @GetMapping("/calendar")
     public String mostrarFormularioReserva(Model model, HttpSession session) {
