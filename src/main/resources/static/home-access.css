@@ -15,6 +15,12 @@
   margin-bottom: 0;
 }
 
+.reserva-inactiva {
+  opacity: 0.7;
+  pointer-events: none;
+  background-color: #665a5a;
+}
+
 /* houses Section */
 .houses {
   display: flex;
@@ -258,4 +264,23 @@
     border-radius: 5px;
     cursor: pointer;
   }
+
+  .btn-ver-antiguas {
+    background-color: transparent;
+    border: 2px solid #444;
+    color: #444;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+  }
+  
+  .btn-ver-antiguas:hover {
+    background-color: #444;
+    color: white;
+  }
+
+
+
 }
