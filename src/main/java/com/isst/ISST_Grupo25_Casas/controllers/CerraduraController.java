@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
+import com.isst.ISST_Grupo25_Casas.services.BatteryMonitorService;
 import com.isst.ISST_Grupo25_Casas.services.CerraduraService;
 import com.isst.ISST_Grupo25_Casas.services.HuespedService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
@@ -42,6 +43,9 @@ public class CerraduraController {
 
    @Autowired
    private final CerraduraService cerraduraService;
+   
+   @Autowired
+   private BatteryMonitorService batteryMonitorService;
 
    @Autowired
    private ReservaRepository reservaRepository; // Acceso al repositorio de reservas
@@ -200,6 +204,12 @@ public class CerraduraController {
             redirectAttributes.addFlashAttribute("mensajeError", "❌ Error al eliminar la casa.");
         }
         return "redirect:/homes"; // o donde tengas el listado de casas
+    }
+    @PostMapping("/cerradura/forzar-bateria")
+    public String forzarBateria(@RequestParam("token") String token, RedirectAttributes redirectAttributes) {
+        batteryMonitorService.forzarConsultaPorToken(token);
+        redirectAttributes.addFlashAttribute("mensajeExito", "🔁 Solicitud de actualización de batería enviada.");
+        return "redirect:/homes";
     }
 
 

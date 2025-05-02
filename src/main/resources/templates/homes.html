@@ -34,10 +34,23 @@
               </div>
 
               <p>
-                <strong>Batería:</strong>
-                <span class="badge-bateria" th:text="${cerradura.bateria + '%'}"
-                  >87%</span
+                <form
+                  th:action="@{/cerradura/forzar-bateria}"
+                  method="post"
+                  style="display: inline;"
+                  onsubmit="return forzarBateriaConRetardo(this);"
                 >
+                  <input type="hidden" name="token" th:value="${cerradura.token}" />
+                  <button type="submit" class="btn-bateria-recarga">🔁</button>
+                </form>
+                <strong>Batería:</strong>
+                <span
+                  class="badge-bateria"
+                  th:attr="data-nivel=${cerradura.bateria}"
+                  th:text="${cerradura.bateria + '%'}"
+                >
+                  87%
+                </span>
               </p>
 
               <details class="details-reservas">
@@ -167,6 +180,45 @@
           "⚠️ Si borras la casa, se eliminarán también todas las reservas asociadas.\n¿Estás segura/o que quieres continuar?"
         );
       }
+    </script>
+
+    <script>
+      function forzarBateriaConRetardo(form) {
+        mostrarToast("⏳ Consultando batería...", "info");
+
+        // Enviar el formulario manualmente
+        fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+        })
+          .then(() => {
+            setTimeout(() => {
+              location.reload(); // 💥 Recarga después de un pequeño retardo
+            }, 1500); // Puedes ajustar este valor
+          })
+          .catch((error) => {
+            console.error("❌ Error al forzar batería:", error);
+            mostrarToast("❌ Error al forzar batería", "error");
+          });
+
+        return false; // 🔒 Evita el submit tradicional
+      }
+    </script>
+    <script>
+      document.querySelectorAll(".badge-bateria").forEach((badge) => {
+        const nivel = parseInt(badge.getAttribute("data-nivel"));
+    
+        if (nivel >= 75) {
+          badge.style.backgroundColor = "#4CAF50"; // verde
+        } else if (nivel >= 50) {
+          badge.style.backgroundColor = "#FFEB3B"; // amarillo
+          badge.style.color = "#000"; // mejor contraste
+        } else if (nivel >= 25) {
+          badge.style.backgroundColor = "#FF9800"; // naranja
+        } else {
+          badge.style.backgroundColor = "#f44336"; // rojo
+        }
+      });
     </script>
   </body>
 </html>

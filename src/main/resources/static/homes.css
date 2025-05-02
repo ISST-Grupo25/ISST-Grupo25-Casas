@@ -35,14 +35,30 @@
 
     .badge-bateria {
       display: inline-block;
-      background-color: #4CAF50;
+      position: relative;
+      width: 60px;
+      height: 24px;
+      background-color: #ccc;
+      border-radius: 5px;
       color: white;
-      padding: 0.25em 0.6em;
-      font-size: 0.9rem;
-      border-radius: 0.5rem;
-      margin-top: 0.5rem;
+      font-weight: bold;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.85rem;
+      transition: background-color 0.3s ease;
     }
-
+  
+    .badge-bateria::after {
+      content: '';
+      position: absolute;
+      right: -6px;
+      top: 6px;
+      width: 6px;
+      height: 12px;
+      background-color: inherit;
+      border-radius: 2px;
+    }
+    
     .add-casa-button {
       display: block;
       margin: 2rem auto 0;
@@ -205,6 +221,9 @@
       background-color: #f8d7da;
       color: #721c24;
   }
+
+  
+
   
   @keyframes fadeOut {
       0% { opacity: 1; }
