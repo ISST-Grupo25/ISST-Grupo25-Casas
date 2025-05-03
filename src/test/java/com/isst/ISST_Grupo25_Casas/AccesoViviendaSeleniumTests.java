@@ -10,6 +10,7 @@ package com.isst.ISST_Grupo25_Casas;
  *   y deja activada la línea de SafariDriver.
  * - Cambia el usuario y contraseña (m1@gmail.com / 1234) por los
  *   que tengas registrados en tu base de datos de tu aplicación.
+ * - Usa como PIN de la cerradura **654321** (modifica si tu BD tiene otro).
  */
 
 import org.junit.jupiter.api.AfterEach;
@@ -32,33 +33,33 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
 )
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class AccesoViviendaSeleniumTests {
 
     private WebDriver driver;
+    private WebDriverWait wait;
     private static final String APP_URL    = "http://localhost:8080";
     private static final String LOCKER_URL = "http://localhost:8090";
 
     @BeforeEach
-    public void setUp() {
-        // Usa Safari por defecto en macOS:
+    void setUp() {
+        // Inicia una nueva sesión de navegador para cada test:
         driver = new SafariDriver();
         driver.manage().window().maximize();
-        // Limpiar cookies para cada test y asegurar sesión limpia
-        driver.manage().deleteAllCookies();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
         /*
-         * Si no estás usando macOS y prefieres Chrome:
-         * comenta SafariDriver y descomenta estas líneas:
-         *
+         * Si prefieres usar Chrome:
          * WebDriverManager.chromedriver().setup();
          * driver = new ChromeDriver();
-         * driver.manage().deleteAllCookies();
+         * driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+         * wait = new WebDriverWait(driver, Duration.ofSeconds(10));
          */
     }
 
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         if (driver != null) {
             driver.quit();
         }
@@ -67,69 +68,102 @@ class AccesoViviendaSeleniumTests {
     @Test
     void testFlujoAccesoExitoso() {
         driver.get(APP_URL + "/login");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // Credenciales: reemplaza con las tuyas en la BD
-        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
-        usernameInput.sendKeys("m1@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("1234");
-        driver.findElement(By.id("loginBtn")).click();
+        // Login
+        WebElement emailInput = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("email"))
+        );
+        emailInput.clear();
+        emailInput.sendKeys("m1@gmail.com");
+        WebElement passInput = driver.findElement(By.id("password"));
+        passInput.clear();
+        passInput.sendKeys("1234");
+        driver.findElement(By.cssSelector("button.btn-primary")).click();
 
         assertEquals(APP_URL + "/dashboard", driver.getCurrentUrl());
 
-        // Introducción de PIN y desbloqueo
-        driver.findElement(By.id("pinInput")).sendKeys("1234");
+        // PIN y desbloqueo en home-access (PIN 654321)
+        driver.findElement(By.id("pinInput")).sendKeys("654321");
         driver.findElement(By.id("submitPinBtn")).click();
-        WebElement pinOk = driver.findElement(By.id("pinOkMsg"));
+        WebElement pinOk = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("pinOkMsg"))
+        );
         assertTrue(pinOk.isDisplayed());
 
-        // Flujo con el servicio de cerradura simulado
+        // Cerradura simulada
         driver.get(LOCKER_URL + "/lock-service");
         driver.findElement(By.id("checkProximityBtn")).click();
-        WebElement proxOk = driver.findElement(By.id("proximityOkMsg"));
+        WebElement proxOk = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("proximityOkMsg"))
+        );
         assertTrue(proxOk.isDisplayed());
         driver.findElement(By.id("openLockBtn")).click();
-        WebElement lockOpened = driver.findElement(By.id("lockOpenedMsg"));
+        WebElement lockOpened = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("lockOpenedMsg"))
+        );
         assertTrue(lockOpened.isDisplayed());
 
-        // Verificación final en la aplicación principal
+        // Verificación final en dashboard
         driver.get(APP_URL + "/dashboard");
-        WebElement finalMsg = driver.findElement(By.id("accessResult"));
+        WebElement finalMsg = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("accessResult"))
+        );
         assertEquals("Acceso completado: puerta abierta", finalMsg.getText());
     }
 
     @Test
     void testCredencialesInvalidas() {
         driver.get(APP_URL + "/login");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
-        usernameInput.sendKeys("m1@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("wrongpass");
-        driver.findElement(By.id("loginBtn")).click();
+        WebElement emailInput = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("email"))
+        );
+        emailInput.clear();
+        emailInput.sendKeys("m1@gmail.com");
+        WebElement passInput = driver.findElement(By.id("password"));
+        passInput.clear();
+        passInput.sendKeys("wrongpass");
+        driver.findElement(By.cssSelector("button.btn-primary")).click();
 
-        WebElement errorMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("loginError")));
+        WebElement errorMsg = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//p[contains(text(),'Usuario o contraseña incorrectos')]")
+            )
+        );
         assertTrue(errorMsg.isDisplayed());
-        assertEquals("Usuario o clave incorrectos.", errorMsg.getText());
     }
 
     @Test
     void testAccesoFueraHorario() {
         driver.get(APP_URL + "/login");
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        WebElement usernameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username")));
-        usernameInput.sendKeys("m1@gmail.com");
-        driver.findElement(By.id("password")).sendKeys("1234");
-        driver.findElement(By.id("loginBtn")).click();
+        WebElement emailInput = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("email"))
+        );
+        emailInput.clear();
+        emailInput.sendKeys("m1@gmail.com");
+        WebElement passInput = driver.findElement(By.id("password"));
+        passInput.clear();
+        passInput.sendKeys("1234");
+        driver.findElement(By.cssSelector("button.btn-primary")).click();
 
-        WebElement lockStatus = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("lockStatus")));
-        assertTrue(lockStatus.isDisplayed());
+        // Ahora estamos en home-access: espera al botón key-btn
+        WebElement keyBtn = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.key-btn"))
+        );
+        assertTrue(keyBtn.isDisplayed());
 
-        driver.findElement(By.id("pinInput")).sendKeys("1234");
-        driver.findElement(By.id("unlockBtn")).click();
+        // Simula clic en la cerradura y rechaza fuera de horario usando PIN 654321
+        keyBtn.click();
+        WebElement pinInput = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("pin-input"))
+        );
+        pinInput.sendKeys("654321");
+        driver.findElement(By.id("accept-btn")).click();
 
-        WebElement timeError = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("timeError")));
+        WebElement timeError = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("timeError"))
+        );
         assertTrue(timeError.isDisplayed());
         assertEquals("Acceso denegado: fuera del horario permitido.", timeError.getText());
     }
