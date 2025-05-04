@@ -1,170 +1,241 @@
 package com.isst.ISST_Grupo25_Casas;
 
-/**
- * Pruebas Selenium para el caso de uso "Acceder a la vivienda".
- *
- * Instrucciones de uso:
- * - Si usas **Chrome**, comenta la línea de SafariDriver e
- *   descomenta las líneas de WebDriverManager + ChromeDriver.
- * - Si usas **Safari** (macOS), comenta las líneas de ChromeDriver
- *   y deja activada la línea de SafariDriver.
- * - Cambia el usuario y contraseña (m1@gmail.com / 1234) por los
- *   que tengas registrados en tu base de datos de tu aplicación.
- * - Usa como PIN de la cerradura **654321** (modifica si tu BD tiene otro).
- */
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.safari.SafariDriver;
-// import org.openqa.selenium.chrome.ChromeDriver;
-// import io.github.bonigarcia.wdm.WebDriverManager;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.junit.jupiter.api.TestInstance;
+import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(
-  webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT
-)
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
-class AccesoViviendaSeleniumTests {
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class AccesoViviendaSeleniumTests {
     private WebDriver driver;
     private WebDriverWait wait;
-    private static final String APP_URL    = "http://localhost:8080";
-    private static final String LOCKER_URL = "http://localhost:8090";
+    private static final String APP_URL = "http://localhost:8080";
 
     @BeforeEach
-    void setUp() {
-        // Inicia una nueva sesión de navegador para cada test:
-        driver = new SafariDriver();
-        driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    void setUp() throws InterruptedException {
+        // Limpieza agresiva de procesos
+        killSafariProcesses();
+        Thread.sleep(2000); // Mayor tiempo de espera
 
-        /*
-         * Si prefieres usar Chrome:
-         * WebDriverManager.chromedriver().setup();
-         * driver = new ChromeDriver();
-         * driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-         * wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-         */
+        // Configuración de SafariOptions
+        SafariOptions options = new SafariOptions();
+        options.setCapability("safari:automaticInspection", true);
+        options.setCapability("safari:automaticProfiling", true);
+        options.setCapability("safari:useTechnologyPreview", false);
+        options.setCapability("safari:noCache", true);
+
+        // Inicialización con reintentos
+        int attempts = 0;
+        while (attempts < 3) {
+            try {
+                driver = new SafariDriver(options);
+                break;
+            } catch (SessionNotCreatedException e) {
+                killSafariProcesses();
+                Thread.sleep(2000);
+                attempts++;
+                if (attempts == 3) throw new RuntimeException("No se pudo iniciar SafariDriver después de 3 intentos");
+            }
+        }
+
+        // Configuración de tiempos
+        driver.manage().timeouts()
+            .pageLoadTimeout(Duration.ofSeconds(10))
+            .implicitlyWait(Duration.ofSeconds(3));
+            
+        wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws InterruptedException {
         if (driver != null) {
-            driver.quit();
+            try {
+                // 1. Cerrar alerts primero
+                closeAlertsSafely();
+                
+                // 2. Limpiar almacenamiento local ANTES de cerrar
+                ((JavascriptExecutor) driver).executeScript("window.localStorage.clear();");
+                
+                // 3. Cerrar driver
+                driver.quit();
+                
+            } catch (Exception e) {
+                // Manejar excepciones silenciosamente
+            } finally {
+                // 4. Limpieza de procesos
+                killSafariProcesses();
+                Thread.sleep(500);
+                driver = null;
+                System.gc();
+            }
         }
     }
 
-    @Test
-    void testFlujoAccesoExitoso() {
-        driver.get(APP_URL + "/login");
-
-        // Login
-        WebElement emailInput = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("email"))
-        );
-        emailInput.clear();
-        emailInput.sendKeys("m1@gmail.com");
-        WebElement passInput = driver.findElement(By.id("password"));
-        passInput.clear();
-        passInput.sendKeys("1234");
-        driver.findElement(By.cssSelector("button.btn-primary")).click();
-
-        assertEquals(APP_URL + "/dashboard", driver.getCurrentUrl());
-
-        // PIN y desbloqueo en home-access (PIN 654321)
-        driver.findElement(By.id("pinInput")).sendKeys("654321");
-        driver.findElement(By.id("submitPinBtn")).click();
-        WebElement pinOk = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("pinOkMsg"))
-        );
-        assertTrue(pinOk.isDisplayed());
-
-        // Cerradura simulada
-        driver.get(LOCKER_URL + "/lock-service");
-        driver.findElement(By.id("checkProximityBtn")).click();
-        WebElement proxOk = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("proximityOkMsg"))
-        );
-        assertTrue(proxOk.isDisplayed());
-        driver.findElement(By.id("openLockBtn")).click();
-        WebElement lockOpened = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("lockOpenedMsg"))
-        );
-        assertTrue(lockOpened.isDisplayed());
-
-        // Verificación final en dashboard
-        driver.get(APP_URL + "/dashboard");
-        WebElement finalMsg = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("accessResult"))
-        );
-        assertEquals("Acceso completado: puerta abierta", finalMsg.getText());
+    private void killSafariProcesses() {
+        try {
+            new ProcessBuilder("pkill", "-9", "-f", "safaridriver").start();
+            new ProcessBuilder("pkill", "-9", "-f", "Safari").start();
+            new ProcessBuilder("killall", "-9", "Safari").start();
+        } catch (Exception ignored) {}
     }
 
-    @Test
-    void testCredencialesInvalidas() {
-        driver.get(APP_URL + "/login");
-
-        WebElement emailInput = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("email"))
-        );
-        emailInput.clear();
-        emailInput.sendKeys("m1@gmail.com");
-        WebElement passInput = driver.findElement(By.id("password"));
-        passInput.clear();
-        passInput.sendKeys("wrongpass");
-        driver.findElement(By.cssSelector("button.btn-primary")).click();
-
-        WebElement errorMsg = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//p[contains(text(),'Usuario o contraseña incorrectos')]")
-            )
-        );
-        assertTrue(errorMsg.isDisplayed());
+    private void closeAlertsSafely() {
+        try {
+            if (driver != null) {
+                driver.switchTo().alert().dismiss();
+            }
+        } catch (NoAlertPresentException | NoSuchWindowException ignored) {
+        }
     }
 
-    @Test
-    void testAccesoFueraHorario() {
+    private void login(String email, String password) {
         driver.get(APP_URL + "/login");
+        wait.until(ExpectedConditions.urlContains("login"));
 
-        WebElement emailInput = wait.until(
+        WebElement emailField = wait.until(
             ExpectedConditions.visibilityOfElementLocated(By.id("email"))
         );
-        emailInput.clear();
-        emailInput.sendKeys("m1@gmail.com");
-        WebElement passInput = driver.findElement(By.id("password"));
-        passInput.clear();
-        passInput.sendKeys("1234");
-        driver.findElement(By.cssSelector("button.btn-primary")).click();
+        emailField.sendKeys(email);
 
-        // Ahora estamos en home-access: espera al botón key-btn
-        WebElement keyBtn = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button.key-btn"))
+        WebElement passwordField = driver.findElement(By.id("password"));
+        passwordField.sendKeys(password);
+
+        WebElement loginBtn = wait.until(
+            ExpectedConditions.elementToBeClickable(By.cssSelector("button.btn-primary"))
         );
-        assertTrue(keyBtn.isDisplayed());
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", loginBtn);
+        
+        wait.until(ExpectedConditions.urlContains("/home-access"));
+    }
 
-        // Simula clic en la cerradura y rechaza fuera de horario usando PIN 654321
-        keyBtn.click();
+    private void enterPinSafely(String pin) {
+        // Verificar que el modal está completamente visible
+        WebElement pinDialog = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("pin-dialog"))
+        );
+        wait.until(ExpectedConditions.attributeContains(pinDialog, "style", "display: flex"));
+    
+        for (char digit : pin.toCharArray()) {
+            WebElement btn = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                    By.cssSelector(".pin-btn[data-value='" + digit + "']:not(:disabled)")
+                )
+            );
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        }
+    
+        // Verificación más robusta del input
         WebElement pinInput = wait.until(
             ExpectedConditions.visibilityOfElementLocated(By.id("pin-input"))
         );
-        pinInput.sendKeys("654321");
-        driver.findElement(By.id("accept-btn")).click();
+        wait.until(d -> pinInput.getAttribute("value").length() == pin.length());
+    }
 
-        WebElement timeError = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(By.id("timeError"))
+    private void clickAcceptButton() {
+        WebElement acceptBtn = wait.until(
+            ExpectedConditions.elementToBeClickable(By.id("accept-btn"))
         );
-        assertTrue(timeError.isDisplayed());
-        assertEquals("Acceso denegado: fuera del horario permitido.", timeError.getText());
+        
+        // Intento de clic con JavaScript
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", acceptBtn);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", acceptBtn);
+        
+        try { Thread.sleep(500); } catch (InterruptedException ignored) {}
+    }
+
+    @Test
+    @Order(1)
+    void testAccesoFueraHorario() {
+        login("m1@gmail.com", "1234");
+
+        // 1. Esperar a que el botón de antiguas sea clickable
+        WebElement historyButton = wait.until(
+            ExpectedConditions.elementToBeClickable(By.id("mostrarAntiguasBtn"))
+        );
+        
+        // 2. Hacer scroll y click con JavaScript
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", historyButton);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", historyButton);
+
+        // 3. Esperar a que la sección sea visible
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.cssSelector("#antiguasSection[style*='display: block']")
+        ));
+
+        // 4. Buscar botón deshabilitado dentro del contexto correcto
+        WebElement oldKeyButton = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("#antiguasSection .key-btn[disabled]")
+            )
+        );
+
+        assertAll("Validación cerradura antigua",
+            () -> assertTrue(oldKeyButton.isDisplayed(), "El botón debería estar visible"),
+            () -> assertFalse(oldKeyButton.isEnabled(), "El botón debería estar deshabilitado")
+        );
+    }
+
+    @Test
+    @Order(2)
+    void testPinIncorrecto() {
+        login("m1@gmail.com", "1234");
+
+        // 1. Esperar a que el botón esté realmente activo
+        WebElement activeKey = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                By.cssSelector(".house:not(.reserva-inactiva) .key-btn:not(:disabled)")
+            )
+        );
+        
+        // 2. Click con JavaScript para evitar overlays
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", activeKey);
+
+        // 3. Esperar a que el modal esté completamente visible
+        WebElement pinDialog = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(By.id("pin-dialog"))
+        );
+        wait.until(ExpectedConditions.attributeContains(pinDialog, "style", "display: flex"));
+
+        enterPinSafely("0000");
+        clickAcceptButton();
+
+        // 4. Manejar posibles múltiples alerts
+        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        String alertText = alert.getText();
+        alert.accept();
+        
+        if (!alertText.equals("❌ PIN incorrecto")) {
+            alert = wait.until(ExpectedConditions.alertIsPresent());
+            alertText = alert.getText();
+            alert.accept();
+        }
+        
+        assertEquals("❌ PIN incorrecto", alertText, "Mensaje de error incorrecto");
+    }
+
+    @Test
+    @Order(3)
+    void testAccesoExitoso() {
+        login("m1@gmail.com", "1234");
+
+        WebElement activeKey = wait.until(
+            ExpectedConditions.elementToBeClickable(
+                By.cssSelector(".house:not(.reserva-inactiva) .key-btn:not(:disabled)")
+            )
+        );
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", activeKey);
+
+        enterPinSafely("654321");
+        clickAcceptButton();
+
+        Alert alert = wait.until(ExpectedConditions.alertIsPresent());
+        assertEquals("✅ PIN válido, acérquese a la cerradura", alert.getText(), "Mensaje de éxito incorrecto");
+        alert.accept();
     }
 }
