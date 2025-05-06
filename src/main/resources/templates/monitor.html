@@ -107,7 +107,7 @@
             fetch(`/accesos/reserva/${reservaId}`)
               .then((response) => {
                 console.log(response);
-                response.json();
+                return response.json(); // ✅ ahora se pasa el JSON al siguiente `.then`
               })
               .then((data) => {
                 accessList.innerHTML = "";
@@ -119,12 +119,14 @@
                   data.forEach((acceso) => {
                     const listItem = document.createElement("li");
                     listItem.innerHTML = `
-            <strong>Fecha:</strong> ${formatDate(acceso.horario)}<br>
-            <strong>Resultado:</strong> ${
-              acceso.resultado ? "Éxito" : "Fallo"
-            }<br>
-            <strong>Huésped:</strong> ${acceso.huesped.nombre}
-          `;
+  <span><strong>Fecha:</strong> ${formatDate(acceso.horario)}</span>
+  <span style="margin-left: 1rem;"><strong>Resultado:</strong> ${
+    acceso.resultado ? "Éxito" : "Fallo"
+  }</span>
+  <span style="margin-left: 1rem;"><strong>Huésped:</strong> ${
+    acceso.nombreHuesped
+  }</span>
+`;
                     accessList.appendChild(listItem);
                   });
                 }

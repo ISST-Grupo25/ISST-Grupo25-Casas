@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Schema.Printer;
 import org.springframework.stereotype.Service;
 
 import com.isst.ISST_Grupo25_Casas.models.Acceso;
@@ -29,11 +30,6 @@ public class AccesoService {
         return accesoRepository.findByHuesped(huesped);
     }
 
-    // 🔵 Buscar accesos de una reserva
-    public List<Acceso> obtenerAccesosPorReserva(Reserva reserva) {
-        return accesoRepository.findByReserva(reserva);
-    }
-
     public Acceso guardarAcceso(Date horario, Boolean resultado, Huesped huesped, Reserva reserva) {
         Acceso acceso = new Acceso();
         acceso.setHorario(horario);
@@ -46,7 +42,9 @@ public class AccesoService {
     }
 
     public List<Acceso> obtenerAccesosPorReserva(Long reservaId) {
-        return accesoRepository.findByReservaId(reservaId);
+        List<Acceso> accesos = accesoRepository.findAllByReservaId(reservaId);
+        System.out.println("ID de reserva: " + reservaId + accesos);
+        return accesoRepository.findAllByReservaId(reservaId);
     }
 
     public List<Acceso> obtenerAccesosPorReservas(List<Reserva> reservas) {
