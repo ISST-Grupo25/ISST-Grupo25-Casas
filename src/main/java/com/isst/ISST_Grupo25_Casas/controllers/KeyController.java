@@ -86,7 +86,13 @@ public class KeyController {
     @GetMapping("/accesos/reserva/{reservaId}")
     @ResponseBody
     public List<Acceso> obtenerAccesosPorReserva(@PathVariable Long reservaId) {
-        return accesoService.obtenerAccesosPorReserva(reservaId);
+        List<Acceso> accesos = accesoService.obtenerAccesosPorReserva(reservaId);
+        System.out.println("Encontrados: " + accesos.size() + " accesos para reserva " + reservaId);
+        for (Acceso a : accesos) {
+            System.out.println(a); // Asegúrate de tener toString() bien definido
+        }
+        return accesos;
     }
+
 
 }

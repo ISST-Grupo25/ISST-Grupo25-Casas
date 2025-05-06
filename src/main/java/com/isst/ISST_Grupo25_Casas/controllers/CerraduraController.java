@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.List;
 
 @Controller
@@ -102,20 +103,22 @@ public class CerraduraController {
            Cerradura cerradura = cerraduraService.obtenerCerraduraPorId(cerraduraId);
            // Verificar el PIN
            if (esPinValido(pin, reservaId)) {
-            System.out.println(">> PIN válido, vamos a intentar enviar el correo");
+                System.out.println(">> PIN válido, vamos a intentar enviar el correo");
                 // ENVÍA EMAIL INMEDIATAMENTE tras validar PIN
                 Gestor gestor = cerradura.getGestor();
                 LocalDateTime ahora = LocalDateTime.now();
                 String nombreHuesped = session.getAttribute("usuario") instanceof Huesped h
                         ? h.getNombre()
                         : "Desconocido";
-                System.out.println(">> PIN válido: enviando correo a " + gestor.getEmail());
-                emailService.sendLockNotification(
-                    gestor,
-                    cerradura.getUbicacion(),
-                    ahora,
-                    nombreHuesped
-                );
+                    
+                Optional<Reserva> optionalReserva = reservaRepository.findById(reservaId);
+                
+                Reserva reserva = optionalReserva.get();
+                String emailGestor = reserva.getCerradura().getGestor().getEmail();
+                System.out.println(">> PIN válido: enviando correo a " + emailGestor);
+                String ubicacion = reserva.getCerradura().getUbicacion();
+                emailService.enviarCorreoDeAcceso(emailGestor, ubicacion, ahora.toString());
+                
                // Generar un token
                String token = cerraduraService.obtenerTokenPorCerradura(cerradura);
                // Crear un objeto para enviar el token en formato JSON

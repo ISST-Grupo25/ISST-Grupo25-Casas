@@ -11,23 +11,30 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-  @Bean
-  public JavaMailSender javaMailSender(Environment env) {
-    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    @Bean
+    public JavaMailSender javaMailSender(Environment env) {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
-    // Ajusta manualmente TODO lo necesario:
-    mailSender.setProtocol("smtp");                                // ← fuerza SMTP
-    mailSender.setHost(env.getProperty("spring.mail.host"));
-    mailSender.setPort(env.getProperty("spring.mail.port", Integer.class, 587));
-    mailSender.setUsername(env.getProperty("spring.mail.username"));
-    mailSender.setPassword(env.getProperty("spring.mail.password"));
+        // Configuración principal
+        mailSender.setHost(env.getProperty("spring.mail.host", "smtp.gmail.com"));
+        mailSender.setPort(env.getProperty("spring.mail.port", Integer.class, 587));
+        mailSender.setUsername(env.getProperty("spring.mail.username"));
+        mailSender.setPassword(env.getProperty("spring.mail.password"));
+        mailSender.setProtocol("smtp");
 
-    Properties props = mailSender.getJavaMailProperties();
-    props.put("mail.transport.protocol", "smtp");                  // ← fuerza SMTP aquí también
-    props.put("mail.smtp.auth",    env.getProperty("spring.mail.properties.mail.smtp.auth"));
-    props.put("mail.smtp.starttls.enable",  env.getProperty("spring.mail.properties.mail.smtp.starttls.enable"));
-    props.put("mail.smtp.starttls.required", env.getProperty("spring.mail.properties.mail.smtp.starttls.required"));
+        // Propiedades adicionales de SMTP
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        safePut(props, "mail.smtp.auth", env.getProperty("spring.mail.properties.mail.smtp.auth", "true"));
+        safePut(props, "mail.smtp.starttls.enable", env.getProperty("spring.mail.properties.mail.smtp.starttls.enable", "true"));
+        safePut(props, "mail.smtp.starttls.required", env.getProperty("spring.mail.properties.mail.smtp.starttls.required", "true"));
 
-    return mailSender;
-  }
+        return mailSender;
+    }
+
+    private void safePut(Properties props, String key, String value) {
+        if (value != null) {
+            props.put(key, value);
+        }
+    }
 }
