@@ -22,6 +22,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <jakarta.mail.version>2.0.1</jakarta.mail.version>
     </properties>
 
     <packaging>jar</packaging>
@@ -92,6 +93,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
 
         <!-- Google Calendar API -->
         <!-- <dependency>
@@ -184,6 +191,16 @@
             <artifactId>json</artifactId>
             <version>20230227</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>jakarta.mail</artifactId>
+            <version>2.0.3</version>
+        </dependency>
+
 
     </dependencies>
 

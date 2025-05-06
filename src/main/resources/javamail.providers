@@ -1,0 +1,1 @@
+protocol=smtp; type=transport; class=org.eclipse.angus.mail.smtp.SMTPTransport; vendor=Angus Mail; version=2.0.3

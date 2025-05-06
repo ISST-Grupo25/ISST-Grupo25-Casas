@@ -105,13 +105,17 @@
             const reservaId = card.getAttribute("data-reserva-id");
 
             fetch(`/accesos/reserva/${reservaId}`)
-              .then((response) => response.json())
+              .then((response) => {
+                console.log(response);
+                response.json();
+              })
               .then((data) => {
                 accessList.innerHTML = "";
                 if (data.length === 0) {
                   accessList.innerHTML =
                     "<p>No hay accesos para esta reserva.</p>";
                 } else {
+                  console.log(data);
                   data.forEach((acceso) => {
                     const listItem = document.createElement("li");
                     listItem.innerHTML = `
