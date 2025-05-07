@@ -26,16 +26,15 @@
                   >Nombre del huésped</strong
                 >
                 <span th:if="${acceso.resultado}"> accedió a </span>
-                <span th:unless="${acceso.resultado}"> intentó acceder a </span
-                >.
+                <span th:unless="${acceso.resultado}"> intentó acceder a </span>
                 <span
                   th:if="${acceso.reserva != null and acceso.reserva.cerradura != null}"
                   th:text="${acceso.reserva.cerradura.ubicacion}"
                 >
                 </span>
 
-                <span th:if="${acceso.resultado}"> correctamente</span>
-                <span th:unless="${acceso.resultado}"> pero falló</span>.
+                <span th:if="${acceso.resultado}"> correctamente.</span>
+                <span th:unless="${acceso.resultado}"> pero falló.</span>
               </p>
               <div class="notification-time" th:text="${acceso.horario}">
                 01/05/2025 12:00
