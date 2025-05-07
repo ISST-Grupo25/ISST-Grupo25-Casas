@@ -9,6 +9,7 @@ import com.google.api.services.calendar.model.Event;
 import com.isst.ISST_Grupo25_Casas.models.Cerradura;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.repository.ReservaRepository;
+import com.isst.ISST_Grupo25_Casas.repository.HuespedRepository;
 //import com.isst.ISST_Grupo25_Casas.utils.IcsParserUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ReservaService {
+
+    @Autowired
+    private HuespedRepository huespedRepository;
 
     @Autowired
     private ReservaRepository reservaRepository;
@@ -144,6 +148,20 @@ public class ReservaService {
     public List<Reserva> obtenerReservasAntiguasPorHuesped(Huesped huesped) {
         LocalDate hoy = LocalDate.now();
         return reservaRepository.findByHuespedesContainingAndFechafinBefore(huesped, Date.valueOf(hoy));
+    }
+
+    @Transactional
+    public void asociarHuesped(Long reservaId, Long huespedId) {
+        Reserva reserva = reservaRepository.findById(reservaId)
+            .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada"));
+
+        Huesped huesped = huespedRepository.findById(huespedId)
+            .orElseThrow(() -> new IllegalArgumentException("Huésped no encontrado"));
+
+        // Evita lazy loading: no uses .contains
+        reserva.getHuespedes().add(huesped);
+
+        reservaRepository.save(reserva);
     }
 
 
