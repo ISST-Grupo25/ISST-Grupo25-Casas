@@ -167,86 +167,84 @@ public class ReservaController {
 
 
 
-@GetMapping("/google-calendar/authorize")
-public String googleCalendarAuthorize() {
-    try {
-        String url = GoogleCalendarService.getAuthorizationUrl(); // El ID de usuario puede ser "isst"
-        return "redirect:" + url;
-    } catch (Exception e) {
-        System.out.println("❌ Error al generar URL de autorización: " + e.getMessage());
-        return "redirect:/calendar?errorGoogleAuth";
-    }
-}
-
-@GetMapping("/google-calendar/callback")
-public String googleCalendarCallback(@RequestParam("code") String code, HttpSession session) {
-    try {
-        GoogleCalendarService.autorizarConCodigo(code);
-
-        // Recuperar acción pendiente
-        String pending = (String) session.getAttribute("pendingAction");
-        if ("guardar".equals(pending)) {
-            Long cerraduraId = (Long) session.getAttribute("form_cerraduraId");
-            String fechaInicio = (String) session.getAttribute("form_fechaInicio");
-            String fechaFin = (String) session.getAttribute("form_fechaFin");
-            List<Long> huespedIds = (List<Long>) session.getAttribute("form_huespedIds");
-            Gestor gestor = (Gestor) session.getAttribute("usuario");
-
-            // Borramos los atributos temporales
-            session.removeAttribute("pendingAction");
-            session.removeAttribute("form_cerraduraId");
-            session.removeAttribute("form_fechaInicio");
-            session.removeAttribute("form_fechaFin");
-            session.removeAttribute("form_huespedIds");
-
-            return ejecutarGuardarReserva(gestor, cerraduraId, fechaInicio, fechaFin, huespedIds, null);
-        }else if ("sincronizar".equals(pending)) {
-            Gestor gestor = (Gestor) session.getAttribute("usuario");
-            session.removeAttribute("pendingAction");
-
-            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
-            GoogleCalendarService.sincronizarConGoogle(reservas);
-
-            return "redirect:/calendar?syncSuccess";
+    @GetMapping("/google-calendar/authorize")
+    public String googleCalendarAuthorize() {
+        try {
+            String url = GoogleCalendarService.getAuthorizationUrl(); // El ID de usuario puede ser "isst"
+            return "redirect:" + url;
+        } catch (Exception e) {
+            System.out.println("❌ Error al generar URL de autorización: " + e.getMessage());
+            return "redirect:/calendar?errorGoogleAuth";
         }
-
-        // Puedes añadir más casos si necesitas importar luego
-        return "redirect:/calendar";
-    } catch (Exception e) {
-        System.out.println("❌ Error en el callback de Google Calendar: " + e.getMessage());
-        return "redirect:/calendar?errorCallback";
     }
-}
 
+    @GetMapping("/google-calendar/callback")
+    public String googleCalendarCallback(@RequestParam("code") String code, HttpSession session) {
+        try {
+            GoogleCalendarService.autorizarConCodigo(code);
 
+            // Recuperar acción pendiente
+            String pending = (String) session.getAttribute("pendingAction");
+            if ("guardar".equals(pending)) {
+                Long cerraduraId = (Long) session.getAttribute("form_cerraduraId");
+                String fechaInicio = (String) session.getAttribute("form_fechaInicio");
+                String fechaFin = (String) session.getAttribute("form_fechaFin");
+                List<Long> huespedIds = (List<Long>) session.getAttribute("form_huespedIds");
+                Gestor gestor = (Gestor) session.getAttribute("usuario");
+
+                // Borramos los atributos temporales
+                session.removeAttribute("pendingAction");
+                session.removeAttribute("form_cerraduraId");
+                session.removeAttribute("form_fechaInicio");
+                session.removeAttribute("form_fechaFin");
+                session.removeAttribute("form_huespedIds");
+
+                return ejecutarGuardarReserva(gestor, cerraduraId, fechaInicio, fechaFin, huespedIds, null);
+            }else if ("sincronizar".equals(pending)) {
+                Gestor gestor = (Gestor) session.getAttribute("usuario");
+                session.removeAttribute("pendingAction");
+
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
+                GoogleCalendarService.sincronizarConGoogle(reservas);
+
+                return "redirect:/calendar?syncSuccess";
+            }
+
+            // Puedes añadir más casos si necesitas importar luego
+            return "redirect:/calendar";
+        } catch (Exception e) {
+            System.out.println("❌ Error en el callback de Google Calendar: " + e.getMessage());
+            return "redirect:/calendar?errorCallback";
+        }
+    }
 
     //la prioridad en la sincronización es la base de datos, por lo que si hay un evento en Google Calendar y no en la base de datos, se eliminará el evento de Google Calendar
     @PostMapping("/calendar/sincronizar")
-public String sincronizarConGoogle(HttpSession session, RedirectAttributes redirectAttributes) {
-    try {
-        Object obj = session.getAttribute("usuario");
-        if (obj instanceof Gestor gestor) {
-            List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
-            GoogleCalendarService.sincronizarConGoogle(reservas);
-            redirectAttributes.addFlashAttribute("sincronizado", true);
+    public String sincronizarConGoogle(HttpSession session, RedirectAttributes redirectAttributes) {
+        try {
+            Object obj = session.getAttribute("usuario");
+            if (obj instanceof Gestor gestor) {
+                List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
+                GoogleCalendarService.sincronizarConGoogle(reservas);
+                redirectAttributes.addFlashAttribute("sincronizado", true);
+                return "redirect:/calendar";
+            } else {
+                return "redirect:/calendar?error=NoAutenticado";
+            }
+        } catch (RuntimeException e) {
+            if (e.getMessage().contains("reautenticación")) {
+                // 👉 Guardamos acción pendiente y redirigimos a autorización
+                session.setAttribute("pendingAction", "sincronizar");
+                return "redirect:/google-calendar/authorize";
+            } else {
+                redirectAttributes.addFlashAttribute("errorSincronizar", e.getMessage());
+                return "redirect:/calendar";
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorSincronizar", "Error al sincronizar: " + e.getMessage());
             return "redirect:/calendar";
-        } else {
-            return "redirect:/calendar?error=NoAutenticado";
         }
-    } catch (RuntimeException e) {
-        if (e.getMessage().contains("reautenticación")) {
-            // 👉 Guardamos acción pendiente y redirigimos a autorización
-            session.setAttribute("pendingAction", "sincronizar");
-            return "redirect:/google-calendar/authorize";
-        } else {
-            redirectAttributes.addFlashAttribute("errorSincronizar", e.getMessage());
-            return "redirect:/calendar";
-        }
-    } catch (Exception e) {
-        redirectAttributes.addFlashAttribute("errorSincronizar", "Error al sincronizar: " + e.getMessage());
-        return "redirect:/calendar";
     }
-}
 
 
 
@@ -363,8 +361,5 @@ public String sincronizarConGoogle(HttpSession session, RedirectAttributes redir
         return "redirect:/calendar";
     }
         
-
-
-
 }
 
