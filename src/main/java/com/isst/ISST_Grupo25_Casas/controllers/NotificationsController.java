@@ -1,9 +1,6 @@
 package com.isst.ISST_Grupo25_Casas.controllers;
 
-import java.time.LocalDate;
 import java.util.List;
-
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,9 +15,11 @@ import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.isst.ISST_Grupo25_Casas.services.AccesoService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
 
+import jakarta.servlet.http.HttpSession;
+
+
 @Controller
-@RequestMapping("/monitor")
-public class MonitorController {
+public class NotificationsController {
 
     @Autowired
     private ReservaService reservaService;
@@ -28,9 +27,9 @@ public class MonitorController {
     @Autowired
     private AccesoService accesoService;
 
-    @GetMapping
-    public String monitor(Model model, HttpSession session) {
-        // Comprobar que haya sesión iniciada
+    @GetMapping("/notifications")
+    public String notifications(Model model, HttpSession session) {
+
         Object usuario = session.getAttribute("usuario");
         if (usuario == null) {
             System.out.println("❌ No hay un usuario en la sesión");
@@ -38,11 +37,7 @@ public class MonitorController {
         }
 
         List<Reserva> reservas;
-        if (usuario instanceof Huesped huesped) {
-            // Obtener reservas asociadas al huésped
-            reservas = reservaService.obtenerReservasPorHuesped(huesped.getId());
-            model.addAttribute("usuario", huesped);
-        } else if (usuario instanceof Gestor gestor) {
+        if (usuario instanceof Gestor gestor) {
             // Obtener reservas asociadas al gestor
             reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
             model.addAttribute("usuario", gestor);
@@ -51,22 +46,15 @@ public class MonitorController {
             return "redirect:/login"; // Redirigir si el usuario no es válido
         }
 
-        // Obtener accesos asociados a las reservas
-        List<Acceso> accesos = accesoService.obtenerAccesosPorReservas(reservas);
 
-        reservas.sort((r1, r2) -> r2.getFechainicio().compareTo(r1.getFechainicio()));
-        // Añadir datos al modelo
-        model.addAttribute("reservas", reservas);
-        model.addAttribute("totalReservas", reservas.size());
-        model.addAttribute("accesosHoy", calcularAccesosHoy(accesos));
+        List<Acceso> accesos = reservas.stream()
+            .flatMap(reserva -> reserva.getAccesos().stream())
+            .toList();
 
-        return "monitor"; // Devuelve monitor.html
+        model.addAttribute("accesos", accesos);
+        System.out.println("🔵 Accesos: " + accesos);
+
+        return "notifications";
     }
 
-    private long calcularAccesosHoy(List<Acceso> accesos) {
-        // Contar los accesos del día de hoy
-        return accesos.stream()
-                .filter(acceso -> acceso.getHorario().toLocalDate().equals(LocalDate.now()))
-                .count();
-    }
 }

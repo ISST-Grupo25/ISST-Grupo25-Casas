@@ -96,7 +96,12 @@
 
             <li th:if="${session.isLoggedIn}" class="nav-item">
               <span class="material-icons">bar_chart</span>
-              <a th:href="@{/monitor}">Monitorizar Acessos</a>
+              <a th:href="@{/monitor}">Historial de Acessos</a>
+            </li>
+
+            <li th:if="${session.role == 'gestor'}" class="nav-item">
+              <span class="material-icons">notifications</span>
+              <a th:href="@{/notifications}">Notificaciones</a>
             </li>
 
             <li th:if="${session.role == 'huesped'}" class="nav-item">
