@@ -116,19 +116,23 @@
                     "<p>No hay accesos para esta reserva.</p>";
                 } else {
                   console.log(data);
-                  data.forEach((acceso) => {
-                    const listItem = document.createElement("li");
-                    listItem.innerHTML = `
-  <span><strong>Fecha:</strong> ${formatDate(acceso.horario)}</span>
-  <span style="margin-left: 1rem;"><strong>Resultado:</strong> ${
-    acceso.resultado ? "Éxito" : "Fallo"
-  }</span>
-  <span style="margin-left: 1rem;"><strong>Huésped:</strong> ${
-    acceso.nombreHuesped
-  }</span>
-`;
-                    accessList.appendChild(listItem);
-                  });
+                  data
+                    .sort((a, b) => new Date(b.horario) - new Date(a.horario))
+                    .forEach((acceso) => {
+                      const listItem = document.createElement("li");
+                      listItem.innerHTML = `
+                          <span><strong>Fecha:</strong> ${formatDate(
+                            acceso.horario
+                          )}</span>
+                          <span style="margin-left: 1rem;"><strong>Resultado:</strong> ${
+                            acceso.resultado ? "Éxito" : "Fallo"
+                          }</span>
+                          <span style="margin-left: 1rem;"><strong>Huésped:</strong> ${
+                            acceso.nombreHuesped
+                          }</span>
+                        `;
+                      accessList.appendChild(listItem);
+                    });
                 }
               })
               .catch((error) => {

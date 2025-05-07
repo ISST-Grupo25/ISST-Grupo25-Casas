@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{layout :: head}"></head>
+  <body th:class="${session.theme}">
+    <div id="main">
+      <!-- Barra de navegación -->
+      <div th:replace="~{layout :: nav}"></div>
+
+      <!-- Contenido principal -->
+      <main class="contentview" th:replace="~{layout :: content}">
+        <section class="notifications-container" th:fragment="section">
+          <h2 style="text-align: center; margin-bottom: 2rem">
+            Notificaciones de Acceso
+          </h2>
+
+          <div
+            th:each="acceso : ${accesos}"
+            th:class="'notification ' + (${acceso.resultado} ? 'success' : 'failure')"
+          >
+            <div class="notification-icon">
+              <span th:text="${acceso.resultado} ? '🔓' : '🔒'">🔓</span>
+            </div>
+            <div class="notification-content">
+              <p>
+                <strong th:text="${acceso.huesped.nombre}"
+                  >Nombre del huésped</strong
+                >
+                <span th:if="${acceso.resultado}"> accedió a </span>
+                <span th:unless="${acceso.resultado}"> intentó acceder a </span>
+                <span
+                  th:if="${acceso.reserva != null and acceso.reserva.cerradura != null}"
+                  th:text="${acceso.reserva.cerradura.ubicacion}"
+                >
+                </span>
+
+                <span th:if="${acceso.resultado}"> correctamente.</span>
+                <span th:unless="${acceso.resultado}"> pero falló.</span>
+              </p>
+              <div class="notification-time" th:text="${acceso.horario}">
+                01/05/2025 12:00
+              </div>
+            </div>
+          </div>
+
+          <p
+            th:if="${#lists.isEmpty(accesos)}"
+            style="text-align: center; color: #999"
+          >
+            No tienes notificaciones por ahora 💤
+          </p>
+        </section>
+      </main>
+    </div>
+    <!-- Inclusión de los scripts del layout -->
+    <script th:replace="~{layout :: scripts}"></script>
+  </body>
+</html>

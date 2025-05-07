@@ -86,6 +86,13 @@ public class CerraduraService {
         }
     }
 
+    public void eliminarCerradurasPorGestor(Long gestorId) {
+        List<Cerradura> cerraduras = obtenerCerradurasPorGestor(gestorId);
+        for (Cerradura cerradura : cerraduras) {
+            eliminarCerradura(cerradura.getId());
+        }
+    }
+
     
 
 }

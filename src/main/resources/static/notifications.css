@@ -1,0 +1,60 @@
+.notifications-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+}
+
+.notification:hover {
+  background-color: #f1f1f1;
+}
+
+.notification-icon {
+  font-size: 1.8rem;
+  margin-right: 1rem;
+}
+
+.notification.success .notification-icon {
+  color: #4caf50;
+}
+
+.notification.failure .notification-icon {
+  color: #f44336;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-time {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.25rem;
+}
+
+.notification strong {
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  .notification {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .notification-icon {
+    margin-bottom: 0.5rem;
+  }
+}

@@ -141,6 +141,13 @@ public class ReservaService {
         reservaRepository.deleteById(reservaId); // 🔥 Después borrar la reserva
     }
 
+    public void eliminarReservasPorGestor(Long gestorId) {
+        List<Reserva> reservas = reservaRepository.findByGestorId(gestorId);
+        for (Reserva reserva : reservas) {
+            eliminarReservaYHuespedes(reserva.getId());
+        }
+    }
+
     public List<Reserva> obtenerReservasActivasOFuturasPorHuesped(Huesped huesped) {
         return reservaRepository.findReservasActivasOFuturasPorHuesped(huesped);
     }
@@ -163,6 +170,7 @@ public class ReservaService {
 
         reservaRepository.save(reserva);
     }
+
 
 
 }
