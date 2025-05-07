@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.client.RestTemplate;
 
+import com.isst.ISST_Grupo25_Casas.dtos.AccesoDTO;
 import com.isst.ISST_Grupo25_Casas.models.Acceso;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
@@ -29,7 +30,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 public class KeyController {
 
     private final HuespedRepository huespedRepository;
@@ -85,8 +86,17 @@ public class KeyController {
 
     @GetMapping("/accesos/reserva/{reservaId}")
     @ResponseBody
-    public List<Acceso> obtenerAccesosPorReserva(@PathVariable Long reservaId) {
-        return accesoService.obtenerAccesosPorReserva(reservaId);
+    public List<AccesoDTO> obtenerAccesosPorReserva(@PathVariable Long reservaId) {
+        List<Acceso> accesos = accesoService.obtenerAccesosPorReserva(reservaId);
+    
+        return accesos.stream()
+                .map(acceso -> new AccesoDTO(
+                        acceso.getHorario(),
+                        acceso.getResultado(),
+                        acceso.getHuesped() != null ? acceso.getHuesped().getNombre() : "Desconocido"
+                ))
+                .toList();
     }
+    
 
 }

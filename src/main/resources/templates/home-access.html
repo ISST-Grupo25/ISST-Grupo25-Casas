@@ -168,10 +168,11 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         // Código relacionado con el modal y el PIN
+        let activeForm = null; // Guarda el form actual que se ha abierto
         const modal = document.getElementById("pin-dialog");
         modal.style.display = "none";
         const pinInputModal = document.getElementById("pin-input"); // Para el PIN del modal
-        const pinInputForm = document.getElementById("form-pin-input"); // Para el PIN del formulario
+        //const pinInputForm = document.getElementById("form-pin-input"); // Para el PIN del formulario
         const buttons = document.querySelectorAll(".pin-btn");
         const openModalBtns = document.querySelectorAll(".key-btn");
         const cancelBtn = document.getElementById("cancel-btn");
@@ -184,12 +185,14 @@
         // Abrir modal y obtener el PIN de la reserva seleccionada
         openModalBtns.forEach((btn) => {
           btn.addEventListener("click", () => {
-            currentPin = btn.getAttribute("data-pin"); // Obtener el PIN de la reserva
-            currentReservaId = btn.getAttribute("data-reserva-id"); // Obtener el ID de la reserva
+            currentPin = btn.getAttribute("data-pin");
+            currentReservaId = btn.getAttribute("data-reserva-id");
+            activeForm = btn.closest("form"); // Capturamos el form asociado al botón
             modal.style.display = "flex";
             pinInputModal.value = "";
           });
         });
+
 
         // Cerrar modal
         cancelBtn.addEventListener("click", () => {
@@ -224,6 +227,9 @@
           if (pin.length >= 4) {
             console.log("PIN ingresado:", pin);
             console.log("PIN de reserva:", currentPin);
+
+            const hidden = activeForm.querySelector(".form-pin-input");
+            hidden.value = pin;
             const resultado = pin === currentPin; // Validar si el PIN es correcto
             const horario = new Date().toISOString(); // Obtener la fecha y hora actual
 
@@ -254,7 +260,7 @@
                 }
               })
               .catch((error) => console.error("❌ Error:", error));
-
+            activeForm.submit();
             modal.style.display = "none";
           } else {
             alert("El PIN debe tener al menos 4 dígitos.");
