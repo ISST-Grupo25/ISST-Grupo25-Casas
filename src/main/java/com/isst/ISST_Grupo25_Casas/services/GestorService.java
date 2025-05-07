@@ -14,8 +14,12 @@ public class GestorService {
     
     private final GestorRepository gestorRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ReservaService reservaService;
+    private final CerraduraService cerraduraService;
 
-    public GestorService(GestorRepository gestorRepository, PasswordEncoder passwordEncoder) {
+    public GestorService(GestorRepository gestorRepository, PasswordEncoder passwordEncoder, ReservaService reservaService, CerraduraService cerraduraService) {
+        this.cerraduraService = cerraduraService;
+        this.reservaService = reservaService;
         this.gestorRepository = gestorRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -66,5 +70,12 @@ public class GestorService {
 
     public Optional<Gestor> findByEmail(String email) {
         return gestorRepository.findByEmail(email);
+    }
+
+    public void eliminarGestor(Long id) {
+        gestorRepository.deleteById(id);
+        //eliminar las reservas y cerraduras asociadas a este gestor
+        reservaService.eliminarReservasPorGestor(id);
+        cerraduraService.eliminarCerradurasPorGestor(id);
     }
 }
