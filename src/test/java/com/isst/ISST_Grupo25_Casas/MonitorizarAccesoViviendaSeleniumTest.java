@@ -100,7 +100,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
     @BeforeEach
     void setUp() {
         // Intentar usar chromedriver local si existe
-        String localDriverPath = "/usr/local/bin/chromedriver";
+        String localDriverPath = "C:\\Users\\inesv\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe";
         File localDriver = new File(localDriverPath);
 
         ChromeOptions options = new ChromeOptions();

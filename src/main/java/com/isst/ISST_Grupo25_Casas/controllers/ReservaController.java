@@ -120,6 +120,7 @@ public class ReservaController {
                                  @RequestParam(value = "huespedes", required = false) List<Long> huespedIds,
                                  HttpSession session,
                                  RedirectAttributes redirectAttributes) {
+        System.out.println("📥 Huespedes recibidos: " + huespedIds);
         try {
             Object obj = session.getAttribute("usuario");
             if (!(obj instanceof Gestor gestor)) {
