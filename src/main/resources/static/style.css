@@ -253,6 +253,221 @@ select:focus {
   background: linear-gradient(to right, #1e3c72, #2a5298); /* azul intenso */
 }
 
+/* ---------------------------------------
+   SECCIÓN: FEATURES
+---------------------------------------- */
+
+.feature-grid {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 90%;
+  margin: 0 auto;
+  text-align: left;
+  padding: 0 40px;
+  min-height: 100vh;
+}
+
+.feature-text {
+  flex: 1 1 50%;
+}
+
+.feature-image {
+  flex: 1 1 40%;
+  display: flex;
+  justify-content: center;
+}
+
+.feature-img {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.feature-text h2 {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: white;
+}
+
+.feature-text h2 .material-icons {
+  font-size: 2.8rem;
+  color: white;
+}
+
+.feature-text .lead {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 25px;
+  color: white;
+}
+
+.feature-text .benefits p {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  line-height: 1.6;
+  color: white;
+}
+
+.feature-text .benefits strong {
+  color: white;
+}
+
+.feature-text p {
+  font-size: 1.3rem;
+  margin-bottom: 18px;
+}
+
+.feature-text li {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.feature-text ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+/* ---------------------------------------
+   SECCIÓN: HERO FULLSCREEN (PORTADA)
+---------------------------------------- */
+
+.hero-fullscreen {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to bottom right, #fdf6f0, #eee2da);
+  scroll-snap-align: start;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.hero-container {
+  max-width: 1000px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.hero-container h1 {
+  font-size: 3rem;
+  margin: 0;
+  color: var(--texto);
+}
+
+.hero-container p {
+  font-size: 1.2rem;
+  margin: 0;
+  max-width: 700px;
+  color: var(--texto);
+}
+
+.hero-benefits {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.hero-benefits div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 160px;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--texto);
+}
+
+.hero-benefits i {
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+  color: var(--marron-claro);
+}
+
+/* ---------------------------------------
+   BOTÓN PRINCIPAL
+---------------------------------------- */
+
+.hero-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.hero-container .btn-primary {
+  font-size: 1.1rem;
+  padding: 16px 36px;
+  border-radius: 14px;
+  font-weight: 600;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.hero-container .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.hero-container .btn-outline {
+  font-size: 1.1rem;
+  padding: 16px 36px;
+  border-radius: 14px;
+  font-weight: 600;
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.hero-container .btn-outline:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+.feature.reverse .feature-grid {
+  flex-direction: row-reverse;
+  gap: 80px;
+}
+
+
+/* Asegura que se vea bien en pantallas pequeñas */
+@media screen and (max-width: 768px) {
+  .feature-grid,
+  .feature.reverse .feature-grid {
+    flex-direction: column !important;
+    text-align: center;
+  }
+
+  .feature-text,
+  .feature-image {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .feature-image {
+    justify-content: center;
+  }
+
+  .feature-text {
+    text-align: center;
+  }
+}
 /* Scroll suave y snap */
 body {
   scroll-behavior: smooth;
