@@ -66,7 +66,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
     private Reserva reserva2;
     private Cerradura cerradura;
     private Cerradura cerradura2;
-    private String gestorEmail = "selenium_gestor@gmail.com";
+    private String gestorEmail = "selenium_gestor2@gmail.com";
     private String gestorPassword = "clave123";
 
     @BeforeAll
@@ -138,7 +138,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
         WebElement menuBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("menuButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", menuBtn);
     
-        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Monitorizar Acessos")));
+        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Historial de Acessos")));
         monitorLink.click();
         wait.until(ExpectedConditions.urlContains("/monitor"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("accessCards")));
@@ -148,34 +148,44 @@ public class MonitorizarAccesoViviendaSeleniumTest {
     @AfterAll
     void limpiarDatos() {
         try {
-            if (reserva != null && reserva.getId() != null) {
-                reservaService.eliminarReservaYHuespedes(reserva.getId());
-                System.out.println("🧹 Reserva eliminada");
-            }
+            // Reservas (y sus accesos y enlaces intermedios)
+        if (reserva2 != null && reserva2.getId() != null) {
+            reservaService.eliminarReservaYHuespedes(reserva2.getId());
+            System.out.println("🧹 Segunda reserva eliminada");
+        }
+        if (reserva != null && reserva.getId() != null) {
+            reservaService.eliminarReservaYHuespedes(reserva.getId());
+            System.out.println("🧹 Reserva eliminada");
+        }
 
-            if (cerradura != null && cerradura.getId() != null) {
-                cerraduraService.eliminarCerradura(cerradura.getId());
-                System.out.println("🧹 Cerradura eliminada");
-            }
+        // Cerraduras (tras eliminar reservas asociadas)
+        if (cerradura2 != null && cerradura2.getId() != null) {
+            cerraduraService.eliminarCerradura(cerradura2.getId());
+            System.out.println("🧹 Segunda cerradura eliminada");
+        }
+        if (cerradura != null && cerradura.getId() != null) {
+            cerraduraService.eliminarCerradura(cerradura.getId());
+            System.out.println("🧹 Cerradura eliminada");
+        }
 
-            if (huesped != null && huesped.getId() != null) {
-                huespedService.eliminarHuesped(huesped.getId());
-                System.out.println("🧹 Huesped eliminado");
-            }
+        // Huéspedes
+        if (segundoHuesped != null && segundoHuesped.getId() != null) {
+            huespedService.eliminarHuesped(segundoHuesped.getId());
+            System.out.println("🧹 Segundo huésped eliminado");
+        }
+        if (huesped != null && huesped.getId() != null) {
+            huespedService.eliminarHuesped(huesped.getId());
+            System.out.println("🧹 Huésped eliminado");
+        }
 
-            if (gestorService.findByEmail(gestorEmail)!= null) {
-                gestorService.findByEmail(gestorEmail).ifPresent(gestor -> gestorService.eliminarGestor(gestor.getId()));
-                System.out.println("🧹 Gestor eliminado");
-            }
+        // Gestor (al final)
+        gestorService.findByEmail(gestorEmail).ifPresent(gestor -> {
+            gestorService.eliminarGestor(gestor.getId());
+            System.out.println("🧹 Gestor eliminado");
+        });
 
-            if (reserva2 != null && reserva2.getId() != null) {
-                reservaService.eliminarReservaYHuespedes(reserva2.getId());
-                System.out.println("🧹 Segunda reserva eliminada");
-            }
-            if (segundoHuesped != null && segundoHuesped.getId() != null) {
-                huespedService.eliminarHuesped(segundoHuesped.getId());
-                System.out.println("🧹 Segundo huésped eliminado");
-            }
+
+            
             //borrar los accesos de prueba
 
 
@@ -204,7 +214,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", menuBtn);
 
         // 4. Ir a monitorización
-        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Monitorizar Acessos")));
+        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Historial de Acessos")));
         monitorLink.click();
         wait.until(ExpectedConditions.urlContains("/monitor"));
 
