@@ -8,26 +8,81 @@
 
       <!-- Contenido principal -->
       <main class="contentview" th:replace="~{layout :: content}">
-        <section class="section-container" th:fragment="section">
-          <section class="feature hero-fullscreen">
+        <section class="hero-fullscreen">
+          <div class="hero-container">
             <h1>Accesos Inteligentes para tu Propiedad</h1>
             <p>Gestión remota y segura de cerraduras con tecnología Bluetooth e Internet.</p>
-          </section>
+
+            <div class="hero-benefits">
+              <div><i class="material-icons">vpn_key</i><p>Sin llaves físicas</p></div>
+              <div><i class="material-icons">calendar_today</i><p>Programación automática</p></div>
+              <div><i class="material-icons">visibility</i><p>Control en tiempo real</p></div>
+            </div>
+
+            <div class="hero-actions">
+              <a href="/login" class="btn btn-primary">Iniciar sesión</a>
+              <a href="/signup" class="btn btn-outline">Crear cuenta</a>
+            </div>
+          </div>
+        </section>
           
           <section class="feature feature-1 fade-in">
-            <h2>Acceso Bluetooth</h2>
-            <p>Abre puertas con tu smartphone sin necesidad de llaves físicas.</p>
+            <div class="feature-grid">
+              <div class="feature-text">
+                <h2><i class="material-icons">bluetooth</i> Acceso Bluetooth</h2>
+                <p class="lead">
+                  Desbloquea la puerta con tu móvil y olvídate de las llaves físicas.
+                </p>
+                <div class="benefits">
+                  <p><strong>📱 Sin llaves físicas:</strong> accede con tu smartphone.</p>
+                  <p><strong>🔒 Seguridad avanzada:</strong> cifrado AES-256 integrado.</p>
+                  <p><strong>📶 Detección automática:</strong> conexión por Bluetooth al acercarte.</p>
+                </div>
+              </div>
+              <div class="feature-image">
+                <img src="/images/bluetooth-access.png" alt="Acceso Bluetooth" class="feature-img" />
+              </div>
+            </div>
           </section>
-          
-          <section class="feature feature-2 fade-in">
-            <h2>Integración con Google Calendar</h2>
-            <p>Planifica accesos y controla el horario de cada usuario.</p>
+
+          <section class="feature feature-2 fade-in reverse">
+            <div class="feature-grid">
+              <div class="feature-text">
+                <h2><i class="material-icons">calendar_today</i> Integración con Google Calendar</h2>
+                <p class="lead">
+                  Automatiza los accesos sincronizándolos con tu calendario de reservas.
+                </p>
+                <div class="benefits">
+                  <p><strong>⏰ Accesos programados:</strong> sin intervención manual.</p>
+                  <p><strong>🔁 Sincronización en tiempo real:</strong> con Google Calendar.</p>
+                  <p><strong>📩 Recordatorios automáticos:</strong> personalizables por usuario.</p>
+                </div>
+              </div>
+              <div class="feature-image">
+                <img src="/images/google-calendar-sync.png" alt="Google Calendar" class="feature-img" />
+              </div>
+            </div>
           </section>
-          
+
           <section class="feature feature-3 fade-in">
-            <h2>Monitoreo en Tiempo Real</h2>
-            <p>Historial de accesos y notificaciones de seguridad.</p>
-          </section>          
+            <div class="feature-grid">
+              <div class="feature-text">
+                <h2><i class="material-icons">visibility</i> Monitoreo en Tiempo Real</h2>
+                <p class="lead">
+                  Supervisa y controla todos los accesos en tus propiedades desde una única plataforma.
+                </p>
+                <div class="benefits">
+                  <p><strong>🔔 Alertas instantáneas:</strong> recibe notificaciones al momento.</p>
+                  <p><strong>📊 Historial completo:</strong> revisa qué usuarios accedieron, cuándo y cómo.</p>
+                  <p><strong>🧭 Gestión visual:</strong> controla accesos y reservas desde un panel centralizado.</p>
+                </div>
+              </div>
+              <div class="feature-image">
+                <img src="/images/access-dashboard.png" alt="Dashboard en Tiempo Real" class="feature-img" />
+              </div>
+            </div>
+          </section>
+
         </section>
       </main>
     </div>
