@@ -100,7 +100,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
     @BeforeEach
     void setUp() {
         // Intentar usar chromedriver local si existe
-        String localDriverPath = "C:\\Users\\inesv\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe";
+        String localDriverPath = "/usr/local/bin/chromedriver";
         File localDriver = new File(localDriverPath);
 
         ChromeOptions options = new ChromeOptions();
@@ -138,7 +138,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
         WebElement menuBtn = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("menuButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", menuBtn);
     
-        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Monitorizar Acessos")));
+        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Monitorizar Accesos")));
         monitorLink.click();
         wait.until(ExpectedConditions.urlContains("/monitor"));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("accessCards")));
@@ -204,7 +204,7 @@ public class MonitorizarAccesoViviendaSeleniumTest {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", menuBtn);
 
         // 4. Ir a monitorización
-        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Monitorizar Acessos")));
+        WebElement monitorLink = wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Monitorizar Accesos")));
         monitorLink.click();
         wait.until(ExpectedConditions.urlContains("/monitor"));
 
