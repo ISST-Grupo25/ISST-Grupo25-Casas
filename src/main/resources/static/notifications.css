@@ -57,4 +57,15 @@
   .notification-icon {
     margin-bottom: 0.5rem;
   }
+
+  .btn-discard {
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    margin-left: 1rem;
+  }
+  .btn-discard:hover {
+    color: #000;
+  }
 }

@@ -16,6 +16,7 @@
           <div
             th:each="acceso : ${accesos}"
             th:class="'notification ' + (${acceso.resultado} ? 'success' : 'failure')"
+            th:attr="data-id=${acceso.id}"
           >
             <div class="notification-icon">
               <span th:text="${acceso.resultado} ? '🔓' : '🔒'">🔓</span>
@@ -40,6 +41,7 @@
                 01/05/2025 12:00
               </div>
             </div>
+            <button class="discard-btn">Descartar</button>
           </div>
 
           <p
@@ -48,10 +50,36 @@
           >
             No tienes notificaciones por ahora 💤
           </p>
+          <!-- botón borrar todas (estático) -->
+        <div style="text-align:center; margin-top:2rem">
+          <button id="clear-all-btn" class="btn btn-danger">Eliminar todas las notificaciones</button>
+        </div>
         </section>
+        
       </main>
     </div>
-    <!-- Inclusión de los scripts del layout -->
+    <!-- Scripts comunes del layout -->
     <script th:replace="~{layout :: scripts}"></script>
+
+    <!-- ➤ Código específico de notifications.html -->
+    <script>
+      // handler “Descartar” individual
+      document.querySelectorAll('.discard-btn').forEach(btn => {
+        btn.addEventListener('click', async e => {
+          const card = e.target.closest('.notification');
+          const id = card.getAttribute('data-id');
+          await fetch(`/notifications/dismiss/${id}`, { method: 'POST' });
+          card.remove();
+        });
+      });
+
+      // botón “Eliminar todas las notificaciones”
+      document
+        .getElementById('clear-all-btn')
+        .addEventListener('click', async () => {
+          await fetch('/notifications/dismissAll', { method: 'POST' });
+          document.querySelectorAll('.notification').forEach(n => n.remove());
+        });
+    </script>
   </body>
 </html>
