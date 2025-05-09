@@ -60,7 +60,7 @@ public class AccesoService {
         return accesoRepository.findByReservaIdIn(reservaIds);
     }
 
-    /** Devuelve solo los NO-LEÍDOS, ordenados y limitados a 20 */
+    /** Devuelve solo los NO-LEÍDOS, ordenados */
     public List<Acceso> obtenerAccesosNoLeidos(List<Reserva> reservas) {
         List<Long> ids = reservas.stream().map(Reserva::getId).toList();
         return accesoRepository.findAllByReservaIdInAndLeidoFalse(ids)

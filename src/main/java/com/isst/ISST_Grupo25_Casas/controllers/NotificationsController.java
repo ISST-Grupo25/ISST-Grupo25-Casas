@@ -60,13 +60,7 @@ public class NotificationsController {
             System.out.println("❌ Usuario no autorizado");
             return "redirect:/login"; // Redirigir si el usuario no es válido
         }
-        
-        // List<Acceso> accesos = reservas.stream()
-        //         .flatMap(reserva -> reserva.getAccesos().stream())
-        //         .filter(a -> !descartados.contains(a.getId()))
-        //         .sorted(Comparator.comparing(Acceso::getHorario).reversed())
-        //         .limit(20) 
-        //         .toList();   
+          
                 
         List<Acceso> accesos = accesoService.obtenerAccesosNoLeidos(reservas);
         model.addAttribute("accesos", accesos);
@@ -88,12 +82,12 @@ public class NotificationsController {
     accesoService.marcarLeido(id);
   }
 
-  // — nuevo: descartar todas las notificaciones de la vista
+  // descartar todas las notificaciones de la vista
   @PostMapping("/notifications/dismissAll")
   @ResponseBody
   public void dismissAll(HttpSession session) {
     session.setAttribute("descartados", new HashSet<Long>());
-    // ← marcamos todos los no-leídos como leídos
+    //  marcamos todos los no-leídos como leídos
         Gestor gestor = (Gestor) session.getAttribute("usuario");
         List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
         List<Acceso> accesos = accesoService.obtenerAccesosNoLeidos(reservas);
