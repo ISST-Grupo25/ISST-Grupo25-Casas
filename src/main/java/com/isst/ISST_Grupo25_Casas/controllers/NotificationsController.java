@@ -61,12 +61,14 @@ public class NotificationsController {
             return "redirect:/login"; // Redirigir si el usuario no es válido
         }
         
-        List<Acceso> accesos = reservas.stream()
-                .flatMap(reserva -> reserva.getAccesos().stream())
-                .filter(a -> !descartados.contains(a.getId()))
-                .sorted(Comparator.comparing(Acceso::getHorario).reversed())
-                .limit(20) 
-                .toList();    
+        // List<Acceso> accesos = reservas.stream()
+        //         .flatMap(reserva -> reserva.getAccesos().stream())
+        //         .filter(a -> !descartados.contains(a.getId()))
+        //         .sorted(Comparator.comparing(Acceso::getHorario).reversed())
+        //         .limit(20) 
+        //         .toList();   
+                
+        List<Acceso> accesos = accesoService.obtenerAccesosNoLeidos(reservas);
         model.addAttribute("accesos", accesos);
         System.out.println("🔵 Accesos: " + accesos);
 
@@ -83,6 +85,7 @@ public class NotificationsController {
       session.setAttribute("descartados", descartados);
     }
     descartados.add(id);
+    accesoService.marcarLeido(id);
   }
 
   // — nuevo: descartar todas las notificaciones de la vista
@@ -90,6 +93,11 @@ public class NotificationsController {
   @ResponseBody
   public void dismissAll(HttpSession session) {
     session.setAttribute("descartados", new HashSet<Long>());
+    // ← marcamos todos los no-leídos como leídos
+        Gestor gestor = (Gestor) session.getAttribute("usuario");
+        List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
+        List<Acceso> accesos = accesoService.obtenerAccesosNoLeidos(reservas);
+        accesoService.marcarTodosLeidos(accesos);
   }
 
 }
