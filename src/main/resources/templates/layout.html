@@ -101,7 +101,12 @@
 
             <li th:if="${session.role == 'gestor'}" class="nav-item">
               <span class="material-icons">notifications</span>
-              <a th:href="@{/notifications}">Notificaciones</a>
+              <a th:href="@{/notifications}">
+                <span style="vertical-align: middle;">Notificaciones</span>
+                <span th:if="${unreadCount > 0}"
+                      th:text="${unreadCount > 10 ? '(+10)' : '(' + unreadCount + ')'}"
+                      class="notification-badge"></span>
+              </a>
             </li>
 
             <li th:if="${session.role == 'huesped'}" class="nav-item">
