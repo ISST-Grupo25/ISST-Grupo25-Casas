@@ -62,23 +62,35 @@
     <script th:replace="~{layout :: scripts}"></script>
 
     <script>
+      function refreshBadge() {
+        const badge = document.querySelector('.notification-badge');
+        const count = document.querySelectorAll('.notification').length;
+        if (!badge) return;
+        if (count > 0) {
+          badge.textContent = count > 10 ? '(+10)' : '(' + count + ')';
+        } else {
+          badge.remove();         // si no quedan, quita la burbuja
+        }
+      }
+    
       // handler “Descartar” individual
       document.querySelectorAll('.discard-btn').forEach(btn => {
         btn.addEventListener('click', async e => {
           const card = e.target.closest('.notification');
           const id = card.getAttribute('data-id');
           await fetch(`/notifications/dismiss/${id}`, { method: 'POST' });
-          card.remove();
+          card.remove();           // quita la tarjeta
+          refreshBadge();          // y actualiza la badge
         });
       });
-
+    
       // botón “Eliminar todas las notificaciones”
-      document
-        .getElementById('clear-all-btn')
-        .addEventListener('click', async () => {
-          await fetch('/notifications/dismissAll', { method: 'POST' });
-          document.querySelectorAll('.notification').forEach(n => n.remove());
-        });
+      const allBtn = document.getElementById('clear-all-btn');
+      allBtn.addEventListener('click', async () => {
+        await fetch('/notifications/dismissAll', { method: 'POST' });
+        document.querySelectorAll('.notification').forEach(n => n.remove());
+        refreshBadge();           // actualiza la badge (se quitará)
+      });
     </script>
   </body>
 </html>

@@ -65,6 +65,7 @@ public class NotificationsController {
         List<Acceso> accesos = accesoService.obtenerAccesosNoLeidos(reservas);
         model.addAttribute("accesos", accesos);
         System.out.println("🔵 Accesos: " + accesos);
+        model.addAttribute("unreadCount", accesos.size());
 
         return "notifications";
     }

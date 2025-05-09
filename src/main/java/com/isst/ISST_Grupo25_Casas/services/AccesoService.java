@@ -28,6 +28,10 @@ public class AccesoService {
         return accesoRepository.findAll();
     }
 
+    public long contarNoLeidosPorGestor(Long gestorId) {
+        return accesoRepository.countByGestorIdAndLeidoFalse(gestorId);
+    }
+
     // 🔵 Buscar accesos de un huesped
     public List<Acceso> obtenerAccesosPorHuesped(Huesped huesped) {
         return accesoRepository.findByHuesped(huesped);
