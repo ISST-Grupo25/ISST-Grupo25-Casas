@@ -1,5 +1,6 @@
 package com.isst.ISST_Grupo25_Casas.services;
 
+
 import java.sql.Date;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
 import com.isst.ISST_Grupo25_Casas.repository.AccesoRepository;
+
+import java.util.Comparator;
 
 @Service
 public class AccesoService {
@@ -55,5 +58,26 @@ public class AccesoService {
     
         // Consultar los accesos directamente desde el repositorio
         return accesoRepository.findByReservaIdIn(reservaIds);
+    }
+
+    /** Devuelve solo los NO-LEÍDOS, ordenados */
+    public List<Acceso> obtenerAccesosNoLeidos(List<Reserva> reservas) {
+        List<Long> ids = reservas.stream().map(Reserva::getId).toList();
+        return accesoRepository.findAllByReservaIdInAndLeidoFalse(ids)
+                               .stream()
+                               .sorted(Comparator.comparing(Acceso::getHorario).reversed())
+                               .toList();
+    }
+    /** Marca un acceso como leído */
+    public void marcarLeido(Long accesoId) {
+        accesoRepository.findById(accesoId).ifPresent(a -> {
+            a.setLeido(true);
+            accesoRepository.save(a);
+        });
+    }
+    /** Marca todos los de la lista como leídos */
+    public void marcarTodosLeidos(List<Acceso> accesos) {
+        accesos.forEach(a -> a.setLeido(true));
+        accesoRepository.saveAll(accesos);
     }
 }

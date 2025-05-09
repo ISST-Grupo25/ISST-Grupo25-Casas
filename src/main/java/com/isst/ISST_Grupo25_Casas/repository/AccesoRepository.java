@@ -23,4 +23,6 @@ public interface AccesoRepository extends JpaRepository<Acceso, Long> {
 
     List<Acceso> findByReservaIdIn(List<Long> reservaIds);
 
+    List<Acceso> findAllByReservaIdInAndLeidoFalse(List<Long> reservaIds);
+
 }
