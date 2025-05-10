@@ -1,76 +1,104 @@
-/* settings.css */
+/* ----------------------------------------
+   ESTILOS PARA PÁGINA DE PERFIL
+---------------------------------------- */
 
-/* General styles for the settings page */
-body {
-	font-family: Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-	background-color: #f4f4f9;
-	color: #333;
+.profile-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: var(--card-bg);
+  color: var(--texto);
+  border-radius: 16px;
+  box-shadow: 0 6px 16px var(--shadow-light);
 }
 
-h1 {
-	font-size: 24px;
-	margin: 20px 0;
+.profile-container h2,
+.profile-container h3 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--texto);
 }
 
-.container {
-	max-width: 800px;
-	margin: 20px auto;
-	padding: 20px;
-	background: white;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.profile-container .btn-primary {
+  width: 100%;
+  display: block;
+  text-align: center;
 }
 
-button {
-	background-color: #af844c;
-	color: white;
-	border: none;
-	padding: 10px 15px;
-	border-radius: 4px;
-	cursor: pointer;
-}
-
-button:hover {
-	background-color: #45a049;
-}
-
+/* Info de usuario */
 .profile-info {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 1rem;
-	margin-bottom: 2rem;
-	text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .avatar {
-	width: 120px;
-	height: 120px;
-	object-fit: cover;
-	border-radius: 50%;
-	border: 3px solid #af844c;
-  }
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--marron-claro);
+  transition: transform 0.3s ease;
+}
 
 .avatar:hover {
-	transform: scale(1.05);
-	transition: transform 0.3s ease;
-	cursor: pointer;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+/* Formulario para subir imagen */
+.profile-info form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
 input[type="file"] {
-	border: 1px solid #ccc;
-	padding: 5px;
-	border-radius: 6px;
-	background-color: #fff;
-	cursor: pointer;
-  }
-
-.profile-info form {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  border: 1px solid var(--borde);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  cursor: pointer;
+  font-size: 0.95rem;
 }
 
+/* Formulario general de perfil */
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+
+.profile-form label {
+  font-weight: 500;
+  color: var(--texto);
+}
+
+.profile-form input {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 1rem;
+}
+
+/* Botones */
+.btn-primary {
+  align-self: flex-start;
+}
+
+.profile-form input,
+.profile-form select,
+.profile-form textarea,
+.profile-form button {
+  width: 100%;
+  box-sizing: border-box;
+}

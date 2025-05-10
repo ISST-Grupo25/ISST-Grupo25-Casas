@@ -219,7 +219,7 @@ select {
 
 .btn .material-icons {
   font-size: 20px;
-  color: white;
+  color: var(--botontexto);
 }
 
 #huespedes-container {
@@ -500,9 +500,9 @@ button[onclick="closeEventModal()"]:hover {
 }
 
 .btn-edit-calendar .material-icons {
-  color: white;
+  color: var(--botontexto);
 }
 
 .btn-delete-calendar .material-icons {
-  color: white;
+  color: var(--botontexto);
 }

@@ -1,191 +1,175 @@
-/* Key Title Section */
+/* ======= ACCESO ACTUAL ======= */
+
+/* Título */
 .key {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  padding: 20px 0;
   text-align: center;
-  padding-bottom: 0px;
 }
 
 .key-content h2 {
-  font-size: 36px;
+  font-size: 2rem;
   color: var(--marron-claro);
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0;
 }
 
-.reserva-inactiva {
-  opacity: 0.7;
-  pointer-events: none;
-  background-color: #665a5a;
-}
-
-/* houses Section */
+/* Contenedor de casas */
 .houses {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 40px;
-  padding: 50px 20px;
-  text-align: center;
+  align-items: center;
+  gap: 30px;
+  padding: 30px 20px;
 }
 
 .house {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
   max-width: 700px;
-}
-
-.house h3 {
-  color: black;
-  font-size: 22px;
+  background-color: var(--card-bg);
+  color: var(--texto);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0px 6px 12px var(--shadow-light);
+  box-sizing: border-box;
+  transition: 0.3s ease;
 }
 
 .house p {
-  color: #666;
+  color: var(--texto-secundario);
+  margin: 8px 0;
 }
 
+/* Reservas inactivas */
+.reserva-inactiva {
+  opacity: 0.6;
+  pointer-events: none;
+  background-color: var(--card-bg);
+}
+
+/* Botón de llave */
 .key-btn {
-  background-color: #69e5a7e0;
-  color: aliceblue !important;
+  background: var(--acento);
+  color: var(--botontexto);
   border: none;
   border-radius: 10px;
-  padding: 20px;
-  transition: transform 0.6s ease, background-color 0.3s ease; /* Añadimos transición */
-  perspective: 1000px; /* Añadimos perspectiva para el efecto 3D */
+  padding: 16px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  
 }
 
 .key-btn:hover {
-  background-color: #397a5ab9;
-  transform: scale(1.1); /* Escala el botón al 110% */
-}
-
-.key-btn.hover-animation {
-  background-color: #397a5ab9;
-  transform: scale(1.1); /* Escala el botón al 110% */
-  transition: transform 0.6s ease, background-color 0.3s ease;
+  transform: scale(1.1);
+  background-color: var(--boton-hover);
 }
 
 .key-btn .material-icons {
-  color: aliceblue !important;
-}
-
-.key-btn span {
-  display: inline-block;
-  transition: transform 0.6s ease; /* Transición para el giro */
-  transform-origin: center;
-}
-
-.key-btn:hover span {
-  transform: rotateY(180deg); /* Gira el contenido del botón */
-}
-.key-btn.hover-animation span {
-  transform: rotate(90deg); /* Gira el contenido del botón */
+  font-size: 28px;
+  color: var(--botontexto);
 }
 
 
-/* Modal Númerico */
-/* Estilos del modal */
+/* ======= MODAL de PIN ======= */
 .access-modal {
   display: none;
   position: fixed;
   z-index: 1000;
-  left: 0;
-  top: 0;
+  left: 0; top: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: var(--card-bg);
+  color: var(--texto);
+  padding: 30px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
   text-align: center;
-  width: 300px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
 
 .modal-content h2 {
-  color: black;
+  margin-bottom: 15px;
 }
 
 #pin-input {
-  font-size: 20px;
+  font-size: 22px;
   text-align: center;
-  margin-bottom: 10px;
-  width: 90%;
+  margin: 10px 0 20px;
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--borde);
+  background: var(--input-bg);
+  color: var(--input-text);
 }
 
 /* Teclado numérico */
 .pin-keypad {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin: 0 10px 10px 10px;
-  margin-bottom: 10px;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .pin-btn {
-  width: 30%;
   height: 60px;
-  font-size: 24px;
-  cursor: pointer;
-  background-color: #ddd;
+  font-size: 1.2rem;
+  background: #ddd;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
 .pin-btn:hover {
-  background-color: #bbb;
+  background: #bbb;
 }
 
-/* Botones de acción */
+/* Acciones */
 .pin-actions {
-  cursor: pointer;
   display: flex;
-  justify-content: space-between;
-  margin: 10px;
+  gap: 10px;
   margin-top: 20px;
 }
 
-#accept-btn {
-  height: 40px;
+.pin-actions button {
   flex: 1;
-  background: #8bedbcd3;
-  color: white;
+  padding: 12px;
+  font-weight: bold;
   border: none;
-  border-radius: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#accept-btn {
+  background: var(--acento);
+  color: var(--botontexto);
 }
 
 #accept-btn:hover {
-  background: rgba(4, 164, 111, 0.514);
+  background: var(--boton-hover);
 }
 
 #cancel-btn {
-  height: 40px;
-  flex: 1;
   background: transparent;
-  color: gray;
-  border: none;
-  border-radius: 10px;
+  color: var(--texto-secundario);
 }
 
 #cancel-btn:hover {
-  color: #d9534f;
+  color: var(--error);
 }
 
 #clear-btn {
   background: #f4c480b6;
 }
-
 #clear-btn:hover {
   background: #f4a460;
 }
@@ -193,94 +177,75 @@
 #blank-btn {
   background: #f0adadbe;
 }
-
 #blank-btn:hover {
   background: #d9534f;
 }
 
-/* 🔹 Estilos responsive para vista móvil (home-access) */
-@media screen and (max-width: 768px) {
-  .key {
-    padding: 20px 15px;
-    text-align: center;
-  }
 
-  .key-content h2 {
-    font-size: 22px;
-  }
-
-  .houses {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-  }
-
+/* ======= RESPONSIVE ======= */
+@media (max-width: 768px) {
   .house {
     padding: 15px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    text-align: center;
   }
 
-  .house h3 {
-    font-size: 18px;
-    margin-top: 10px;
-  }
-
-  .house p {
-    font-size: 14px;
-  }
-
-  /* Modal adaptado */
   .modal-content {
-    width: 90%;
-    max-width: 400px;
     padding: 20px;
-    margin: 30px;
   }
 
   #pin-input {
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 10px;
-    width: 90%;
+    font-size: 18px;
   }
 
-  .pin-actions {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .pin-actions button {
-    flex: 1;
-    padding: 10px;
-    font-size: 16px;
-    background-color: var(--marron-claro);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  .pin-btn {
+    height: 50px;
+    font-size: 18px;
   }
 
   .btn-ver-antiguas {
-    background-color: transparent;
-    border: 2px solid #444;
-    color: #444;
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: 0.3s;
+    width: 100%;
+    font-size: 16px;
   }
-  
-  .btn-ver-antiguas:hover {
-    background-color: #444;
-    color: white;
-  }
+}
 
+.house form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
+.btn,
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--marron-oscuro),
+    var(--marron-claro)
+  );
+  color: var(--botontexto);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 
+.btn:hover,
+.btn-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--marron-claro),
+    var(--marron-oscuro)
+  );
+  color: var(--botontexto-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }

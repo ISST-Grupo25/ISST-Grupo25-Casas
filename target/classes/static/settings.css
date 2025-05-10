@@ -1,38 +1,52 @@
-/* settings.css */
+/* -----------------------------------------------------
+   ESTILOS PARA LA PÁGINA DE AJUSTES
+----------------------------------------------------- */
 
-/* General styles for the settings page */
-body {
-	font-family: Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-	background-color: #f4f4f9;
-	color: #333;
+.settings-container {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: left;
 }
 
-
-h1 {
-	font-size: 24px;
-	margin: 20px 0;
+.settings-section {
+  background-color: var(--card-bg);
+  color: var(--texto);
+  border-radius: 16px;
+  box-shadow: 0px 6px 16px var(--shadow-light);
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 30px;
 }
 
-.container {
-	max-width: 800px;
-	margin: 20px auto;
-	padding: 20px;
-	background: white;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.settings-container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--texto);
+  margin-bottom: 20px;
 }
 
-button {
-	background-color: #af844c;
-	color: white;
-	border: none;
-	padding: 10px 15px;
-	border-radius: 4px;
-	cursor: pointer;
+.settings-section h3 {
+  margin-bottom: 15px;
 }
 
-button:hover {
-	background-color: #45a049;
+.settings-section label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.settings-section input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--marron-oscuro);
+}
+
+.settings-section select {
+  margin-top: 5px;
+}
+
+.settings-section button.btn-primary {
+  margin-top: 10px;
+  width: 100%;
 }
