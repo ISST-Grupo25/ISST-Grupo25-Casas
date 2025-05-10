@@ -207,8 +207,9 @@ public class NotificacionesAccesoSeleniumTest {
         ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView(true);", allBtn);
         pause(500);
         allBtn.click();
-        wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".notification"), 0));
-        assertTrue(driver.findElements(By.cssSelector(".notification")).isEmpty());
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".notification")));
+        List<WebElement> notifs = driver.findElements(By.cssSelector(".notification"));
+        assertEquals(0, notifs.size(), "Todas las notificaciones deberían desaparecer");
         logoutComoGestor();
     }
 
