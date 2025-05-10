@@ -117,16 +117,16 @@ public class NotificacionesAccesoSeleniumTest {
 
     @Test
     void testNuevaNotificacionAparece() {
+        pause(3000);
         loginComoGestor();
-        pause(5000);
         accesoService.marcarTodosLeidos(
         accesoService.obtenerAccesosNoLeidos(
                 reservaService.obtenerReservasPorGestor(gestor.getId())
             )
         );
-        pause(5000);
+        pause(4000);
         irANotificaciones();
-        pause(5000);
+        pause(3000);
         // contamos las que hay
         int antes = driver.findElements(By.cssSelector(".notification")).size();
         // generamos un nuevo acceso
@@ -134,9 +134,9 @@ public class NotificacionesAccesoSeleniumTest {
         pause(500);
         // refrescamos
         driver.navigate().refresh();
-        pause(5000);
+        pause(3000);
         irANotificaciones();
-        pause(5000);
+        pause(3000);
         int despues = driver.findElements(By.cssSelector(".notification")).size();
         pause(500);
         assertEquals(antes + 1, despues, "Debe aparecer una nueva notificación");
@@ -144,52 +144,51 @@ public class NotificacionesAccesoSeleniumTest {
 
     @Test
     void testDescartarUno() {
+        pause(3000);
         loginComoGestor();
-        pause(5000);
-        accesoService.guardarAcceso(
-            java.sql.Date.valueOf(java.time.LocalDate.now()), 
-            false, huesped, reserva
-        );
-        pause(5000);
+        pause(3000);
+        for (int i = 0; i < 3; i++) {
+            accesoService.guardarAcceso(Date.valueOf(LocalDate.now()), false, huesped, reserva);
+        }
         irANotificaciones();
-        pause(5000);
+        pause(3000);
         List<WebElement> cards = driver.findElements(By.cssSelector(".notification"));
         assertFalse(cards.isEmpty(), "Debe haber al menos una notificación");
         int inicial = cards.size();
-        pause(5000);
+        pause(3000);
         // descartar la primera
         WebElement btn = cards.get(0).findElement(By.cssSelector(".discard-btn"));
         btn.click();
-        
+        pause(3000);
         // espera que baje en 1
         wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".notification"), inicial - 1));
-        pause(5000);
+        
         List<WebElement> tras = driver.findElements(By.cssSelector(".notification"));
         assertEquals(inicial - 1, tras.size());
+        pause(2000);
     }
 
     @Test
     void testDescartarTodos() {
-
+        pause(3000);
         loginComoGestor();
-        pause(5000);
+        pause(3000);
         // añadimos un par más para asegurar
         for (int i = 0; i < 5; i++) {
             accesoService.guardarAcceso(Date.valueOf(LocalDate.now()), false, huesped, reserva);
         }
 
-        pause(5000);
+        pause(1000);
         irANotificaciones();
-        pause(5000);
+        pause(3000);
         List<WebElement> cards = driver.findElements(By.cssSelector(".notification"));
         assertTrue(cards.size() >= 5, "Debe haber al menos 5 notificaciones");
-        pause(5000);
         WebElement allBtn = driver.findElement(By.id("clear-all-btn"));
         allBtn.click();
-
+        pause(3000);
         wait.until(ExpectedConditions.numberOfElementsToBe(By.cssSelector(".notification"), 0));
-        pause(5000);
         assertTrue(driver.findElements(By.cssSelector(".notification")).isEmpty());
+        pause(3000);
     }
 
 
