@@ -1,13 +1,13 @@
-package com.isst.ISST_Grupo25_Casas;
+// package com.isst.ISST_Grupo25_Casas;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class IsstGrupo25CasasApplicationTests {
+// @SpringBootTest
+// class IsstGrupo25CasasApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }

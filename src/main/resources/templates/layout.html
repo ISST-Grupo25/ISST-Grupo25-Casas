@@ -101,7 +101,7 @@
 
             <li th:if="${session.role == 'gestor'}" class="nav-item">
               <span class="material-icons">notifications</span>
-              <a th:href="@{/notifications}">
+              <a th:href="@{/notifications}" class="nav-notifications">
                 <span style="vertical-align: middle;">Notificaciones</span>
                 <span th:if="${unreadCount > 0}"
                       th:text="${unreadCount > 10 ? '(+10)' : '(' + unreadCount + ')'}"
