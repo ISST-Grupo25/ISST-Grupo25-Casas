@@ -16,13 +16,14 @@
 
   --boton: var(--marron-claro);
   --boton-hover: #4a362a;
-  --botontexto: #ffffff;
+  --botontexto: #ffffffd0;
   --botontexto-hover: white;
 
   --texto: #333;
   --texto-secundario: #666;
 
   --card-bg: white;
+  --card-bg-2: #e0dcd7;
   --shadow-light: rgba(0, 0, 0, 0.1);
   --shadow-medium: rgba(0, 0, 0, 0.2);
 
@@ -35,8 +36,11 @@
   --input-text: #212121;
   --borde: #ccc;
 
-  --shadow-light: rgba(0, 0, 0, 0.1);
-  --shadow-medium: rgba(0, 0, 0, 0.2);
+  --sidenav: #f8f4f1;
+  --texto--sidenav: #7c4f35;
+  --texto--sidenav--hover: #a06846;
+
+  --detalles-bg: #f1ede9;
 }
 
 /* Tema Oscuro */
@@ -45,18 +49,25 @@ body.dark {
   --marron-claro: #d8bfa4;
   --marron-oscuro: #cbb29a;
 
-  --texto: #f0f0f0;
+  --texto: #e0e0e0;
   --texto-secundario: #aaa;
   --card-bg: #2c2c2c;
+  --card-bg-2: #463d34;
 
   --boton: var(--marron-oscuro);
   --boton-hover: #a68e74;
-  --botontexto: #1e1e1e;
+  --botontexto: #3b3b3be7;
   --botontexto-hover: rgb(0, 0, 0);
 
   --input-bg: #1e1e1e;
   --input-text: #f5f5f5;
   --borde: #444;
+
+  --sidenav: #2c2c2c;
+  --texto--sidenav: #b0aeb1;
+  --texto--sidenav--hover: #d3d0d4;
+
+  --detalles-bg: #2a2a2a;
 }
 
 /* -----------------------------------------------------
@@ -106,6 +117,7 @@ main {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  align-self: center;
 }
 
 .btn:hover,
@@ -567,56 +579,6 @@ body.dark .feature-3 {
 
 .form a:hover {
   text-decoration: underline;
-}
-
-/* Perfil */
-.profile-info {
-  margin-bottom: 20px;
-}
-
-.avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-}
-
-.profile-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.profile-form label {
-  text-align: left;
-}
-
-.profile-form input {
-  margin-top: 5px;
-}
-
-/* Ajustes */
-.settings-container {
-  max-width: 600px;
-  margin: 40px auto;
-  text-align: left;
-}
-
-.settings-section h3 {
-  margin-bottom: 15px;
-}
-
-.settings-section label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.settings-section input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--marron-oscuro);
 }
 
 /* Error */

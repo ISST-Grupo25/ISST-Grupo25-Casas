@@ -22,14 +22,14 @@
         <section class="section-container" th:fragment="section">
           <div class="tittle-button">
             <h2>Gestión de Reservas</h2>
-            <button id="addEvent" class="btn-calendar">
+            <button id="addEvent" class="btn-primary">
               <span class="material-icons">add</span>Añadir Reserva
             </button>
           </div>
           <div id="calendar" class="fade-in"></div>
 
           <form method="post" th:action="@{/calendar/sincronizar}">
-            <button type="submit" class="btn-calendar">
+            <button type="submit" class="btn-primary">
               <span class="material-icons">autorenew</span> Sincronizar con
               Google Calendar
             </button>

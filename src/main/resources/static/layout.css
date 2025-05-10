@@ -61,8 +61,12 @@
 }
 
 .btn-login {
-  background-color: var(--boton);
-  color: var(--botontexto, black);
+  background: linear-gradient(
+    135deg,
+    var(--marron-oscuro),
+    var(--marron-claro)
+  );
+  color: var(--botontexto);
   border: 2px solid var(--boton);
 }
 
@@ -74,9 +78,14 @@
 
 .btn-login:hover,
 .btn-register:hover {
-  background-color: var(--boton-hover);
+  background: linear-gradient(
+    135deg,
+    var(--marron-claro),
+    var(--marron-oscuro)
+  );
   color: var(--botontexto-hover);
-  font-weight: bold;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
 
 /* Sidebar */

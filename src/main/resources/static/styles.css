@@ -14,13 +14,11 @@
 @import url("home-access.css");
 @import url("homes.css");
 @import url("profile.css");
-@import url("settings.css");
+@import url("/settings.css");
 @import url("monitor.css");
 @import url("notifications.css");
 
 /* DESACTIVADOS (por ahora):
-//
-//
 //@import url("access.css");
 //@import url("error.css");
 */

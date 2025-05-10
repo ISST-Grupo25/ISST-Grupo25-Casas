@@ -1,80 +1,113 @@
+/* 📌 Mensaje de error */
 .error-message {
   color: red !important;
   font-weight: bold;
   margin-top: 10px;
 }
 
-/* Formularios */
+/* 📌 Contenedor principal */
+.section-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 15px;
+}
+
+/* 📌 Formulario de registro */
 .form {
   display: none;
-  max-width: 500px;
-  margin: 50px auto;
-  background: white;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  width: 100%;
+  max-width: 460px;
+  background-color: var(--card-bg);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px var(--shadow-light);
+  color: var(--texto);
+  transition: background-color 0.3s, color 0.3s;
+  box-sizing: border-box;
 }
 
 .form h2 {
-  margin-bottom: 10px;
+  margin-bottom: 5px;
+  font-size: 22px;
+  color: var(--texto);
+  text-align: center;
 }
 
 .form p {
-  color: #666;
+  color: var(--texto-secundario, #666);
   margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
 }
 
 .form form {
   display: flex;
   flex-direction: column;
+  gap: 14px;
 }
 
 .form label {
-  text-align: left;
   font-weight: 600;
-  margin-top: 10px;
+  font-size: 14px;
+  text-align: left;
 }
 
 .form input {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  margin-top: 5px;
+  border-radius: 6px;
+  background-color: var(--input-bg, #fff);
+  color: var(--input-text, #000);
+  transition: border 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+.form input:focus {
+  outline: none;
+  border-color: var(--marron-claro);
+}
+
+/* 📌 Botón principal */
 .form .btn-primary {
-  background-color: var(--marron-claro);
+  background: var(--marron-claro);
   color: white;
-  padding: 10px;
+  padding: 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-weight: bold;
   margin-top: 15px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.3s ease;
+  width: 100%;
 }
 
 .form .btn-primary:hover {
   background-color: var(--marron-oscuro);
 }
 
+/* 📌 Enlaces */
 .form a {
   color: var(--marron-claro);
   text-decoration: none;
   font-weight: 600;
+  font-size: 14px;
 }
 
 .form a:hover {
   text-decoration: underline;
 }
 
-/* Estilos de las opciones */
+/* 📌 Opciones de registro iniciales */
 .options-container {
   display: flex;
   gap: 20px;
   justify-content: center;
   margin-bottom: 30px;
   padding-top: 50px;
+  flex-wrap: wrap;
 }
 
 .option-box {
@@ -96,24 +129,23 @@
   color: #666;
 }
 
-.btn {
-  display: inline-block;
-  margin-top: 10px;
-  padding: 10px 15px;
-  background-color: #8b6b50;
+.option-box .btn {
+  background: var(--marron-claro);
   color: white;
   border: none;
-  border-radius: 5px;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
   cursor: pointer;
-  text-decoration: none;
-  font-size: 14px;
+  width: 100%;
+  transition: background 0.3s ease;
 }
 
-.btn:hover {
-  background-color: #a6866a;
+.option-box .btn:hover {
+  background: var(--marron-oscuro);
 }
 
-/* 🔹 Estilos responsive para vista móvil (signup) */
+/* 📱 Responsive (pantallas pequeñas) */
 @media screen and (max-width: 768px) {
   .options-container {
     flex-direction: column;
@@ -127,49 +159,20 @@
     padding: 15px;
   }
 
-  .option-box h3 {
-    font-size: 18px;
-  }
-
-  .option-box p {
-    font-size: 14px;
-  }
-
-  .btn {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-  }
-
   .form {
     margin: 20px 15px;
     padding: 20px;
     max-width: 100%;
   }
 
-  .form h2,
-  .form p {
-    font-size: 14px;
-  }
-
-  .form label {
-    font-size: 14px;
-  }
-
-  .form input {
-    font-size: 14px;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
+  .form input,
   .form .btn-primary {
     font-size: 14px;
-    padding: 12px;
-    width: 100%;
+    padding: 10px;
   }
 
-  .form a {
+  .form a,
+  .form label {
     font-size: 14px;
   }
 }
