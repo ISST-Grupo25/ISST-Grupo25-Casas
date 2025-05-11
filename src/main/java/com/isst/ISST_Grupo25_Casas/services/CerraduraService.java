@@ -38,6 +38,11 @@ public class CerraduraService {
         return cerraduraRepository.findById(id).orElse(null);
     }
 
+    public Cerradura obtenerCerraduraPorUbicacion(String ubicacion) {
+        List<Cerradura> cerraduras = cerraduraRepository.findByUbicacion(ubicacion);
+        return cerraduras.isEmpty() ? null : cerraduras.get(0);
+    }
+
     public String obtenerTokenPorCerradura(Cerradura Cerradura) {
         return Cerradura.getToken();
     }

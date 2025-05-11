@@ -18,6 +18,7 @@ import java.sql.Date;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +31,7 @@ public class ProgramarReservas {
     private WebDriverWait wait;
     private static final String APP_URL = "http://localhost:8080";
 
-    private final String gestorEmail = "gestor.calendar@test.com";
+    private final String gestorEmail = "ioh_isst_test_reservas@gmail.com";
     private final String gestorPassword = "clave123";
     private Gestor gestor;
     private Cerradura cerradura;
@@ -45,10 +46,9 @@ public class ProgramarReservas {
 
     @BeforeAll
     void prepararDatos() {
-        gestor = gestorService.registerGestor("Gestor Calendario", gestorEmail, gestorPassword, "612345678");
-        cerradura = cerraduraService.guardarCerradura("Casa Calendario", "TOKENCAL", gestor.getId());
-        huesped = huespedService.registerHuesped("Huésped Prueba", "huesped.prueba@calendario.com", "123456");
-
+        gestor = gestorService.registerGestor("Gestor Reservas test", gestorEmail, gestorPassword, "612345678");
+        cerradura = cerraduraService.guardarCerradura("Casa Calendario test reservas", "TOKEN1323423", gestor.getId());
+        huesped = huespedService.registerHuesped("Huésped prueba test", "huesped_test@calendario.com", "123456");
     }
 
     @BeforeEach
@@ -77,6 +77,8 @@ public class ProgramarReservas {
     void limpiarDatos() {
         if (reserva != null) reservaService.eliminarReservaYHuespedes(reserva.getId());
         if (cerradura != null) cerraduraService.eliminarCerradura(cerradura.getId());
+        Cerradura cerraduraNueva = cerraduraService.obtenerCerraduraPorUbicacion("Dirección casa nueva Test");
+        if (cerraduraNueva != null) cerraduraService.eliminarCerradura(cerraduraNueva.getId());
         if (gestor != null) gestorService.eliminarGestor(gestor.getId());
         if (huesped != null) huespedService.eliminarHuesped(huesped.getId());
     }
@@ -95,85 +97,138 @@ public class ProgramarReservas {
     @Test
     void testAñadirYEditarReservaEnCalendario() throws InterruptedException {
         loginComoGestor();
+        Thread.sleep(1000);
 
-        // 📅 Esperar calendario
         WebElement calendario = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("calendar")));
         assertNotNull(calendario, "❌ No se encontró el calendario");
+        Thread.sleep(1000);
 
-        // ➕ Abrir modal
         wait.until(ExpectedConditions.elementToBeClickable(By.id("addEvent"))).click();
+        Thread.sleep(1000);
 
-        // 🔄 Forzar visibilidad por si acaso
         JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("document.getElementById('accessModal').style.display = 'block';");
         js.executeScript("document.getElementById('modalOverlay').classList.add('show');");
+        Thread.sleep(1000);
 
-        // Esperar formulario y checkbox
+        driver.findElement(By.id("addCasa")).click();
+        Thread.sleep(1000);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("newCasaInputs")));
+        Thread.sleep(1000);
+
+        String ubicacionNueva = "Dirección casa nueva Test";
+        String tokenNuevo = "TOKEN-NUEVA";
+
+        driver.findElement(By.id("ubicacion")).sendKeys(ubicacionNueva);
+        Thread.sleep(1000);
+        driver.findElement(By.id("token")).sendKeys(tokenNuevo);
+        Thread.sleep(1000);
+
+        driver.findElement(By.cssSelector(".btn-confirmar-cerradura")).click();
+        wait.until(ExpectedConditions.alertIsPresent());
+        driver.switchTo().alert().accept();
+        Thread.sleep(1000);
+
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("newCasaInputs")));
+        Thread.sleep(1000);
+
+        WebElement selectCasa = driver.findElement(By.id("casa"));
+        List<WebElement> opciones = selectCasa.findElements(By.tagName("option"));
+
+        boolean nuevaCerraduraPresente = opciones.stream()
+            .anyMatch(opt -> opt.getText().equals(ubicacionNueva));
+
+        assertTrue(nuevaCerraduraPresente, "❌ La nueva cerradura no apareció en el selector");
+
+        WebElement nuevaOpcion = opciones.stream()
+            .filter(opt -> opt.getText().equals(ubicacionNueva))
+            .findFirst()
+            .orElseThrow();
+
+        nuevaOpcion.click();
+        Thread.sleep(1000);
+
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("accessForm")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#huespedes-container input[type='checkbox']")));
+        Thread.sleep(1000);
 
-        // ✅ Seleccionar datos de nueva reserva
         WebElement checkboxHuesped = driver.findElement(By.cssSelector("#huespedes-container input[type='checkbox']"));
         js.executeScript("arguments[0].scrollIntoView(true);", checkboxHuesped);
         if (!checkboxHuesped.isSelected()) {
             checkboxHuesped.click();
         }
+        Thread.sleep(1000);
 
         LocalDate hoy = LocalDate.now();
         LocalDate mañana = hoy.plusDays(1);
-        
         js.executeScript("document.getElementById('fechaInicio').value = arguments[0];", hoy.toString());
         js.executeScript("document.getElementById('fechaFin').value = arguments[0];", mañana.toString());
-        
+        Thread.sleep(1000);
 
         WebElement select = driver.findElement(By.id("casa"));
         select.findElement(By.cssSelector("option[value='" + cerradura.getId() + "']")).click();
-
+        Thread.sleep(1000);
 
         driver.findElement(By.cssSelector("#accessForm button[type='submit']")).click();
+        Thread.sleep(1500);
 
         wait.until(ExpectedConditions.urlContains("/calendar"));
-
-        // Esperar explícitamente que aparezca al menos un evento en el DOM
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".fc-event")));
-        
-        List<WebElement> eventos = driver.findElements(By.cssSelector(".fc-event"));
-        assertTrue(eventos.size() > 0, "❌ No se encontró evento creado");        
-        
+        Thread.sleep(1000);
 
-        // 💾 Guardar la reserva desde la BDD
+        List<WebElement> eventos = driver.findElements(By.cssSelector(".fc-event"));
+        assertTrue(eventos.size() > 0, "❌ No se encontró evento creado");
+
         reserva = reservaRepository.findAll().stream()
             .filter(r -> r.getCerradura().getId().equals(cerradura.getId()))
             .max((r1, r2) -> r1.getId().compareTo(r2.getId()))
             .orElse(null);
 
         assertNotNull(reserva, "❌ La reserva no fue persistida correctamente");
+        Thread.sleep(1500);
 
-       // ✏️ Editar la reserva
         eventos.get(0).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("eventModal")));
+        Thread.sleep(1000);
+
         driver.findElement(By.id("editEventBtn")).click();
-
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("editForm")));
+        Thread.sleep(1000);
 
-        // 🔄 Seleccionar huésped en formulario de edición
         WebElement checkboxEditHuesped = driver.findElement(By.cssSelector("#edit-huespedes-container input[type='checkbox']"));
         if (!checkboxEditHuesped.isSelected()) {
             checkboxEditHuesped.click();
         }
+        Thread.sleep(1000);
 
-        // 🗓️ Cambiar fecha de fin
         LocalDate diaRandom = hoy.plusDays(6);
         js.executeScript("document.getElementById('fechaFin').value = arguments[0];", diaRandom.toString());
-
-        // 💾 Enviar formulario
-        driver.findElement(By.cssSelector("#editForm button[type='submit']")).click();
-
-        // 📅 Verificar edición en BDD
         Thread.sleep(1000);
+
+        driver.findElement(By.cssSelector("#editForm button[type='submit']")).click();
+        Thread.sleep(1500);
+
         Reserva editada = reservaRepository.findById(reserva.getId()).orElse(null);
         assertNotNull(editada);
         assertEquals(Date.valueOf(LocalDate.now().plusDays(2)), editada.getFechafin(), "❌ La fecha de fin no se actualizó");
-}
+        Thread.sleep(1000);
+
+        // // 🔁 Pulsar botón de sincronizar con Google Calendar
+        // WebElement botonSincronizar = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("form[action='/calendar/sincronizar'] button[type='submit']")));
+        // botonSincronizar.click();
+
+        // // 🕐 Esperar redirección (sincronización exitosa)
+        // wait.until(ExpectedConditions.urlContains("syncSuccess"));
+
+        // // ⏳ Pequeña pausa para confirmar guardado
+        // Thread.sleep(1000);
+
+        // Reserva sincronizada = reservaRepository.findById(reserva.getId()).orElse(null);
+        // assertNotNull(sincronizada, "❌ No se encontró la reserva tras sincronizar");
+        // // assertNotNull(sincronizada.getEventId(), "❌ La reserva no tiene eventId después de sincronizar");
+        // // assertFalse(sincronizada.getEventId().isBlank(), "❌ El eventId está vacío");
     
+    }
+
 }
