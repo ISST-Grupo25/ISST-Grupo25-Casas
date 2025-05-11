@@ -160,14 +160,13 @@ public class ReservaService {
     @Transactional
     public void asociarHuesped(Long reservaId, Long huespedId) {
         Reserva reserva = reservaRepository.findById(reservaId)
-            .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada"));
-
+                .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + reservaId));
         Huesped huesped = huespedRepository.findById(huespedId)
-            .orElseThrow(() -> new IllegalArgumentException("Huésped no encontrado"));
-
-        // Evita lazy loading: no uses .contains
+                .orElseThrow(() -> new IllegalArgumentException("Huesped no encontrado con ID: " + huespedId));
+    
         reserva.getHuespedes().add(huesped);
-
+        huesped.getReservas().add(reserva); // si usas relación bidireccional
+    
         reservaRepository.save(reserva);
     }
 
