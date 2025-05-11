@@ -20,6 +20,9 @@ public class Acceso {
     @Column(nullable = false)
     private Boolean resultado;
 
+    @Column(nullable = false)
+    private Boolean leido = false;
+
     @ManyToOne
     @JoinColumn(name = "ID_huesped", foreignKey = @ForeignKey(name = "fk_acceso_huesped"))
     private Huesped huesped;
@@ -68,6 +71,14 @@ public class Acceso {
 
     public void setReserva(Reserva reserva) {
         this.reserva = reserva;
+    }
+
+    public Boolean getLeido() {
+        return leido;
+    }
+    
+    public void setLeido(Boolean leido) {
+        this.leido = leido;
     }
 
 

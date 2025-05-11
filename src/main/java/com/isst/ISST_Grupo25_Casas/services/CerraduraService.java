@@ -38,6 +38,11 @@ public class CerraduraService {
         return cerraduraRepository.findById(id).orElse(null);
     }
 
+    public Cerradura obtenerCerraduraPorUbicacion(String ubicacion) {
+        List<Cerradura> cerraduras = cerraduraRepository.findByUbicacion(ubicacion);
+        return cerraduras.isEmpty() ? null : cerraduras.get(0);
+    }
+
     public String obtenerTokenPorCerradura(Cerradura Cerradura) {
         return Cerradura.getToken();
     }
@@ -83,6 +88,13 @@ public class CerraduraService {
         } catch (Exception e) {
             System.out.println("❌ Error al eliminar cerradura: " + e.getMessage());
             throw e;
+        }
+    }
+
+    public void eliminarCerradurasPorGestor(Long gestorId) {
+        List<Cerradura> cerraduras = obtenerCerradurasPorGestor(gestorId);
+        for (Cerradura cerradura : cerraduras) {
+            eliminarCerradura(cerradura.getId());
         }
     }
 

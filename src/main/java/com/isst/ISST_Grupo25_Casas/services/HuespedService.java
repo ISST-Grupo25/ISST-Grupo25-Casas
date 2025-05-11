@@ -78,6 +78,12 @@ public class HuespedService {
         return huespedes.get(0);
     }
     throw new NoSuchElementException("No hay huéspedes disponibles.");
-}
+    }
+
+    public void eliminarHuesped(Long id) {
+        Huesped huesped = huespedRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Huesped no encontrado con ID: " + id));
+        huespedRepository.delete(huesped);
+    }
 
 }
