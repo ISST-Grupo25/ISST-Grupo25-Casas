@@ -20,11 +20,15 @@
 
       <main class="contentview" th:replace="~{layout :: content}">
         <section class="section-container" th:fragment="section">
-          <div class="tittle-button">
-            <h2>Gestión de Reservas</h2>
-            <button id="addEvent" class="btn-primary">
-              <span class="material-icons">add</span>Añadir Reserva
-            </button>
+          <div class="calendar-header">
+            <div class="calendar-header-left">
+              <h2>Gestión de Reservas</h2>
+            </div>
+            <div class="calendar-header-right">
+              <button id="addEvent" class="btn-primary">
+                <span class="material-icons">add</span>Añadir Reserva
+              </button>
+            </div>
           </div>
           <div id="calendar" class="fade-in"></div>
 
@@ -249,7 +253,7 @@
               <div class="modal-calendar-actions scale-up">
                 <button
                   type="button"
-                  id="cancelModal"
+                  id="cancelModalNew"
                   class="btn-cancel-calendar"
                 >
                   Cancelar
@@ -278,6 +282,7 @@
         const openModalBtn = document.getElementById("addEvent");
         const closeModalBtn = document.getElementById("closeModal");
         const cancelModalBtn = document.getElementById("cancelModal");
+        const cancelModalNewBtn = document.getElementById("cancelModalNew");
         const editForm = document.getElementById("editForm");
         const editEventBtn = document.getElementById("editEventBtn");
         const errorReserva = document.getElementById("errorReserva");
@@ -471,6 +476,15 @@
           cancelCasaBtn.addEventListener("click", function (event) {
             event.preventDefault();
             newCasaInputs.style.display = "none";
+          });
+        }
+
+        if (cancelModalNewBtn) {
+          cancelModalNewBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            modal.classList.remove("show");
+            modalOverlay.classList.remove("show");
+            newCasaInputs.style.display = "none"; // Oculta si estaba visible
           });
         }
 

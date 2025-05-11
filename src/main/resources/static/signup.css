@@ -19,7 +19,7 @@
   display: none;
   width: 100%;
   max-width: 460px;
-  background-color: var(--card-bg);
+  background: var(--card-bg);
   padding: 40px;
   border-radius: 16px;
   box-shadow: 0 8px 16px var(--shadow-light);
@@ -175,4 +175,13 @@
   .form label {
     font-size: 14px;
   }
+}
+
+.signup-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 150px); /* alto menos navbar y footer */
+  width: 100%;
 }

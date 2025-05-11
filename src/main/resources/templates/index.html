@@ -8,24 +8,66 @@
 
       <!-- Contenido principal -->
       <main class="contentview" th:replace="~{layout :: content}">
-        <section class="hero-fullscreen">
-          <div class="hero-container">
-            <h1>Accesos Inteligentes para tu Propiedad</h1>
-            <p>Gestión remota y segura de cerraduras con tecnología Bluetooth e Internet.</p>
+        <!-- Si el usuario está logueado, mostrar dashboard -->
+        <section class="dashboard" th:if="${session.usuario != null and session.isLoggedIn}">
+          <div class="dashboard-container">
+            <h1 th:text="'Bienvenido, ' + ${session.usuario.nombre} + '!'">Bienvenido</h1>
+            <div class="dashboard-options">
+              <a href="/home-access" class="dashboard-card acceso-principal" th:if="${session.role == 'huesped'}">
+                <i class="material-icons">key</i>
+                <p>Acceso Actual</p>
+              </a>
+              <a href="/calendar" class="dashboard-card" th:if="${session.role == 'gestor'}">
+                <i class="material-icons">calendar_month</i>
+                <p>Gestionar Reservas</p>
+              </a>
+              <a href="/homes" class="dashboard-card" th:if="${session.role == 'gestor'}">
+                <i class="material-icons">home</i>
+                <p>Gestionar Casas</p>
+              </a>
+              <a href="/notifications" class="dashboard-card" th:if="${session.role == 'gestor'}">
+                <i class="material-icons">notifications</i>
+                <p>Notificaciones</p>
+              </a>
 
-            <div class="hero-benefits">
-              <div><i class="material-icons">vpn_key</i><p>Sin llaves físicas</p></div>
-              <div><i class="material-icons">calendar_today</i><p>Programación automática</p></div>
-              <div><i class="material-icons">visibility</i><p>Control en tiempo real</p></div>
-            </div>
+              <a href="/monitor" class="dashboard-card">
+                <i class="material-icons">bar_chart</i>
+                <p>Historial de Accesos</p>
+              </a>
 
-            <div class="hero-actions" th:if="${session.usuario == null and session.isLoggedIn == null}">
-              <a href="/login" class="btn btn-primary">Iniciar sesión</a>
-              <a href="/signup" class="btn btn-outline">Crear cuenta</a>
+              <a href="/profile" class="dashboard-card">
+                <i class="material-icons">account_circle</i>
+                <p>Mi Perfil</p>
+              </a>
+
+              <a href="/settings" class="dashboard-card">
+                <i class="material-icons">settings</i>
+                <p>Ajustes</p>
+              </a>
             </div>
           </div>
         </section>
-          
+
+        <!-- Si NO está logueado, mostrar la landing original -->
+        <section th:unless="${session.usuario != null and session.isLoggedIn}">
+          <section class="hero-fullscreen">
+            <div class="hero-container">
+              <h1>Accesos Inteligentes para tu Propiedad</h1>
+              <p>Gestión remota y segura de cerraduras con tecnología Bluetooth e Internet.</p>
+
+              <div class="hero-benefits">
+                <div><i class="material-icons">vpn_key</i><p>Sin llaves físicas</p></div>
+                <div><i class="material-icons">calendar_today</i><p>Programación automática</p></div>
+                <div><i class="material-icons">visibility</i><p>Control en tiempo real</p></div>
+              </div>
+
+              <div class="hero-actions">
+                <a href="/login" class="btn btn-primary">Iniciar sesión</a>
+                <a href="/signup" class="btn btn-outline">Crear cuenta</a>
+              </div>
+            </div>
+          </section>
+
           <section class="feature feature-1 fade-in">
             <div class="feature-grid">
               <div class="feature-text">
@@ -82,7 +124,6 @@
               </div>
             </div>
           </section>
-
         </section>
       </main>
     </div>

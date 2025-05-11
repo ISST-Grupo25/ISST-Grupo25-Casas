@@ -14,9 +14,7 @@
 .section-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 20px;
+  align-items: stretch; /* ✅ Esto permitirá que el contenido se alinee por sí solo */
 }
 
 .flex-row {
@@ -29,11 +27,14 @@
 
 .flex-row-between {
   display: flex;
+  width: 95%;
+  box-sizing: border-box;
   flex-direction: row;
+  justify-content: center; /* centrado */
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 20px;
+  gap: 30px; /* más separación entre campos */
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 #calendar {
@@ -48,73 +49,25 @@
   color: gray;
 }
 
-.tittle-button {
+.calendar-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin: 20px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.btn-calendar {
-  background: linear-gradient(
-    135deg,
-    var(--marron-oscuro),
-    var(--marron-claro)
-  );
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  letter-spacing: 0.5px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  max-width: 1200px;
+  width: 90%;
+  margin: 0 auto 20px auto;
+  box-sizing: border-box;
+  padding: 0 10px;
 }
 
-.btn-calendar::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.2);
-  transform: skewX(-20deg);
-  transition: all 0.5s ease;
-}
-
-.btn-calendar:hover::after {
-  left: 125%;
-}
-
-.btn-calendar .material-icons {
-  color: white;
-}
-
-.btn-calendar:hover {
-  background: linear-gradient(
-    135deg,
-    var(--marron-claro),
-    var(--marron-oscuro)
-  );
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+.calendar-header-left h2 {
+  margin: 0;
 }
 
 .modal-calendar label {
   font-size: 15px;
   font-weight: bold;
-  color: black;
+  color: var(--texto);
 }
 
 select {
@@ -135,7 +88,6 @@ select {
 
 /* 📌 Estilos del modal-calendar */
 .modal-calendar {
-  display: flex;
   flex-direction: column;
   position: fixed;
   top: 50%;
@@ -143,7 +95,7 @@ select {
   transform: translate(-50%, -50%) scale(0.9);
   width: 90%;
   max-width: 450px;
-  background-color: white;
+  background-color: var(--card-bg);
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
@@ -247,7 +199,7 @@ select {
 .huesped-checkbox label {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: var(--card-bg-2);
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
@@ -408,9 +360,24 @@ button[onclick="closeEventModal()"]:hover {
 }
 
 .añadir-casa {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   border: 1px solid var(--marron-claro);
   border-radius: 10px;
-  padding: 10px;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  background-color: var(--card-bg);
+  gap: 15px;
+}
+
+.añadir-casa input {
+  width: 60%;
 }
 
 /* 📌 Botones */

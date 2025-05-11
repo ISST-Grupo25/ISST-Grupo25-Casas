@@ -1,234 +1,313 @@
-    .casas-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-      justify-content: center;
-    }
+.casas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
 
-    .casa-card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      padding: 1.5rem;
-      width: 280px;
-      transition: transform 0.3s, box-shadow 0.3s;
-      text-align: center;
-    }
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px var(--shadow-light);
+  padding: 1.5rem;
+  width: 280px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+  color: var(--texto);
+}
 
-    .casa-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px var(--shadow-medium);
+}
 
-    .casa-card h3 {
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-      color: #333;
-    }
+.card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: var(--texto);
+}
 
-    .casa-card p {
-      font-size: 1rem;
-      margin: 0.3rem 0;
-      color: #666;
-    }
+.card p {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+  color: var(--texto-secundario);
+}
 
-    .badge-bateria {
-      display: inline-block;
-      position: relative;
-      width: 60px;
-      height: 24px;
-      background-color: #ccc;
-      border-radius: 5px;
-      color: white;
-      font-weight: bold;
-      text-align: center;
-      line-height: 24px;
-      font-size: 0.85rem;
-      transition: background-color 0.3s ease;
-    }
-  
-    .badge-bateria::after {
-      content: '';
-      position: absolute;
-      right: -6px;
-      top: 6px;
-      width: 6px;
-      height: 12px;
-      background-color: inherit;
-      border-radius: 2px;
-    }
-    
-    .add-casa-button {
-      display: block;
-      margin: 2rem auto 0;
-      padding: 0.75rem 2rem;
-      background-color: #666;
-      color: white;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
+.badge-bateria {
+  display: inline-block;
+  position: relative;
+  width: 60px;
+  height: 24px;
+  background-color: var(--borde);
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  line-height: 24px;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
+}
 
-    .add-casa-button:hover {
-      background-color: #aaa9a9;
-    }
+.badge-bateria::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  top: 6px;
+  width: 6px;
+  height: 12px;
+  background-color: inherit;
+  border-radius: 2px;
+}
 
-    /* Modal de añadir casa */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
+.btn-primary {
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+}
 
-    .modal {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      width: 350px;
-      text-align: center;
-    }
+.btn-bateria-recarga {
+  background-color: var(--marron-oscuro);
+  color: var(--texto);
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  padding: 5px;
+}
 
-    .modal input {
-      width: 100%;
-      padding: 0.6rem;
-      margin-top: 1rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
+.btn-delete-casa{
+  background-color: var(--delete);
+  padding: 5px 8px;
+  border: none;
+  cursor: pointer;
+  color: var(--texto);
+  transition: transform 0.2s;
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+}
 
-    .modal button {
-      margin-top: 1rem;
-      padding: 0.6rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      background-color: #1976D2;
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-    }
+.btn-delete-casa:hover {
+  transform: scale(1.2);
+}
 
-    .modal button:hover {
-      background-color: #1565C0;
-    }
+/* Modal de añadir casa */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
-    .toast {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #333;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      box-shadow: 0px 0px 12px rgba(0,0,0,0.3);
-      opacity: 0.9;
-      z-index: 10000;
-      font-size: 1rem;
-      animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-    
-    .toast.success {
-      background: #4caf50;
-    }
-    
-    .toast.error {
-      background: #f44336;
-    }
-    
-    @keyframes fadein {
-      from { top: 0; opacity: 0; }
-      to { top: 20px; opacity: 0.9; }
-    }
-    
-    @keyframes fadeout {
-      from { opacity: 0.9; }
-      to { opacity: 0; }
-    }
+.modal {
+  background: var(--card-bg);
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  width: 90vw;
+  max-width: 400px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  color: var(--texto);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: scaleUp 0.3s ease-out;
+  box-sizing: border-box;
+}
 
-    .details-reservas summary {
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    
-    .reservas-container {
-      margin-top: 8px;
-      padding-left: 10px;
-    }
-    
-    .reservas-container ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    
-    .reservas-container li {
-      background-color: #f0f0f0;
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 6px;
-    }
+.modal form {
+  width: 100%;
+  box-sizing: border-box;
+}
 
-    .casa-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .btn-eliminar-casa {
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-      color: crimson;
-      font-size: 1.8rem;
-      transition: transform 0.2s;
-    }
-    
-    .btn-eliminar-casa:hover {
-      transform: scale(1.2);
-      color: darkred;
-    }
+.modal label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: left;
+  display: block;
+  margin-bottom: 4px;
+}
 
-    .alert-container {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      z-index: 9999;
-  }
-  
-  .alert {
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      margin-bottom: 10px;
-      animation: fadeOut 4s forwards;
-  }
-  
-  .alert.success {
-      background-color: #d4edda;
-      color: #155724;
-  }
-  
-  .alert.error {
-      background-color: #f8d7da;
-      color: #721c24;
-  }
+.modal input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  font-size: 1rem;
+}
 
-  
+.modal input:focus {
+  border-color: var(--marron-claro);
+  outline: none;
+}
 
-  
-  @keyframes fadeOut {
-      0% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { opacity: 0; transform: translateX(100%); }
-  }
-  
-    
+.modal h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--texto);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  gap: 1rem;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel,
+.btn-confirm {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 120px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Botón Cancelar */
+.btn-cancel {
+  background: linear-gradient(135deg, #d3d3d3, #a9a9a9);
+  color: #555;
+}
+
+.btn-cancel:hover {
+  background: linear-gradient(135deg, #a9a9a9, #808080);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Botón Confirmar */
+.btn-confirm {
+  background: linear-gradient(135deg, darkseagreen, seagreen);
+  color: white;
+}
+
+.btn-confirm:hover {
+  background: linear-gradient(135deg, seagreen, darkgreen);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--marron-oscuro);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 12px rgba(0,0,0,0.3);
+  opacity: 0.9;
+  z-index: 10000;
+  font-size: 1rem;
+  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+.toast.success {
+  background: var(--success);
+}
+
+.toast.error {
+  background: var(--error);
+}
+
+@keyframes fadein {
+  from { top: 0; opacity: 0; }
+  to { top: 20px; opacity: 0.9; }
+}
+
+@keyframes fadeout {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}
+
+.details-reservas summary {
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.reservas-container {
+  margin-top: 8px;
+  padding-left: 10px;
+}
+
+.reservas-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.reservas-container li {
+  background-color: var(--card-bg-2);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 6px;
+}
+
+.casa-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
+.alert-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+}
+
+.alert {
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  margin-bottom: 10px;
+  animation: fadeOut 4s forwards;
+}
+
+.alert.success {
+  background-color: var(--success);
+  color: white;
+}
+
+.alert.error {
+  background-color: var(--error);
+  color: white;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateX(100%); }
+}

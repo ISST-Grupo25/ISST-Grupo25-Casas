@@ -41,6 +41,8 @@
   --texto--sidenav--hover: #a06846;
 
   --detalles-bg: #f1ede9;
+
+  --delete: #dc354686;
 }
 
 /* Tema Oscuro */
@@ -68,6 +70,8 @@ body.dark {
   --texto--sidenav--hover: #d3d0d4;
 
   --detalles-bg: #2a2a2a;
+
+  --delete: rgba(139, 0, 0, 0.582);
 }
 
 /* -----------------------------------------------------
@@ -734,4 +738,87 @@ body.dark .feature-3 {
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* -----------------------------------------------------
+   SECCIÓN: DASHBOARD
+----------------------------------------------------- */
+.dashboard {
+  min-height: calc(100vh - 200px); /* ocupa el alto disponible sin pisar el footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.dashboard-container h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--marron-claro);
+  margin-bottom: 2rem;
+}
+
+.dashboard-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  justify-items: center;
+  align-items: start;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.dashboard-card {
+  background: var(--card-bg);
+  border-radius: 1.5rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  width: 220px;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: var(--texto);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dashboard-card i {
+  font-size: 3rem;
+  color: var(--marron-oscuro);
+}
+
+.dashboard-card p {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  background: var(--card-bg-2);
+}
+
+.acceso-principal {
+  grid-column: span 3;
+  background: var(--marron-claro);
+  color: var(--texto);
+  width: 91%;
+
+}
+
+.acceso-principal i,
+.acceso-principal p {
+  color: var(--botontexto);
 }
