@@ -7,6 +7,9 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import jakarta.annotation.PostConstruct;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,10 @@ public class BatteryMonitorService {
     private final CerraduraRepository cerraduraRepository;
     private Socket socket;
     private boolean notificado = false;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
 
     public BatteryMonitorService(CerraduraRepository cerraduraRepository) {
         this.cerraduraRepository = cerraduraRepository;
@@ -125,10 +132,32 @@ public class BatteryMonitorService {
     }
 
     private void enviarNotificacion(String token, int nivel) {
-        System.out.println("⚠️ Nivel de batería crítico en cerradura (" + token + "): " + nivel + "% — Notificando al gestor...");
+        Cerradura cerradura = cerraduraRepository.findAll().stream()
+                .filter(c -> token.equals(c.getToken()))
+                .findFirst()
+                .orElse(null);
+
+        if (cerradura != null && cerradura.getGestor() != null) {
+            String email = cerradura.getGestor().getEmail();
+            if (email != null && !email.isEmpty()) {
+                SimpleMailMessage mensaje = new SimpleMailMessage();
+                mensaje.setTo(email);
+                mensaje.setSubject("⚠️ Batería baja en tu cerradura");
+                mensaje.setText("La cerradura en " + cerradura.getUbicacion() +
+                        " tiene una batería baja (" + nivel + "%). Por favor, cámbiala lo antes posible.");
+
+                try {
+                    mailSender.send(mensaje);
+                    System.out.println("✅ Email enviado a " + email);
+                } catch (Exception e) {
+                    System.out.println("❌ Error al enviar email: " + e.getMessage());
+                }
+            }
+        }
     }
 
     private void bloquearCerradura(String token) {
         System.out.println("❌ Batería agotada en cerradura (" + token + "). Cerradura bloqueada digitalmente. Requiere intervención física.");
     }
+    
 }
