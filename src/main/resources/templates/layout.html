@@ -102,12 +102,10 @@
             <li th:if="${session.role == 'gestor'}" class="nav-item">
               <span class="material-icons">notifications</span>
               <a th:href="@{/notifications}" class="nav-notifications">
-                <span style="vertical-align: middle">Notificaciones</span>
-                <span
-                  th:if="${unreadCount > 0}"
-                  th:text="${unreadCount > 10 ? '(+10)' : '(' + unreadCount + ')'}"
-                  class="notification-badge"
-                ></span>
+                <span style="vertical-align: middle;">Notificaciones</span>
+                <span th:if="${unreadCount > 0}"
+                      th:text="${unreadCount > 10 ? '(+10)' : '(' + unreadCount + ')'}"
+                      class="notification-badge"></span>
               </a>
             </li>
 
@@ -167,28 +165,19 @@
           >
             <span class="material-icons">key</span>
           </a>
-
           <a
-            th:href="@{/homes}"
-            th:if="${session.role == 'gestor'}"
+            th:href="@{/profile}"
+            th:if="${session.isLoggedIn}"
             class="mobile-nav-item"
           >
-            <span class="material-icons">key</span>
+            <span class="material-icons">account_circle</span>
           </a>
-
           <a
-            th:if="${session.role == 'gestor'}"
-            th:href="@{/notifications}"
+            th:href="@{/settings}"
+            th:if="${session.isLoggedIn}"
             class="mobile-nav-item"
           >
-            <span class="material-icons">notifications</span>
-
-            <span style="vertical-align: middle"></span>
-            <span
-              th:if="${unreadCount > 0}"
-              th:text="${unreadCount > 10 ? '(+10)' : '(' + unreadCount + ')'}"
-              class="notification-badge"
-            ></span>
+            <span class="material-icons">settings</span>
           </a>
         </div>
 

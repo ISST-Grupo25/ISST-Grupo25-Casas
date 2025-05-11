@@ -104,7 +104,6 @@ public class NotificacionesAccesoSeleniumTest {
     
 
     private void irANotificaciones() {
-        ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,0);");
         WebElement menu = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("menuButton")));
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", menu);
         pause(1000);
