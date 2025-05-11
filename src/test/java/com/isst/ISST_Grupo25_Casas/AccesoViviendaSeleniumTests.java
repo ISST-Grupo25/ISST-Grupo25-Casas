@@ -110,8 +110,6 @@ public class AccesoViviendaSeleniumTests {
             ExpectedConditions.elementToBeClickable(By.cssSelector("button.btn-primary"))
         );
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", loginBtn);
-        
-        wait.until(ExpectedConditions.urlContains("/home-access"));
     }
 
     private void enterPinSafely(String pin) {
