@@ -9,4 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CerraduraRepository extends JpaRepository<Cerradura, Long> {
     List<Cerradura> findByGestorId(Long gestorId);
     Cerradura findByToken(String token);
+    List<Cerradura> findByUbicacion(String ubicacion);
 }
