@@ -23,17 +23,13 @@
               </div>
               <div class="notification-content">
                 <p>
-                  <strong th:text="${acceso.huesped.nombre}"
-                    >Nombre del huésped</strong
-                  >
+                  <strong th:text="${acceso.huesped.nombre}">Nombre del huésped</strong>
                   <span th:if="${acceso.resultado}"> accedió a </span>
                   <span th:unless="${acceso.resultado}"> intentó acceder a </span>
                   <span
                     th:if="${acceso.reserva != null and acceso.reserva.cerradura != null}"
-                    th:text="${acceso.reserva.cerradura.ubicacion}"
-                  >
+                    th:text="${acceso.reserva.cerradura.ubicacion}">
                   </span>
-
                   <span th:if="${acceso.resultado}"> correctamente.</span>
                   <span th:unless="${acceso.resultado}"> pero falló.</span>
                 </p>
@@ -43,14 +39,6 @@
               </div>
               <button class="discard-btn">Descartar</button>
             </div>
-
-            <p
-              id="empty-msg"
-              class="empty-notification-message"
-              th:attr="hidden=${!#lists.isEmpty(accesos)}"
-            >
-              No tienes notificaciones por ahora 💤
-            </p>
 
             <div th:each="c : ${lowBatteryAlerts}"
                 class="notification warning"
@@ -68,16 +56,23 @@
                 </div>
               </div>
             </div>
+
+            <p
+              id="empty-msg"
+              class="empty-notification-message"
+              style="display: none"
+            >
+              No tienes notificaciones por ahora 💤
+            </p>
           </div>
+
           <div style="text-align:center; margin-top:2rem">
             <button id="clear-all-btn" class="btn-primary btn-danger">Descartar todo</button>
           </div>
         </section>
-        <!-- botón borrar todas (estático) -->
-        
-        
       </main>
     </div>
+
     <!-- Scripts comunes del layout -->
     <script th:replace="~{layout :: scripts}"></script>
 
@@ -89,41 +84,41 @@
         if (count > 0) {
           badge.textContent = count > 10 ? '(+10)' : '(' + count + ')';
         } else {
-          badge.remove();         // si no quedan, quita la burbuja
+          badge.remove();
         }
       }
-    
+
+      function showEmptyMessageIfNeeded() {
+        const emptyMsg = document.getElementById('empty-msg');
+        const remaining = document.querySelectorAll('.notification');
+        if (remaining.length === 0 && emptyMsg) {
+          emptyMsg.style.display = 'block';
+        }
+      }
+
       // handler “Descartar” individual
       document.querySelectorAll('.discard-btn').forEach(btn => {
         btn.addEventListener('click', async e => {
           const card = e.target.closest('.notification');
           const id = card.getAttribute('data-id');
           await fetch(`/notifications/dismiss/${id}`, { method: 'POST' });
-          card.remove();           // quita la tarjeta
-          refreshBadge();          // y actualiza la badge
-          // si ya no hay notificaciones, mostrar el mensaje
-          const remaining = document.querySelectorAll('.notification.success, .notification.failure');
-          if (remaining.length === 0) {
-            document.getElementById('empty-msg').hidden = false;
-          }
+          card.remove();
+          refreshBadge();
+          showEmptyMessageIfNeeded();
         });
       });
-    
+
       // botón “Eliminar todas las notificaciones”
       const allBtn = document.getElementById('clear-all-btn');
       allBtn.addEventListener('click', async () => {
         await fetch('/notifications/dismissAll', { method: 'POST' });
 
         document
-          .querySelectorAll('.notification.success, .notification.failure')
+          .querySelectorAll('.notification')
           .forEach(card => card.remove());
 
-        const remaining = document.querySelectorAll('.notification.success, .notification.failure');
-        if (remaining.length === 0) {
-          document.getElementById('empty-msg').hidden = false;
-        }
-
         refreshBadge();
+        showEmptyMessageIfNeeded();
       });
     </script>
   </body>

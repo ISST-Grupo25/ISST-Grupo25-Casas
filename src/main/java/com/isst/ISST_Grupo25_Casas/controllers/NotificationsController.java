@@ -15,6 +15,8 @@ import com.isst.ISST_Grupo25_Casas.models.Acceso;
 import com.isst.ISST_Grupo25_Casas.models.Gestor;
 import com.isst.ISST_Grupo25_Casas.models.Huesped;
 import com.isst.ISST_Grupo25_Casas.models.Reserva;
+import com.isst.ISST_Grupo25_Casas.models.Cerradura;
+import com.isst.ISST_Grupo25_Casas.services.CerraduraService;
 import com.isst.ISST_Grupo25_Casas.services.AccesoService;
 import com.isst.ISST_Grupo25_Casas.services.ReservaService;
 import java.util.Set;
@@ -25,6 +27,8 @@ import java.util.Comparator;
 import jakarta.servlet.http.HttpSession;
 
 
+
+
 @Controller
 public class NotificationsController {
 
@@ -33,6 +37,9 @@ public class NotificationsController {
 
     @Autowired
     private AccesoService accesoService;
+
+    @Autowired
+    private CerraduraService cerraduraService;
 
     @GetMapping("/notifications")
     public String notifications(Model model, HttpSession session) {
@@ -56,6 +63,14 @@ public class NotificationsController {
             // Obtener reservas asociadas al gestor
             reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
             model.addAttribute("usuario", gestor);
+
+            // 🟡 Buscar cerraduras con batería baja (<15%)
+            List<Cerradura> cerraduras = cerraduraService.obtenerCerradurasPorGestor(gestor.getId());
+            List<Cerradura> lowBatteryAlerts = cerraduras.stream()
+                .filter(c -> c.getBateria() < 15)
+                .toList();
+            model.addAttribute("lowBatteryAlerts", lowBatteryAlerts);
+            
         } else {
             System.out.println("❌ Usuario no autorizado");
             return "redirect:/login"; // Redirigir si el usuario no es válido
