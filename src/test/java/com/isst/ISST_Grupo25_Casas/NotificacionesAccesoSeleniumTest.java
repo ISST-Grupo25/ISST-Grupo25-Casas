@@ -37,8 +37,10 @@ public class NotificacionesAccesoSeleniumTest {
     @Autowired private CerraduraService cerraduraService;
     @Autowired private GestorService gestorService;
 
-    private String gestorEmail = "selenium_gestor2@gmail.com";
+    private String gestorEmail = "selenium_gestor" + System.currentTimeMillis() + "@test.com";
     private String gestorPassword = "clave123";
+     private String huespedEmail = "selenium_huesped_" + System.currentTimeMillis() + "@test.com";
+     private String huespedPassword = "clave123";
     private Gestor gestor;
     private Huesped huesped;
     private Reserva reserva;
@@ -50,14 +52,18 @@ public class NotificacionesAccesoSeleniumTest {
         // Crear cerradura
         Cerradura c = cerraduraService.guardarCerradura("Casa Test", "TOKEN123", gestor.getId());
         // Crear huésped
-        huesped = huespedService.registerHuesped("Huesped Selenium", "huespedSelenium@gmail.com", "clave123");
+        huesped = huespedService.registerHuesped(
+            "Huesped Selenium", huespedEmail, huespedPassword
+        );
+
         // Crear reserva
         reserva = new Reserva();
         reserva.setCerradura(c);
         reserva.setGestor(gestor);
         reserva.setFechainicio(Date.valueOf(LocalDate.now()));
         reserva.setFechafin(Date.valueOf(LocalDate.now().plusDays(1)));
-        reserva.setPin("654321");
+        String pin = String.valueOf((int)(Math.random() * 900_000) + 100_000);
+        reserva.setPin(pin);
         reserva = reservaRepository.save(reserva);
         reservaService.asociarHuesped(reserva.getId(), huesped.getId());
         // Un acceso inicial

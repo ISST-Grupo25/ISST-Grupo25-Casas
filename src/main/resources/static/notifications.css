@@ -68,4 +68,18 @@
   .btn-discard:hover {
     color: #000;
   }
+
+  .notification.warning {
+  border-left: 4px solid #ff9800;
+  background-color: #fff8e1;
+}
+
+.notification.warning .notification-icon {
+  color: #ff9800;
+}
+
+/* Opcional: diferenciar el texto */
+.notification.warning .notification-content p {
+  color: #795548;
+}
 }

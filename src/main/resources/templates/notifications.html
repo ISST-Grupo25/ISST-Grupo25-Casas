@@ -50,6 +50,24 @@
           >
             No tienes notificaciones por ahora 💤
           </p>
+
+          <div th:each="c : ${lowBatteryAlerts}"
+              class="notification warning"
+              th:attr="data-id=${c.id}">
+            <div class="notification-icon">⚠️</div>
+            <div class="notification-content">
+              <p>
+                La cerradura
+                <strong th:text="${c.ubicacion}">Ubicación</strong>
+                tiene batería baja:
+                <span th:text="${c.bateria + '%'}">10%</span>
+              </p>
+              <div class="notification-time">
+                <em>Requiere recarga</em>
+              </div>
+            </div>
+          </div>
+
           <!-- botón borrar todas (estático) -->
         <div style="text-align:center; margin-top:2rem">
           <button id="clear-all-btn" class="btn btn-danger">Descartar todo</button>
@@ -88,7 +106,9 @@
       const allBtn = document.getElementById('clear-all-btn');
       allBtn.addEventListener('click', async () => {
         await fetch('/notifications/dismissAll', { method: 'POST' });
-        document.querySelectorAll('.notification').forEach(n => n.remove());
+        document
+        .querySelectorAll('.notification.success, .notification.failure')
+        .forEach(card => card.remove());
         refreshBadge();           // actualiza la badge (se quitará)
       });
     </script>
