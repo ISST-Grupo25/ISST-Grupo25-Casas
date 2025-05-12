@@ -106,7 +106,9 @@
       const allBtn = document.getElementById('clear-all-btn');
       allBtn.addEventListener('click', async () => {
         await fetch('/notifications/dismissAll', { method: 'POST' });
-        document.querySelectorAll('.notification').forEach(n => n.remove());
+        document
+        .querySelectorAll('.notification.success, .notification.failure')
+        .forEach(card => card.remove());
         refreshBadge();           // actualiza la badge (se quitará)
       });
     </script>
