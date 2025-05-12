@@ -18,6 +18,7 @@
 // import java.sql.Date;
 // import java.time.LocalDate;
 // import java.time.format.DateTimeFormatter;
+// import java.time.Duration;
 // import java.util.List;
 
 // import static org.junit.jupiter.api.Assertions.*;
@@ -37,50 +38,49 @@
 //     @Autowired private CerraduraService cerraduraService;
 //     @Autowired private GestorService gestorService;
 
-    // private String gestorEmail = "selenium_gestor" + System.currentTimeMillis() + "@test.com";
-    // private String gestorPassword = "clave123";
-    //  private String huespedEmail = "selenium_huesped_" + System.currentTimeMillis() + "@test.com";
-    //  private String huespedPassword = "clave123";
-    // private Gestor gestor;
-    // private Huesped huesped;
-    // private Reserva reserva;
+//     private String gestorEmail = "selenium_gestor" + System.currentTimeMillis() + "@test.com";
+//     private String gestorPassword = "clave123";
+//      private String huespedEmail = "selenium_huesped_" + System.currentTimeMillis() + "@test.com";
+//      private String huespedPassword = "clave123";
+//     private Gestor gestor;
+//     private Huesped huesped;
+//     private Reserva reserva;
 
-    // @BeforeAll
-    // void prepararDatos() {
-    //     // Crear gestor de prueba
-    //     gestor = gestorService.registerGestor("Gestor Selenium", gestorEmail, gestorPassword, "666666666");
-    //     // Crear cerradura
-    //     Cerradura c = cerraduraService.guardarCerradura("Casa Test", "TOKEN123", gestor.getId());
-    //     // Crear huésped
-    //     huesped = huespedService.registerHuesped(
-    //         "Huesped Selenium", huespedEmail, huespedPassword
-    //     );
+//     @BeforeAll
+//     void prepararDatos() {
+//         // Crear gestor de prueba
+//         gestor = gestorService.registerGestor("Gestor Selenium", gestorEmail, gestorPassword, "666666666");
+//         // Crear cerradura
+//         Cerradura c = cerraduraService.guardarCerradura("Casa Test", "TOKEN123", gestor.getId());
+//         // Crear huésped
+//         huesped = huespedService.registerHuesped(
+//             "Huesped Selenium", huespedEmail, huespedPassword
+//         );
 
-    //     // Crear reserva
-    //     reserva = new Reserva();
-    //     reserva.setCerradura(c);
-    //     reserva.setGestor(gestor);
-    //     reserva.setFechainicio(Date.valueOf(LocalDate.now()));
-    //     reserva.setFechafin(Date.valueOf(LocalDate.now().plusDays(1)));
-    //     String pin = String.valueOf((int)(Math.random() * 900_000) + 100_000);
-    //     reserva.setPin(pin);
-    //     reserva = reservaRepository.save(reserva);
-    //     reservaService.asociarHuesped(reserva.getId(), huesped.getId());
-    //     // Un acceso inicial
-    //     accesoService.guardarAcceso(Date.valueOf(LocalDate.now()), true, huesped, reserva);
-    // }
+//         // Crear reserva
+//         reserva = new Reserva();
+//         reserva.setCerradura(c);
+//         reserva.setGestor(gestor);
+//         reserva.setFechainicio(Date.valueOf(LocalDate.now()));
+//         reserva.setFechafin(Date.valueOf(LocalDate.now().plusDays(1)));
+//         String pin = String.valueOf((int)(Math.random() * 900_000) + 100_000);
+//         reserva.setPin(pin);
+//         reserva = reservaRepository.save(reserva);
+//         reservaService.asociarHuesped(reserva.getId(), huesped.getId());
+//         // Un acceso inicial
+//         accesoService.guardarAcceso(Date.valueOf(LocalDate.now()), true, huesped, reserva);
+//     }
 
 //     @BeforeEach
 //     void setUp() {
-//         System.setProperty("webdriver.chrome.driver", "C:\\webdrivers\\chromedriver.exe");
-
-//         ChromeOptions opts = new ChromeOptions();
-//         driver = new ChromeDriver(opts);
-//         driver.manage().timeouts().implicitlyWait(java.time.Duration.ofSeconds(5));
-//         wait = new WebDriverWait(driver, java.time.Duration.ofSeconds(10));
-//         List<Reserva> reservas = reservaService.obtenerReservasPorGestor(gestor.getId());
-//         List<Acceso> todos = accesoService.obtenerAccesosPorReservas(reservas);
-//         accesoService.marcarTodosLeidos(todos);
+//         ChromeOptions options = new ChromeOptions();
+//         options.addArguments("--remote-allow-origins=*");
+//         options.addArguments("--start-maximized");
+ 
+//         driver = new ChromeDriver(options);
+//         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+//         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+//         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 //     }
 
 

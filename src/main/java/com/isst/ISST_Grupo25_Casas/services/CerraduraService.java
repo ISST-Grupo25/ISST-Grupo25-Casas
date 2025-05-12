@@ -93,6 +93,9 @@ public class CerraduraService {
         }
     }
 
-    
+    public Cerradura obtenerCerraduraPorUbicacion(String ubicacion) {
+            List<Cerradura> cerraduras = cerraduraRepository.findByUbicacion(ubicacion);
+            return cerraduras.isEmpty() ? null : cerraduras.get(0);
+        }
 
 }

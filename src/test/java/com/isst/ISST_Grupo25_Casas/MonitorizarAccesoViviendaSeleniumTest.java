@@ -67,7 +67,7 @@
 // 	private Reserva reserva2;
 // 	private Cerradura cerradura;
 // 	private Cerradura cerradura2;
-// 	private String gestorEmail = "selenium_gestor2@gmail.com";
+// 	private String gestorEmail = "selenium_gestor3@gmail.com";
 // 	private String gestorPassword = "clave123";
 
 // 	@BeforeAll
@@ -82,10 +82,10 @@
 // 		cerradura = cerraduraService.guardarCerradura("Casa Test Monitorización", "TOKEN123", gestor.getId());
 
 // 		// Crear huésped
-// 		huesped = huespedService.registerHuesped("SeleniumHuesped", "huespedSelenium@gmail.com", "clave123");
+// 		huesped = huespedService.registerHuesped("SeleniumHuesped", "huespedSelenium1@gmail.com", "clave123");
 
 // 		// Crear segundo huésped
-// 		segundoHuesped = huespedService.registerHuesped("Huesped Secundario", "huespedSecundario@gmail.com", "clave456");
+// 		segundoHuesped = huespedService.registerHuesped("Huesped Secundario", "huespedSecundario1@gmail.com", "clave456");
 
 
 		
@@ -97,7 +97,7 @@
 // reserva.setFechainicio(Date.valueOf(LocalDate.now()));
 // reserva.setFechafin(Date.valueOf(LocalDate.now().plusDays(1)));
 // reserva.setCerradura(cerradura);
-// reserva.setPin("654321");
+// reserva.setPin("656665");
 // reserva.setGestor(gestor);
 // reserva = reservaRepository.save(reserva);
 
@@ -109,30 +109,17 @@
 // 		accesoService.guardarAcceso(Date.valueOf(LocalDate.now()), true, huesped, reserva);
 // 	}
 
-// 	@BeforeEach
-// 	void setUp() {
-// 		// Intentar usar chromedriver local si existe
-// 		String localDriverPath = "C:\\Users\\inesv\\Downloads\\chromedriver-win64\\chromedriver-win64\\chromedriver.exe";
-// 		File localDriver = new File(localDriverPath);
-
-// 		ChromeOptions options = new ChromeOptions();
-// 		//options.addArguments("--force-device-scale-factor=0.5");
-		
-
-// 		if (localDriver.exists()) {
-// 			System.out.println("🔧 Usando chromedriver local: " + localDriverPath);
-// 			System.setProperty("webdriver.chrome.driver", localDriverPath);
-// 		} else {
-// 			System.out.println("🌐 Usando WebDriverManager (puede fallar si no encuentra versión correcta)");
-// 			WebDriverManager.chromedriver().setup();
-// 		}
-
-		
-		
-// 		driver = new ChromeDriver(options);
-// 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-// 		wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-// 	}
+//     @BeforeEach
+//     void setUp() {
+//         ChromeOptions options = new ChromeOptions();
+//         options.addArguments("--remote-allow-origins=*");
+//         options.addArguments("--start-maximized");
+ 
+//         driver = new ChromeDriver(options);
+//         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+//         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(3));
+//         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+//     }
 
 // 	@AfterEach
 // 	void tearDown() {
@@ -291,7 +278,7 @@
 // 		reserva2.setCerradura(cerradura2);
 // 		reserva2.setFechainicio(Date.valueOf(LocalDate.now()));
 // 		reserva2.setFechafin(Date.valueOf(LocalDate.now().plusDays(1)));
-// 		reserva2.setPin("987654");
+// 		reserva2.setPin("987653");
 // 		reserva2.setGestor(cerradura2.getGestor());
 // 		reserva2 = reservaRepository.save(reserva2);
 // 		reservaService.asociarHuesped(reserva2.getId(), segundoHuesped.getId());
