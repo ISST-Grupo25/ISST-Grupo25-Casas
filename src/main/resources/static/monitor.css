@@ -35,7 +35,7 @@
   flex-direction: row; /* IMPORTANTE: columna horizontal */
   gap: 20px;
   transition: transform 0.3s ease;
-  width: 100%; /* ya no duplicamos el ancho */
+  width: 100%; 
   align-items: flex-start;
 }
 
