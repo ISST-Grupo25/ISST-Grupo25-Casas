@@ -1,10 +1,19 @@
-.notifications-container {
-  max-width: 600px;
+/* Adaptación al estilo general del proyecto */
+.notifications-container h2{
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--texto);
+  margin-bottom: 1rem;
+  margin-top: 2rem;
+}
+
+.container {
+  max-width: 800px;
+  width: 90%;
   margin: 2rem auto;
   padding: 1rem;
   border-radius: 12px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  background-color: var(--card-bg);
 }
 
 .notification {
@@ -13,25 +22,31 @@
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 10px;
-  background-color: #f9f9f9;
+  background-color: var(--card-bg-2);
+  color: var(--texto);
+  box-shadow: 0 4px 8px var(--shadow-light);
   transition: background-color 0.2s ease;
 }
 
 .notification:hover {
-  background-color: #f1f1f1;
+  background-color: var(--card-bg-2);
 }
 
 .notification-icon {
-  font-size: 1.8rem;
+  font-size: 3rem;
   margin-right: 1rem;
 }
 
 .notification.success .notification-icon {
-  color: #4caf50;
+  color: var(--success);
 }
 
 .notification.failure .notification-icon {
-  color: #f44336;
+  color: var(--error);
+}
+
+.notification.warning .notification-icon {
+  color: var(--warning);
 }
 
 .notification-content {
@@ -40,12 +55,35 @@
 
 .notification-time {
   font-size: 0.85rem;
-  color: #888;
+  color: var(--texto-secundario);
   margin-top: 0.25rem;
 }
 
 .notification strong {
   font-weight: 600;
+}
+
+.discard-btn {
+  background: transparent;
+  border: none;
+  color: var(--texto-secundario);
+  cursor: pointer;
+  margin-left: 1rem;
+  font-weight: 600;
+}
+
+.discard-btn:hover {
+  color: var(--texto);
+}
+
+.empty-notification-message {
+  text-align: center;
+  color: var(--texto-secundario);
+  font-size: 1.1rem;
+  padding: 2rem;
+  background-color: var(--card-bg);
+  max-width: 400px;
+  margin: 2rem auto;
 }
 
 @media (max-width: 480px) {
@@ -57,29 +95,4 @@
   .notification-icon {
     margin-bottom: 0.5rem;
   }
-
-  .btn-discard {
-    background: transparent;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    margin-left: 1rem;
-  }
-  .btn-discard:hover {
-    color: #000;
-  }
-
-  .notification.warning {
-  border-left: 4px solid #ff9800;
-  background-color: #fff8e1;
-}
-
-.notification.warning .notification-icon {
-  color: #ff9800;
-}
-
-/* Opcional: diferenciar el texto */
-.notification.warning .notification-content p {
-  color: #795548;
-}
 }
