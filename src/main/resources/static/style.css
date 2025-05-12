@@ -802,6 +802,7 @@ body.dark .feature-3 {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 500;
+  max-width: 100%;
 }
 
 .dashboard-card:hover {
@@ -821,4 +822,250 @@ body.dark .feature-3 {
 .acceso-principal i,
 .acceso-principal p {
   color: var(--botontexto);
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-options {
+    grid-template-columns: 1fr !important; /* Una columna en móvil */
+    gap: 1rem;
+  }
+
+  .acceso-principal {
+    grid-column: span 1 !important;
+    width: 100% !important;
+  }
+
+  .dashboard-card {
+    width: 90% !important;
+  }
+
+  .hero-fullscreen {
+    padding: 20px 10px;
+    text-align: center;
+  }
+
+  .hero-container h1 {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+    word-break: break-word;
+  }
+
+  .hero-container p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-benefits {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .hero-benefits div {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hero-actions a {
+    width: 90%;
+    max-width: 300px;
+    margin: 8px 0;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .btn,
+  .btn-outline,
+  .btn-primary {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .feature-grid {
+  flex-direction: column !important;
+  text-align: center;
+  }
+
+  .feature.reverse .feature-grid {
+    flex-direction: column !important;
+  }
+
+  .feature-text,
+  .feature-image {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+
+  .feature-image {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  .feature-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  }
+
+  .feature-grid {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+    gap: 1rem;
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  .feature-text,
+  .feature-image {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+
+  .feature-image {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .feature-img {
+    width: 90%;
+    max-width: 300px;
+    height: auto;
+  }
+
+    .feature-grid {
+    flex-direction: column !important;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 1.2rem;
+  }
+
+  .feature-text {
+    text-align: center;
+    padding: 0 10px;
+  }
+
+  .feature-image {
+    margin-top: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .feature-img {
+    width: 85%;
+    max-width: 320px;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    margin-bottom: 2rem;
+  }
+
+  .feature p.lead {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature .benefits p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .feature-grid {
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0 1.2rem;
+    text-align: center;
+  }
+
+  .feature-text {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .feature-text h2 {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+  }
+
+  .feature-text .lead {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-text .benefits p {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .feature-image {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 2rem;
+  }
+
+  .feature-img {
+    width: 90%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 14px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .feature-text {
+    padding: 0 1.2rem; /* 🌟 añade espacio horizontal */
+    box-sizing: border-box;
+  }
+
+  .feature-text h2 {
+    font-size: 1.6rem;
+    line-height: 2rem;
+    word-break: break-word; /* previene desbordamiento */
+  }
+
+  .feature-text .lead {
+    font-size: 1.05rem;
+    line-height: 1.5rem;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .feature-text .benefits p {
+    font-size: 0.95rem;
+    line-height: 1.4rem;
+    padding: 0 0.5rem;
+  }
+
+  .feature-text h2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center; /* ✅ centra icono + texto */
+    gap: 1rem;
+    text-align: center;
+    font-size: 3rem;
+    line-height: 3rem;
+  }
+
+  .feature-text h2 .material-icons {
+    font-size: 3rem;
+    vertical-align: middle;
+  }
+
 }
