@@ -12,67 +12,69 @@
           <h2 style="text-align: center; margin-bottom: 2rem">
             Notificaciones de Acceso
           </h2>
+          <div class="container">
+            <div
+              th:each="acceso : ${accesos}"
+              th:class="'notification ' + (${acceso.resultado} ? 'success' : 'failure')"
+              th:attr="data-id=${acceso.id}"
+            >
+              <div class="notification-icon">
+                <span th:text="${acceso.resultado} ? '🔓' : '🔒'">🔓</span>
+              </div>
+              <div class="notification-content">
+                <p>
+                  <strong th:text="${acceso.huesped.nombre}"
+                    >Nombre del huésped</strong
+                  >
+                  <span th:if="${acceso.resultado}"> accedió a </span>
+                  <span th:unless="${acceso.resultado}"> intentó acceder a </span>
+                  <span
+                    th:if="${acceso.reserva != null and acceso.reserva.cerradura != null}"
+                    th:text="${acceso.reserva.cerradura.ubicacion}"
+                  >
+                  </span>
 
-          <div
-            th:each="acceso : ${accesos}"
-            th:class="'notification ' + (${acceso.resultado} ? 'success' : 'failure')"
-            th:attr="data-id=${acceso.id}"
-          >
-            <div class="notification-icon">
-              <span th:text="${acceso.resultado} ? '🔓' : '🔒'">🔓</span>
+                  <span th:if="${acceso.resultado}"> correctamente.</span>
+                  <span th:unless="${acceso.resultado}"> pero falló.</span>
+                </p>
+                <div class="notification-time" th:text="${acceso.horario}">
+                  01/05/2025 12:00
+                </div>
+              </div>
+              <button class="discard-btn">Descartar</button>
             </div>
-            <div class="notification-content">
-              <p>
-                <strong th:text="${acceso.huesped.nombre}"
-                  >Nombre del huésped</strong
-                >
-                <span th:if="${acceso.resultado}"> accedió a </span>
-                <span th:unless="${acceso.resultado}"> intentó acceder a </span>
-                <span
-                  th:if="${acceso.reserva != null and acceso.reserva.cerradura != null}"
-                  th:text="${acceso.reserva.cerradura.ubicacion}"
-                >
-                </span>
 
-                <span th:if="${acceso.resultado}"> correctamente.</span>
-                <span th:unless="${acceso.resultado}"> pero falló.</span>
-              </p>
-              <div class="notification-time" th:text="${acceso.horario}">
-                01/05/2025 12:00
+            <p
+              id="empty-msg"
+              class="empty-notification-message"
+              th:attr="hidden=${!#lists.isEmpty(accesos)}"
+            >
+              No tienes notificaciones por ahora 💤
+            </p>
+
+            <div th:each="c : ${lowBatteryAlerts}"
+                class="notification warning"
+                th:attr="data-id=${c.id}">
+              <div class="notification-icon">⚠️</div>
+              <div class="notification-content">
+                <p>
+                  La cerradura
+                  <strong th:text="${c.ubicacion}">Ubicación</strong>
+                  tiene batería baja:
+                  <span th:text="${c.bateria + '%'}">10%</span>
+                </p>
+                <div class="notification-time">
+                  <em>Requiere recarga</em>
+                </div>
               </div>
             </div>
-            <button class="discard-btn">Descartar</button>
           </div>
-
-          <p
-            th:if="${#lists.isEmpty(accesos)}"
-            style="text-align: center; color: #999"
-          >
-            No tienes notificaciones por ahora 💤
-          </p>
-
-          <div th:each="c : ${lowBatteryAlerts}"
-              class="notification warning"
-              th:attr="data-id=${c.id}">
-            <div class="notification-icon">⚠️</div>
-            <div class="notification-content">
-              <p>
-                La cerradura
-                <strong th:text="${c.ubicacion}">Ubicación</strong>
-                tiene batería baja:
-                <span th:text="${c.bateria + '%'}">10%</span>
-              </p>
-              <div class="notification-time">
-                <em>Requiere recarga</em>
-              </div>
-            </div>
+          <div style="text-align:center; margin-top:2rem">
+            <button id="clear-all-btn" class="btn-primary btn-danger">Descartar todo</button>
           </div>
-
-          <!-- botón borrar todas (estático) -->
-        <div style="text-align:center; margin-top:2rem">
-          <button id="clear-all-btn" class="btn btn-danger">Descartar todo</button>
-        </div>
         </section>
+        <!-- botón borrar todas (estático) -->
+        
         
       </main>
     </div>
@@ -99,6 +101,11 @@
           await fetch(`/notifications/dismiss/${id}`, { method: 'POST' });
           card.remove();           // quita la tarjeta
           refreshBadge();          // y actualiza la badge
+          // si ya no hay notificaciones, mostrar el mensaje
+          const remaining = document.querySelectorAll('.notification.success, .notification.failure');
+          if (remaining.length === 0) {
+            document.getElementById('empty-msg').hidden = false;
+          }
         });
       });
     
@@ -106,10 +113,17 @@
       const allBtn = document.getElementById('clear-all-btn');
       allBtn.addEventListener('click', async () => {
         await fetch('/notifications/dismissAll', { method: 'POST' });
+
         document
-        .querySelectorAll('.notification.success, .notification.failure')
-        .forEach(card => card.remove());
-        refreshBadge();           // actualiza la badge (se quitará)
+          .querySelectorAll('.notification.success, .notification.failure')
+          .forEach(card => card.remove());
+
+        const remaining = document.querySelectorAll('.notification.success, .notification.failure');
+        if (remaining.length === 0) {
+          document.getElementById('empty-msg').hidden = false;
+        }
+
+        refreshBadge();
       });
     </script>
   </body>
