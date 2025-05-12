@@ -56,6 +56,10 @@ public class CerraduraService {
         return cerraduraRepository.save(cerradura);
     }
 
+    public Cerradura guardar(Cerradura cerradura) {
+        return cerraduraRepository.save(cerradura);
+    }
+
     public Cerradura obtenerPrimera() {
     List<Cerradura> cerraduras = obtenerTodasLasCerraduras();
     if (!cerraduras.isEmpty()) {

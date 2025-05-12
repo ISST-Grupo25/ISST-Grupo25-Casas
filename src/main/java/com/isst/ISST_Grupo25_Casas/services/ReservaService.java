@@ -61,6 +61,11 @@ public class ReservaService {
     }
 
     @Transactional
+    public Reserva guardar(Reserva reserva) {
+        return reservaRepository.save(reserva);
+    }
+
+    @Transactional
     public Reserva actualizarReserva(Long id, Date fechaInicio, Date fechaFin, Cerradura cerradura, List<Huesped> nuevosHuespedes) {
         Reserva reserva = reservaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Reserva no encontrada con ID: " + id));
